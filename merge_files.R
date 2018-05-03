@@ -34,6 +34,7 @@ resh <- indSkjema("Resh", encode = "Latin-1")
 ## endrer navn RHF
 
 resh[RHF == "HSØ", RHF := "Helse Sør-Øst"]
+resh[HF == "OUS", HF := "Oslo universitetssykehus"]
 
 #################################
 ## Tar bort whitespace
@@ -126,15 +127,23 @@ skadeDel <- splitstackshape::cSplit(skade, splitCols = "aiskode", sep = ",", dir
 
 ### Beholder alle var i skadeskjema
 ### alle var starter med i. kommer fra skade skjema
-skadeGrad <- ulykke[skade, on = "ntrid"]
-
+skadeUlykke <- ulykke[skade, on = "ntrid"]
 
 ## henter index fra acc_trans til acc_fire
-accName <- grep("acc_transport", names(skadeGrad)):grep("acc_fire_inhal", names(skadeGrad))
+accName <- grep("acc_transport", names(skadeUlykke)):grep("acc_fire_inhal", names(skadeUlykke))
 ## convert to numeric
 for (d in accName) {
-  set(skadeGrad, j = d, value = as.numeric(skadeGrad[[d]]))
+  set(skadeUlykke, j = d, value = as.numeric(skadeUlykke[[d]]))
 }
+
+#########################
+## legger til HF og RHF
+#########################
+skadeUlykke[, i.UnitId := as.numeric(i.UnitId)]
+resh[, reshid := as.numeric(reshid)]
+
+skadeGrad <- resh[skadeUlykke, on = c(reshid = "i.UnitId")]
+
 
 #######################
 ## Valg ulyketype
@@ -149,31 +158,37 @@ setkey(skadeGrad, ntrid)
 
 ##testGrad <- skadeGrad[!duplicated(ntrid) & !is.na(ntrid), ]
 
-skadeAlvor <- skadeGrad[get(varValg) == acd & !duplicated(ntrid) & !is.na(ntrid), list(ja = ifelse(sum(grepl(
-  paste0("^", body, ".*[", grad1, "-", grad2, "]$"), as.numeric(unlist(
-    strsplit(aiskode, split = ","))))) != 0, 1, 0),
-  syk = i.HealthUnitName), #bruk i.HealthUnitName som kommer fra skadeskjema
-  by = c("ntrid")]
+skadeAlvor <- skadeGrad[get(varValg) == acd & !duplicated(ntrid) & !is.na(ntrid),
+                        list(ja = ifelse(
+                          sum(grepl(paste0("^", body, ".*[", grad1, "-", grad2, "]$"),
+                                    as.numeric(unlist(
+                                      strsplit(aiskode, split = ","))))) != 0, 1, 0),
+                          syk = i.HealthUnitName,
+                          hf = HF,
+                          rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
+                        by = c("ntrid")]
 
 skadeAlvor[ja == 1, .N, by = syk]
-
+skadeAlvor[ja == 1, .N, by = c("hf", "rhf")]
 
 #########################
 ## Andre ulykke
 ########################
-## 1 - Fallulykke
-## 2 - Voldsulykke
-## 3 - Arbeidsulykke
-## 4 - Sport og fritid
-## 5 - Brann og inhalasjonsskade
-## 6 - Annen ulykke
+## 1 - Transportulykke
+## 2 - Fallulykke
+## 3 - Voldsulykke
+## 4 - Arbeidsulykke
+## 5 - Sport og fritid
+## 6 - Brann og inhalasjonsskade
+## 7 - Annen ulykke
 
-accT <- 4
+accT <- 1
 body <- 4
 grad1 <- 1
 grad2 <- 1
 
 accKode <- switch(accT,
+                  "acc_transport",
                   "acc_fall",
                   "acc_violence",
                   "acc_self_inflict",
@@ -189,7 +204,10 @@ setkey(skadeGrad, ntrid)
 skadeAndre <- skadeGrad[get(accKode) == 1 & !duplicated(ntrid) & !is.na(ntrid), list(ja = ifelse(sum(grepl(
   paste0("^", body, ".*[", grad1, "-", grad2, "]$"), as.numeric(unlist(
     strsplit(aiskode, split = ","))))) != 0, 1, 0),
-  syk = i.HealthUnitName), #bruk i.HealthUnitName som kommer fra skadeskjema
+  syk = i.HealthUnitName,
+  hf = HF,
+  rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
   by = c("ntrid")]
 
 skadeAndre[ja == 1, .N, by = syk]
+skadeAndre[ja == 1, .N, by = c("hf", "rhf")]
