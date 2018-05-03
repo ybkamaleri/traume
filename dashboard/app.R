@@ -2,6 +2,10 @@
 library(shiny)
 library(shinydashboard)
 
+##############
+## Data
+source('data.R', local = TRUE)
+
 ### UI ######
 
 ## Sidebar ###
@@ -51,7 +55,10 @@ body <-  dashboardBody(
                                            "Upper extremity" = 7,
                                            "Lower extremity" = 8,
                                            "External and other" = 9),
-                            selected = 1))
+                            selected = 1)),
+              box(
+                dataTableOutput("table")
+              )
             )),
     tabItem(tabName = "dag",
             h2("Sykehusopphold")))
@@ -68,9 +75,11 @@ ui <- dashboardPage(
   body)
 
 
-
+## Server ##
 server <- function(input, output) {
-
+  output$table <- renderDataTable({
+    head(masterID)
+  })
 }
 
 shinyApp(ui, server)
