@@ -16,7 +16,8 @@ source(data)
 ###########################
 indSkjema <- function(x, encode = "UTF-8"){
   indx <- grep(x, ntrCSV)
-  DT <- fread(ntrCSV[indx], encoding = encode)
+  filN <- paste0(filDir, "/", ntrCSV[indx])
+  DT <- fread(filN, encoding = encode)
   return(DT)
 }
 
