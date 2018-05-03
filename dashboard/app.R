@@ -24,7 +24,7 @@ sidebar <- dashboardSidebar(
                        start = Sys.Date() - 30, end = Sys.Date(),
                        separator = "-", format = "dd-mm-yyyy", startview = "year",
                        language = "no", weekstart = 1),
-              menuItem("Type ulykke", tabName = "skade", icon = icon("medkit")),
+              menuItem("Ulykke og skadegradering", tabName = "skade", icon = icon("medkit")),
               conditionalPanel("input.sidebar === 'skade'",
                                selectInput("ulykke1", "Valg type ulykke:",
                                            choices = list("Transportulykke" = 1,
