@@ -44,7 +44,7 @@ delW <- function(dt){
   for (j in names(dt)) set(dt, j = j, value = dt[[trimws(j)]])
 }
 
-##ntrFil <- list(traume, akutt, intensiv, prehosp, ulykke, skade)
+## ntrFil <- list("traume", "akutt", "intensiv", "prehosp", "ulykke", "skade")
 
 delW(traume)
 delW(akutt)
