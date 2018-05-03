@@ -10,7 +10,7 @@ source('data.R', local = TRUE)
 
 ############################# Sidebar ###############################
 sidebar <- dashboardSidebar(
-  width = 300,
+  width = 250,
   sidebarMenu(id = "sidebar",
               menuItem("Helse enheten", tabName = "unit", icon = icon("building"),
                        selectInput(inputId = "unit", label = "Valg enhet",
@@ -34,7 +34,7 @@ sidebar <- dashboardSidebar(
                                                           "Sport og fritid" = 5,
                                                           "Brann og inhalasjonsskade" = 6,
                                                           "Annen ulykke" = 7),
-                                           selected = 7,
+                                           selected = 4,
                                            width = '90%')),
               menuItem("Sykehusopphod", tabName = "dag", icon = icon("bed"))
               ))
@@ -44,7 +44,7 @@ sidebar <- dashboardSidebar(
 body <-  dashboardBody(
   tabItems(
     tabItem(tabName = "skade",
-            h2("Type ulykke og skadegradering"),
+            h4("Type ulykke og skadegradering"),
             fluidPage(
               fluidRow(
                 box(
@@ -94,7 +94,7 @@ body <-  dashboardBody(
 ########################## Page ##################################
 ui <- dashboardPage(
   dashboardHeader(title = "Nasjonalt traumeregister",
-                  titleWidth = 300
+                  titleWidth = 250
                   ),
   sidebar,
   body)
@@ -102,12 +102,17 @@ ui <- dashboardPage(
 
 ######################## Server #################################
 server <- function(input, output, session) {
+
+  ## Viser transport type hvis transportulykke
   output[["box"]] <- renderUI({
     if (input$ulykke1 == 1)
       box(
         width = 4,
         selectInput("acc", "Transportulykke",
-                    choices = list("a", "b")))
+                    choices = list("Bil" = 1,
+                                   "Sykkel" = 2,
+                                   "Båt" = 3),
+                    selected = 1))
   })
 
   output$table <- renderDataTable({
