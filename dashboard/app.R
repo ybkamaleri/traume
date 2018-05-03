@@ -14,7 +14,10 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Helse enheten", tabName = "unit", icon = icon("building"),
              selectInput(inputId = "unit", label = "Valg enhet",
-                         choices = c("Sykehus", "HF", "RHF"),
+                         choices = c("Sykehus" = 1,
+                                     "HF" = 2,
+                                     "RHF" = 3),
+                         selected = 3,
                          width = '98%')),
     menuItem("Periode", tabName = "tid", icon = icon("calendar"),
              dateRangeInput(inputId = "date", label = "Valg dato fra og til"),
@@ -43,7 +46,8 @@ body <-  dashboardBody(
                                              "Sport og fritid" = 5,
                                              "Brann og inhalasjonsskade" = 6,
                                              "Annen ulykke" = 7),
-                              selected = 7)),
+                            selected = 7,
+                            width = '90%')),
 
               box(
                 width = 4,
@@ -57,7 +61,8 @@ body <-  dashboardBody(
                                            "Upper extremity" = 7,
                                            "Lower extremity" = 8,
                                            "External and other" = 9),
-                            selected = 1)),
+                            selected = 1,
+                            width = '90%')),
               box(
                 width = 4,
                 title = "Skadegradering",
@@ -69,9 +74,15 @@ body <-  dashboardBody(
                                                   "5" = 5),
                                    )),
               box(
-                dataTableOutput("table")
+                dataTableOutput("table"),
+                textOutput("skadegrad")
+
               )
-            )),
+              ## ,
+              ## box(
+              ##   textOutput("skadegrad")
+              ## )
+              )),
     tabItem(tabName = "dag",
             h2("Sykehusopphold")))
 )
@@ -90,8 +101,12 @@ ui <- dashboardPage(
 ######################## Server #################################
 server <- function(input, output, session) {
 
-    output$table <- renderDataTable({
-      head(masterID)
+  output$table <- renderDataTable({
+    head(masterID)
+  })
+
+  output$skadegrad <- renderText({
+    skadeTall <- input$skade
   })
 }
 
