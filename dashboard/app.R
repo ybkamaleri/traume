@@ -8,7 +8,7 @@ source('data.R', local = TRUE)
 
 ### UI ######
 
-## Sidebar ###
+############################# Sidebar ###############################
 sidebar <- dashboardSidebar(
   width = 300,
   sidebarMenu(
@@ -26,25 +26,27 @@ sidebar <- dashboardSidebar(
   ))
 
 
-### Body ###
+############################## Body ##################################
 body <-  dashboardBody(
   tabItems(
     tabItem(tabName = "skade",
             h2("Type ulykke og skadegradering"),
             fluidRow(
               box(
+                width = 4,
                 title = "Type ulykke",
                 selectInput("ulykke", "Valg type ulykke:",
                             choices = list("Transportulykke" = 1,
-                                           "Fallulykke" = 2,
-                                           "Voldsulykke" = 3,
-                                           "Arbeidsulykke" = 4,
-                                           "Sport og fritid" = 5,
-                                           "Brann og inhalasjonsskade" = 6,
-                                           "Annen ulykke" = 7),
-                            selected = 7)
-              ),
+                                             "Fallulykke" = 2,
+                                             "Voldsulykke" = 3,
+                                             "Arbeidsulykke" = 4,
+                                             "Sport og fritid" = 5,
+                                             "Brann og inhalasjonsskade" = 6,
+                                             "Annen ulykke" = 7),
+                              selected = 7)),
+
               box(
+                width = 4,
                 title = "Kroppsregion",
                 selectInput("kropp", "Valg kroppsregion:",
                             choices = list("Head" = 1,
@@ -57,6 +59,16 @@ body <-  dashboardBody(
                                            "External and other" = 9),
                             selected = 1)),
               box(
+                width = 4,
+                title = "Skadegradering",
+                checkboxGroupInput("skade", "Valg skadegrader:",
+                                   choices = list("1" = 1,
+                                                  "2" = 2,
+                                                  "3" = 3,
+                                                  "4" = 4,
+                                                  "5" = 5),
+                                   )),
+              box(
                 dataTableOutput("table")
               )
             )),
@@ -66,7 +78,7 @@ body <-  dashboardBody(
 
 
 
-## Page ##
+########################## Page ##################################
 ui <- dashboardPage(
   dashboardHeader(title = "Nasjonalt traumeregister",
                   titleWidth = 300
@@ -75,10 +87,11 @@ ui <- dashboardPage(
   body)
 
 
-## Server ##
-server <- function(input, output) {
-  output$table <- renderDataTable({
-    head(masterID)
+######################## Server #################################
+server <- function(input, output, session) {
+
+    output$table <- renderDataTable({
+      head(masterID)
   })
 }
 
