@@ -45,57 +45,48 @@ body <-  dashboardBody(
   tabItems(
     tabItem(tabName = "skade",
             h2("Type ulykke og skadegradering"),
-            fluidRow(
-              box(
-                width = 4,
-                title = "Type ulykke",
-                selectInput("ulykke", "Valg type ulykke:",
-                            choices = list("Transportulykke" = 1,
-                                             "Fallulykke" = 2,
-                                             "Voldsulykke" = 3,
-                                             "Arbeidsulykke" = 4,
-                                             "Sport og fritid" = 5,
-                                             "Brann og inhalasjonsskade" = 6,
-                                             "Annen ulykke" = 7),
-                            selected = 7,
-                            width = '90%')),
+            fluidPage(
+              fluidRow(
+                box(
+                  width = 4,
+                  ## title = "Kroppsregion",
+                  selectInput("kropp", "Valg kroppsregion:",
+                              choices = list("Head" = 1,
+                                             "Face" = 2,
+                                             "Neck" = 3,
+                                             "Thorax" = 4,
+                                             "Abdomen" = 5,
+                                             "Upper extremity" = 7,
+                                             "Lower extremity" = 8,
+                                             "External and other" = 9),
+                              selected = 1,
+                              width = '90%')),
+                box(
+                  width = 4,
+                  ## title = "Skadegradering",
+                  checkboxGroupInput("skade", "Valg skadegrader:",
+                                     choices = list("1" = 1,
+                                                    "2" = 2,
+                                                    "3" = 3,
+                                                    "4" = 4,
+                                                    "5" = 5),
+                                     inline = TRUE
+                                     )),
+                uiOutput(outputId = "box")
+              ),
+              fluidRow(
+                box(
+                  width = 12,
+                  dataTableOutput("table"),
+                  textOutput("skadegrad")
 
-              box(
-                width = 4,
-                title = "Kroppsregion",
-                selectInput("kropp", "Valg kroppsregion:",
-                            choices = list("Head" = 1,
-                                           "Face" = 2,
-                                           "Neck" = 3,
-                                           "Thorax" = 4,
-                                           "Abdomen" = 5,
-                                           "Upper extremity" = 7,
-                                           "Lower extremity" = 8,
-                                           "External and other" = 9),
-                            selected = 1,
-                            width = '90%')),
-              box(
-                width = 4,
-                title = "Skadegradering",
-                checkboxGroupInput("skade", "Valg skadegrader:",
-                                   choices = list("1" = 1,
-                                                  "2" = 2,
-                                                  "3" = 3,
-                                                  "4" = 4,
-                                                  "5" = 5),
-                                   )),
-              box(
-                dataTableOutput("table"),
-                textOutput("skadegrad")
-
+                )
               )
-              ## ,
-              ## box(
-              ##   textOutput("skadegrad")
-              ## )
-              )),
+            )
+            ),
     tabItem(tabName = "dag",
-            h2("Sykehusopphold")))
+            h2("Sykehusopphold"))
+  )
 )
 
 
@@ -111,6 +102,13 @@ ui <- dashboardPage(
 
 ######################## Server #################################
 server <- function(input, output, session) {
+  output[["box"]] <- renderUI({
+    if (input$ulykke1 == 1)
+      box(
+        width = 4,
+        selectInput("acc", "Transportulykke",
+                    choices = list("a", "b")))
+  })
 
   output$table <- renderDataTable({
     head(masterID)
