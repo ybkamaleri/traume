@@ -1,2 +1,4 @@
 # traume
-Nasjonalt Traumeregister
+## Nasjonalt Traumeregister
+
+Rapport løsning for registret
