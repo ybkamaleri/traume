@@ -1,0 +1,2 @@
+# traume
+Nasjonalt Traumeregister
