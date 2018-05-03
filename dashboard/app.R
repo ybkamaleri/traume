@@ -44,7 +44,7 @@ sidebar <- dashboardSidebar(
 body <-  dashboardBody(
   tabItems(
     tabItem(tabName = "skade",
-            h4("Type ulykke og skadegradering"),
+            h4("Ulykke og skadegradering"),
             fluidPage(
               fluidRow(
                 box(
@@ -60,7 +60,7 @@ body <-  dashboardBody(
                                              "Lower extremity" = 8,
                                              "External and other" = 9),
                               selected = 1,
-                              width = '90%')),
+                              width = '99%')),
                 box(
                   width = 4,
                   ## title = "Skadegradering",
@@ -72,6 +72,7 @@ body <-  dashboardBody(
                                                     "5" = 5),
                                      inline = TRUE
                                      )),
+                ## Transport type
                 uiOutput(outputId = "box")
               ),
               fluidRow(
@@ -85,7 +86,7 @@ body <-  dashboardBody(
             )
             ),
     tabItem(tabName = "dag",
-            h2("Sykehusopphold"))
+            h4("Sykehusopphold"))
   )
 )
 
