@@ -4,7 +4,7 @@ library(data.table)
 #########
 ## DATA
 #########
-filDir <- getwd()
+filDir <- "~/avid/ntr/data"
 sr01 <- paste0(filDir,"/", "datakilder1.R")
 sr02 <- paste0(filDir, "/", "datakilder2.R")
 ##ifelse(file.exists(sr01), source(sr01), source(sr02))
