@@ -111,8 +111,14 @@ server <- function(input, output, session) {
         width = 4,
         selectInput("acc", "Transportulykke",
                     choices = list("Bil" = 1,
-                                   "Sykkel" = 2,
-                                   "Båt" = 3),
+                                   "MC" = 2,
+                                   "Sykkel" = 3,
+                                   "Båt" = 4,
+                                   "Tog" = 5,
+                                   "Fly" = 6,
+                                   "Moped" = 7,
+                                   "Annet" = 99,
+                                   "Ukjent" = 999),
                     selected = 1))
   })
 
