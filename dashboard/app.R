@@ -120,7 +120,7 @@ server <- function(input, output, session) {
                                    "Moped" = 7,
                                    "Annet" = 99,
                                    "Ukjent" = 999),
-                    selected = 1))
+                    width = '98%'))
   })
 
   ###########################
@@ -170,11 +170,17 @@ server <- function(input, output, session) {
 
 
   accData <- reactive({
-
-    body <- input$kropp
+    
+    ## kroppregion
+    body <- as.numeric(input$kropp)
+    ## ulykke type
     accT <- as.numeric(input$ulykkeType)
-
+    ## skadegradering
     gradKode <- as.numeric(input$sgrad)
+
+    ## transport type
+    varValg <- "acc_trsp_rd_type"
+    acd <- as.numeric(input$acc)
 
     skadeGrad <- skadeData()
     setkey(skadeGrad, ntrid)
@@ -189,20 +195,41 @@ server <- function(input, output, session) {
                       "acc_fire_inhal",
                       "acc_other")
 
-    skadeGrad[get(accKode) == 1 & !duplicated(ntrid) & !is.na(ntrid),
-              list(ja = ifelse(sum(grepl(
-                paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"), as.numeric(unlist(
-                  strsplit(aiskode, split = ","))))) != 0, 1, 0),
-                syk = i.HealthUnitName,
-                hf = HF,
-                rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
-              by = c("ntrid")]
+    if (is.null(input$acc)){
+
+      skadeGrad[get(accKode) == 1 & !duplicated(ntrid) & !is.na(ntrid),
+                list(ja = ifelse(sum(grepl(
+                  paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"),
+                  as.numeric(unlist(
+                    strsplit(aiskode, split = ","))))) != 0, 1, 0),
+                  syk = i.HealthUnitName,
+                  hf = HF,
+                  rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
+                by = c("ntrid")]
+    } else {
+
+      skadeGrad[get(varValg) == acd & !duplicated(ntrid) & !is.na(ntrid),
+                list(ja = ifelse(
+                  sum(grepl(paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"),
+                            as.numeric(unlist(
+                              strsplit(aiskode, split = ","))))) != 0, 1, 0),
+                  syk = i.HealthUnitName,
+                  hf = HF,
+                  rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
+                by = c("ntrid")]
+
+    }
   })
 
-
+  ## Table for Ullyke og skadegradering
   output$accTable <- DT::renderDataTable({
 
-    accData()[ja == 1, .N, by = syk]
+    unit <- switch(as.numeric(input$unit),
+                   "syk",
+                   "hf",
+                   "rhf")
+
+    accData()[ja == 1, .N, by = unit]
 
   })
 
