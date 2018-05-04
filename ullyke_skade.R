@@ -125,3 +125,6 @@ skadeAndre <- skadeGrad[get(accKode) == 1 & !duplicated(ntrid) & !is.na(ntrid), 
 
 skadeAndre[ja == 1, .N, by = syk]
 skadeAndre[ja == 1, .N, by = c("hf", "rhf")]
+
+## select 1 at first and either 2 or 3 at the end
+grepl("^1.*[23]$", test1)
