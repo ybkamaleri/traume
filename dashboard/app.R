@@ -32,11 +32,12 @@ sidebar <- dashboardSidebar(
                                            choices = list("Transportulykke" = 1,
                                                           "Fallulykke" = 2,
                                                           "Voldsulykke" = 3,
-                                                          "Arbeidsulykke" = 4,
-                                                          "Sport og fritid" = 5,
-                                                          "Brann og inhalasjonsskade" = 6,
+                                                          "Selvpåført skade" = 4,
+                                                          "Arbeidsulykke" = 5,
+                                                          "Sport og fritid" = 6,
+                                                          "Brann og inhalasjonsskade" = 7,
                                                           "Annen ulykke" = 7),
-                                           selected = 4,
+                                           selected = 5,
                                            width = '90%')),
               menuItem("Sykehusopphod", tabName = "dag", icon = icon("bed"))
               ))
@@ -80,7 +81,7 @@ body <-  dashboardBody(
               ),
               fluidRow(
                 box(
-                  width = 12,
+                  width = 8,
                   DT::dataTableOutput("accTable")
                 )
               )
