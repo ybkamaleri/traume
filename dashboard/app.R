@@ -1,6 +1,8 @@
 
 library(shiny)
 library(shinydashboard)
+library(DT)
+library(data.table)
 
 ##############
 ## Data
@@ -70,7 +72,8 @@ body <-  dashboardBody(
                                                     "3" = 3,
                                                     "4" = 4,
                                                     "5" = 5),
-                                     inline = TRUE
+                                     inline = TRUE,
+                                     selected = 2,
                                      )),
                 ## Transport type
                 uiOutput(outputId = "box")
@@ -78,9 +81,7 @@ body <-  dashboardBody(
               fluidRow(
                 box(
                   width = 12,
-                  dataTableOutput("table"),
-                  textOutput("skadegrad")
-
+                  DT::dataTableOutput("accTable")
                 )
               )
             )
@@ -122,6 +123,9 @@ server <- function(input, output, session) {
                     selected = 1))
   })
 
+  ###########################
+  ## Skade og Ulykke data
+  ##########################
   skadeData <- eventReactive(input$ulykkeType %in% 1:7, {
 
     ## Valgte ais-koder
@@ -165,27 +169,52 @@ server <- function(input, output, session) {
   })
 
 
-  filSkadeData <- reactive({
+  accData <- reactive({
 
-    ## merged data skade og ulykke
-    data <- skadeData()
+    body <- input$kropp
+    accT <- as.numeric(input$ulykkeType)
 
-    ### Filter element##
-    helseEnhet <- input$unit
+    gradKode <- as.numeric(input$sgrad)
 
-    datoFra <- format(input$date[1])
-    datoTil <- format(input$date[2])
+    skadeGrad <- skadeData()
+    setkey(skadeGrad, ntrid)
 
-    ulType <- input$ulykkeType
+    accKode <- switch(accT,
+                      "acc_transport",
+                      "acc_fall",
+                      "acc_violence",
+                      "acc_self_inflict",
+                      "acc_work",
+                      "acc_sprt_recreat",
+                      "acc_fire_inhal",
+                      "acc_other")
+
+    skadeGrad[get(accKode) == 1 & !duplicated(ntrid) & !is.na(ntrid),
+              list(ja = ifelse(sum(grepl(
+                paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"), as.numeric(unlist(
+                  strsplit(aiskode, split = ","))))) != 0, 1, 0),
+                syk = i.HealthUnitName,
+                hf = HF,
+                rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
+              by = c("ntrid")]
   })
 
-  output$table <- renderDataTable({
+
+  output$accTable <- DT::renderDataTable({
+
+    accData()[ja == 1, .N, by = syk]
+
+  })
+
+  output$table <- DT::renderDataTable({
     skadeData()[1:10, 1:5]
   })
 
   output$skadegrad <- renderText({
-    skadeTall <- input$skade
+    skadeTall <- input$sgrad
   })
+
+  session$onSessionEnded(stopApp)
 }
 
 shinyApp(ui, server)
