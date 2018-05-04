@@ -83,7 +83,8 @@ skadeAlvor <- skadeGrad[get(varValg) == acd & !duplicated(ntrid) & !is.na(ntrid)
                         by = c("ntrid")]
 
 skadeAlvor[ja == 1, .N, by = syk]
-skadeAlvor[ja == 1, .N, by = c("hf", "rhf")]
+skadeAlvor[ja == 1, .N, by = "hf"]
+skadeAlvor[ja == 1, .N, by = "rhf"]
 
 #########################
 ## Andre ulykke
@@ -96,7 +97,7 @@ skadeAlvor[ja == 1, .N, by = c("hf", "rhf")]
 ## 6 - Brann og inhalasjonsskade
 ## 7 - Annen ulykke
 
-accT <- 1
+accT <- 2
 body <- 4
 grad1 <- 1
 grad2 <- 1
