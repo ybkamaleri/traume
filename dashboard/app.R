@@ -220,7 +220,7 @@ server <- function(input, output, session) {
                     paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"),
                     as.numeric(unlist(
                       strsplit(aiskode, split = ","))))) != 0, 1, 0),
-                    syk = i.HealthUnitName,
+                    sykehus = i.HealthUnitName,
                     hf = HF,
                     rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
                   by = c("ntrid")]
@@ -231,7 +231,7 @@ server <- function(input, output, session) {
                     sum(grepl(paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"),
                               as.numeric(unlist(
                                 strsplit(aiskode, split = ","))))) != 0, 1, 0),
-                    syk = i.HealthUnitName,
+                    sykehus = i.HealthUnitName,
                     hf = HF,
                     rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
                   by = c("ntrid")]
@@ -243,7 +243,7 @@ server <- function(input, output, session) {
   output$accTable <- DT::renderDataTable({
 
     unit <- switch(as.numeric(input$unit),
-                   "syk",
+                   "sykehus",
                    "hf",
                    "rhf")
 
