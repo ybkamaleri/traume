@@ -111,7 +111,7 @@ server <- function(input, output, session) {
     if (input$ulykkeType == 1)
       box(
         width = 4,
-        selectInput(inputId = "acc", "Transportulykke",
+        selectInput(inputId = "transTyp", "Transportulykke",
                     choices = list("Bil" = 1,
                                    "MC" = 2,
                                    "Sykkel" = 3,
@@ -181,7 +181,7 @@ server <- function(input, output, session) {
 
     ## transport type
     varValg <- "acc_trsp_rd_type"
-    acd <- as.numeric(input$acc)
+    acd <- as.numeric(input$transTyp)
 
     skadeGrad <- skadeData()
     setkey(skadeGrad, ntrid)
@@ -196,7 +196,7 @@ server <- function(input, output, session) {
                       "acc_fire_inhal",
                       "acc_other")
 
-    if (is.null(input$acc)){
+    if (input$ulykkeType != 1){
 
       skadeGrad[get(accKode) == 1 & !duplicated(ntrid) & !is.na(ntrid),
                 list(ja = ifelse(sum(grepl(
