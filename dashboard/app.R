@@ -234,14 +234,6 @@ server <- function(input, output, session) {
 
   })
 
-  output$table <- DT::renderDataTable({
-    skadeData()[1:10, 1:5]
-  })
-
-  output$skadegrad <- renderText({
-    skadeTall <- input$sgrad
-  })
-
   session$onSessionEnded(stopApp)
 }
 
