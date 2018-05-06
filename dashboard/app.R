@@ -129,7 +129,7 @@ server <- function(input, output, session) {
   ###########################
   ## Skade og Ulykke data
   ##########################
-  skadeData <- eventReactive(input$ulykkeType %in% 1:7, {
+  skadeGrad <- eventReactive(input$ulykkeType %in% 1:7, {
 
     ## Valgte ais-koder
     indAis <- grep("Valgte ais", names(skade)) #finne indeks til kolonne
@@ -186,8 +186,8 @@ server <- function(input, output, session) {
   accData <- reactive({
 
     ## Data
-    skadeGrad <- skadeData()
-    setkey(skadeGrad, ntrid)
+    ## skadeGrad <- skadeGrad()
+    setkey(skadeGrad(), ntrid)
 
     ## kroppregion
     body <- as.numeric(input$kropp)
@@ -202,8 +202,8 @@ server <- function(input, output, session) {
                       "acc_self_inflict",
                       "acc_work",
                       "acc_sprt_recreat",
-                        "acc_fire_inhal",
-                        "acc_other")
+                      "acc_fire_inhal",
+                      "acc_other")
 
       ## skadegradering
       gradKode <- as.numeric(input$sgrad)
@@ -215,8 +215,8 @@ server <- function(input, output, session) {
 
       if (input$ulykkeType != 1){
 
-        skadeGrad[get(accKode) == 1 & !duplicated(ntrid) & !is.na(ntrid),
-                  list(ja = ifelse(sum(grepl(
+        skadeGrad()[get(accKode) == 1 & !duplicated(ntrid) & !is.na(ntrid),
+                    list(ja = ifelse(sum(grepl(
                     paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"),
                     as.numeric(unlist(
                       strsplit(aiskode, split = ","))))) != 0, 1, 0),
@@ -226,8 +226,8 @@ server <- function(input, output, session) {
                   by = c("ntrid")]
       } else {
 
-        skadeGrad[get(varValg) %in% acd & !duplicated(ntrid) & !is.na(ntrid),
-                  list(ja = ifelse(
+        skadeGrad()[get(varValg) %in% acd & !duplicated(ntrid) & !is.na(ntrid),
+                    list(ja = ifelse(
                     sum(grepl(paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"),
                               as.numeric(unlist(
                                 strsplit(aiskode, split = ","))))) != 0, 1, 0),
