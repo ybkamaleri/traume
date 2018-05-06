@@ -37,7 +37,7 @@ sidebar <- dashboardSidebar(
                                                           "Sport og fritid" = 6,
                                                           "Brann og inhalasjonsskade" = 7,
                                                           "Annen ulykke" = 7),
-                                           selected = 5,
+                                           selected = 1,
                                            width = '90%')),
               menuItem("Sykehusopphod", tabName = "dag", icon = icon("bed"))
               ))
@@ -120,7 +120,9 @@ server <- function(input, output, session) {
                                    "Fly" = 6,
                                    "Moped" = 7,
                                    "Annet" = 99,
-                                   "Ukjent" = 999),
+                                   "Ukjent" = 999,
+                                   "Alle typer" = 50),
+                    selected = 50,
                     width = '98%'))
   })
 
@@ -169,22 +171,29 @@ server <- function(input, output, session) {
 
   })
 
+  ## Transport typer
+  transValg <- eventReactive(input$transTyp, {
 
+    if (as.numeric(input$transTyp) == 50) {
+      acd <- c(1:7, 99, 999) #valg alle transport type
+    } else {
+      acd <- as.numeric(input$transTyp)
+    }
+
+  })
+
+  ## Skade og ulykke
   accData <- reactive({
-    
-    ## kroppregion
-    body <- as.numeric(input$kropp)
-    ## ulykke type
-    accT <- as.numeric(input$ulykkeType)
-    ## skadegradering
-    gradKode <- as.numeric(input$sgrad)
 
-    ## transport type
-    varValg <- "acc_trsp_rd_type"
-    acd <- as.numeric(input$transTyp)
-
+    ## Data
     skadeGrad <- skadeData()
     setkey(skadeGrad, ntrid)
+
+    ## kroppregion
+    body <- as.numeric(input$kropp)
+
+    ## ulykke type
+    accT <- as.numeric(input$ulykkeType)
 
     accKode <- switch(accT,
                       "acc_transport",
@@ -193,34 +202,42 @@ server <- function(input, output, session) {
                       "acc_self_inflict",
                       "acc_work",
                       "acc_sprt_recreat",
-                      "acc_fire_inhal",
-                      "acc_other")
+                        "acc_fire_inhal",
+                        "acc_other")
 
-    if (input$ulykkeType != 1){
+      ## skadegradering
+      gradKode <- as.numeric(input$sgrad)
 
-      skadeGrad[get(accKode) == 1 & !duplicated(ntrid) & !is.na(ntrid),
-                list(ja = ifelse(sum(grepl(
-                  paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"),
-                  as.numeric(unlist(
-                    strsplit(aiskode, split = ","))))) != 0, 1, 0),
-                  syk = i.HealthUnitName,
-                  hf = HF,
-                  rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
-                by = c("ntrid")]
-    } else {
+      ## transport type
+      varValg <- "acc_trsp_rd_type"
+      acd <- transValg()
 
-      skadeGrad[get(varValg) == acd & !duplicated(ntrid) & !is.na(ntrid),
-                list(ja = ifelse(
-                  sum(grepl(paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"),
-                            as.numeric(unlist(
-                              strsplit(aiskode, split = ","))))) != 0, 1, 0),
-                  syk = i.HealthUnitName,
-                  hf = HF,
-                  rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
-                by = c("ntrid")]
 
-    }
-  })
+      if (input$ulykkeType != 1){
+
+        skadeGrad[get(accKode) == 1 & !duplicated(ntrid) & !is.na(ntrid),
+                  list(ja = ifelse(sum(grepl(
+                    paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"),
+                    as.numeric(unlist(
+                      strsplit(aiskode, split = ","))))) != 0, 1, 0),
+                    syk = i.HealthUnitName,
+                    hf = HF,
+                    rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
+                  by = c("ntrid")]
+      } else {
+
+        skadeGrad[get(varValg) %in% acd & !duplicated(ntrid) & !is.na(ntrid),
+                  list(ja = ifelse(
+                    sum(grepl(paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"),
+                              as.numeric(unlist(
+                                strsplit(aiskode, split = ","))))) != 0, 1, 0),
+                    syk = i.HealthUnitName,
+                    hf = HF,
+                    rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
+                  by = c("ntrid")]
+
+      }
+    })
 
   ## Table for Ullyke og skadegradering
   output$accTable <- DT::renderDataTable({
