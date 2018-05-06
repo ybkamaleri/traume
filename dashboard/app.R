@@ -47,7 +47,7 @@ sidebar <- dashboardSidebar(
 body <-  dashboardBody(
   tabItems(
     tabItem(tabName = "skade",
-            h4("Ulykke og skadegradering"),
+            tags$h4("  Ulykke og skadegradering"),
             fluidPage(
               fluidRow(
                 box(
@@ -88,7 +88,7 @@ body <-  dashboardBody(
             )
             ),
     tabItem(tabName = "dag",
-            h4("Sykehusopphold"))
+            tags$h4("Sykehusopphold"))
   )
 )
 
