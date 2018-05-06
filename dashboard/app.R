@@ -14,7 +14,7 @@ source('data.R', local = TRUE)
 sidebar <- dashboardSidebar(
   width = 250,
   sidebarMenu(id = "sidebar",
-              menuItem("Helse enheten", tabName = "unit", icon = icon("building"),
+              menuItem("Helse enheten", tabName = "unit", icon = icon("h-square"),
                        selectInput(inputId = "unit", label = "Valg enhet",
                                    choices = c("Sykehus" = 1,
                                                "HF" = 2,
