@@ -1,3 +1,3 @@
 library(shiny)
 runApp("app.R")
-ShinyAppDir("test")
+## ShinyAppDir("test")
