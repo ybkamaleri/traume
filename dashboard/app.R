@@ -47,8 +47,8 @@ sidebar <- dashboardSidebar(
 body <-  dashboardBody(
   tabItems(
     tabItem(tabName = "skade",
-            tags$h4("  Ulykke og skadegradering"),
             fluidPage(
+              tags$h3(textOutput("titleUT")),
               fluidRow(
                 box(
                   width = 5,
@@ -127,6 +127,26 @@ server <- function(input, output, session) {
                     selected = 50,
                     width = '98%'))
   })
+
+
+  ####################
+  ##  Ulykke typer  ##
+  ####################
+  observeEvent(input$ulykkeType, {
+
+    frameTitle <- switch(as.numeric(input$ulykkeType),
+                         "Transportulykke",
+                         "Fallulykke",
+                         "Voldsulykke",
+                         "Selvpåført skade",
+                         "Arbeidsulykke",
+                         "Sport og fritid relaterte skade",
+                         "Brann og inhalasjonsskade",
+                         "Annen type ulykke")
+
+    output$titleUT <- renderText(frameTitle)
+  })
+
 
   ###########################
   ## Skade og Ulykke data
