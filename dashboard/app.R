@@ -51,7 +51,7 @@ body <-  dashboardBody(
             fluidPage(
               fluidRow(
                 box(
-                  width = 4,
+                  width = 5,
                   ## title = "Kroppsregion",
                   selectInput(inputId = "kropp", "Valg kroppsregion:",
                               choices = list("Head" = 1,
@@ -63,16 +63,18 @@ body <-  dashboardBody(
                                              "Lower extremity" = 8,
                                              "External and other" = 9),
                               selected = 1,
+                              multiple = TRUE,
                               width = '99%')),
                 box(
-                  width = 4,
+                  width = 3,
                   ## title = "Skadegradering",
                   checkboxGroupInput(inputId = "sgrad", "Valg skadegrader:",
                                      choices = list("1" = 1,
                                                     "2" = 2,
                                                     "3" = 3,
                                                     "4" = 4,
-                                                    "5" = 5),
+                                                    "5" = 5,
+                                                    "6" = 6),
                                      inline = TRUE,
                                      selected = 2,
                                      )),
@@ -190,8 +192,10 @@ server <- function(input, output, session) {
     setkey(skadeGrad(), ntrid)
 
     ## kroppregion
-    body <- as.numeric(input$kropp)
+    inBody <- as.numeric(input$kropp)
+    body <- paste(inBody, collapse = "")
 
+    
     ## ulykke type
     accT <- as.numeric(input$ulykkeType)
 
@@ -217,8 +221,9 @@ server <- function(input, output, session) {
 
         skadeGrad()[get(accKode) == 1 & !duplicated(ntrid) & !is.na(ntrid),
                     list(ja = ifelse(sum(grepl(
-                    paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"),
-                    as.numeric(unlist(
+                      paste0("^", paste0("[", body, "]"),
+                             ".*[", paste(gradKode, collapse = ""), "]$"),
+                      as.numeric(unlist(
                       strsplit(aiskode, split = ","))))) != 0, 1, 0),
                     sykehus = i.HealthUnitName,
                     hf = HF,
@@ -228,8 +233,9 @@ server <- function(input, output, session) {
 
         skadeGrad()[get(varValg) %in% acd & !duplicated(ntrid) & !is.na(ntrid),
                     list(ja = ifelse(
-                    sum(grepl(paste0("^", body, ".*[", paste(gradKode, collapse = ""), "]$"),
-                              as.numeric(unlist(
+                      sum(grepl(paste0("^", paste0("[", body, "]"),
+                                       ".*[", paste(gradKode, collapse = ""), "]$"),
+                                as.numeric(unlist(
                                 strsplit(aiskode, split = ","))))) != 0, 1, 0),
                     sykehus = i.HealthUnitName,
                     hf = HF,
