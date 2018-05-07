@@ -28,15 +28,15 @@ sidebar <- dashboardSidebar(
                        language = "no", weekstart = 1),
               menuItem("Ulykke og skadegradering", tabName = "skade", icon = icon("medkit")),
               conditionalPanel("input.sidebar === 'skade'",
-                               selectInput(inputId = "ulykkeType", "Valg type ulykke:",
-                                           choices = list("Transportulykke" = 1,
-                                                          "Fallulykke" = 2,
-                                                          "Voldsulykke" = 3,
-                                                          "Selvpåført skade" = 4,
-                                                          "Arbeidsulykke" = 5,
+                               selectInput(inputId = "ulykkeType", "Valg type ulykke/skade:",
+                                           choices = list("Transport" = 1,
+                                                          "Fall" = 2,
+                                                          "Vold" = 3,
+                                                          "Selvpåført" = 4,
+                                                          "Arbeid" = 5,
                                                           "Sport og fritid" = 6,
-                                                          "Brann og inhalasjonsskade" = 7,
-                                                          "Annen ulykke" = 7),
+                                                          "Brann og inhalasjon" = 7,
+                                                          "Annen" = 8),
                                            selected = 1,
                                            width = '90%')),
               menuItem("Sykehusopphod", tabName = "dag", icon = icon("bed"))
@@ -53,7 +53,7 @@ body <-  dashboardBody(
                 box(
                   width = 5,
                   ## title = "Kroppsregion",
-                  selectInput(inputId = "kropp", "Valg kroppsregion:",
+                  selectInput(inputId = "kropp", "Valg en eller flere kroppsregion:",
                               choices = list("Head" = 1,
                                              "Face" = 2,
                                              "Neck" = 3,
@@ -113,7 +113,7 @@ server <- function(input, output, session) {
     if (input$ulykkeType == 1)
       box(
         width = 4,
-        selectInput(inputId = "transTyp", "Transportulykke",
+        selectInput(inputId = "transTyp", "Valg transport type:",
                     choices = list("Bil" = 1,
                                    "MC" = 2,
                                    "Sykkel" = 3,
@@ -148,20 +148,18 @@ server <- function(input, output, session) {
   })
 
 
-  ###########################
-  ## Skade og Ulykke data
   ##########################
-  skadeGrad <- eventReactive(input$ulykkeType %in% 1:7, {
+  ## Skade og Ulykke data ##
+  ##########################
+  skadeGrad <- eventReactive(input$ulykkeType, {
 
     ## Valgte ais-koder
     indAis <- grep("Valgte ais", names(skade)) #finne indeks til kolonne
     names(skade)[indAis] <- "ais"  #gir nytt navn til Valgte ais-koder
 
-    ################################################
-    ## kombinere alle skadekoder fra samme NTR-nr
-    ## og tar bort dublikate koder
-    ###############################################
-    #ta bort alle missing NTR-nr.
+    ## - kombinere alle skadekoder fra samme NTR-nr
+    ## - tar bort dublikate koder
+    ## - ta bort alle missing NTR-nr.
     skade <- skade[!is.na(ntrid), ]
 
     ## kombinere alle skadekoder og valgt bare unike koder
@@ -183,9 +181,8 @@ server <- function(input, output, session) {
       set(skadeUlykke, j = d, value = as.numeric(skadeUlykke[[d]]))
     }
 
-    #########################
-    ## legger til HF og RHF
-    #########################
+
+    #### legger til HF og RHF ####
     skadeUlykke[, i.UnitId := as.numeric(i.UnitId)]
     resh[, reshid := as.numeric(reshid)]
 
@@ -193,7 +190,9 @@ server <- function(input, output, session) {
 
   })
 
-  ## Transport typer
+  #####################
+  ## Transport typer ##
+  #####################
   transValg <- eventReactive(input$transTyp, {
 
     if (as.numeric(input$transTyp) == 50) {
@@ -204,7 +203,11 @@ server <- function(input, output, session) {
 
   })
 
-  ## Skade og ulykke
+
+  #####################
+  ## Skade og ulykke ##
+  #####################
+
   accData <- reactive({
 
     ## Data
@@ -245,10 +248,10 @@ server <- function(input, output, session) {
                              ".*[", paste(gradKode, collapse = ""), "]$"),
                       as.numeric(unlist(
                       strsplit(aiskode, split = ","))))) != 0, 1, 0),
-                    sykehus = i.HealthUnitName,
-                    hf = HF,
-                    rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
-                  by = c("ntrid")]
+                      Sykehus = i.HealthUnitName,
+                      HF = HF,
+                      RHF = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
+                    by = c("ntrid")]
       } else {
 
         skadeGrad()[get(varValg) %in% acd & !duplicated(ntrid) & !is.na(ntrid),
@@ -257,21 +260,25 @@ server <- function(input, output, session) {
                                        ".*[", paste(gradKode, collapse = ""), "]$"),
                                 as.numeric(unlist(
                                 strsplit(aiskode, split = ","))))) != 0, 1, 0),
-                    sykehus = i.HealthUnitName,
-                    hf = HF,
-                    rhf = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
-                  by = c("ntrid")]
+                      Sykehus = i.HealthUnitName,
+                      HF = HF,
+                      RHF = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
+                    by = c("ntrid")]
 
       }
     })
 
-  ## Table for Ullyke og skadegradering
+
+  ########################################
+  ## Table for Ullyke og skadegradering ##
+  ########################################
+
   output$accTable <- DT::renderDataTable({
 
     unit <- switch(as.numeric(input$unit),
-                   "sykehus",
-                   "hf",
-                   "rhf")
+                   "Sykehus",
+                   "HF",
+                   "RHF")
 
     accData()[ja == 1, .N, by = unit]
 
