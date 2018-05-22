@@ -4,3 +4,16 @@
 #+options: toc:nil
 
 * Flowchart for analysen
+* Features [3/5]
+(k) betyr at features inneholder kommentarer nedenfor
+ - [X] Sortere tabellen alphabetisk
+ - [X] Align checkboxGroupInput (k)
+ - [X] Tab for 'Generelle info' (k)
+ - [ ] Liggerdøgn
+ - [ ] Reset
+* Features kommentarer
+** Align checkboxGroupInput
+- bruk CSS og filen ligger under *www* mappe.
+** Tab for Generelle info
+- bruk CSS for å kunne endre farge. Nå er det valg for farge 'yellow' som er endret
+* Bugfix
