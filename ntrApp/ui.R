@@ -3,6 +3,7 @@
 sidebar <- dashboardSidebar(
   width = 250,
   sidebarMenu(id = "sidebar",
+              menuItem("Generell informasjon", tabName = "info", icon = icon("info-circle")),
               menuItem("Helse enheten", tabName = "unit", icon = icon("h-square"),
                        selectInput(inputId = "unit", label = "Valg enhet",
                                    choices = c("Sykehus" = 1,
@@ -43,6 +44,7 @@ body <-  dashboardBody(
   ),
 
   tabItems(
+    tabItem(tabName = "info"),
     tabItem(tabName = "skade",
             fluidPage(
               tags$h3(textOutput("titleUT")),
