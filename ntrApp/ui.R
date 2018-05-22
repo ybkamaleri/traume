@@ -33,7 +33,27 @@ sidebar <- dashboardSidebar(
 
 
 ############################## Body ##################################
+
+
+
 body <-  dashboardBody(
+  ## Align checkboxGroupInput
+  tags$head(
+    tags$style(
+      HTML(
+        ".checkbox-inline {
+                    margin-left: 0px;
+                    margin-right: 1px;
+          }
+         .checkbox-inline+.checkbox-inline {
+                    margin-left: 0px;
+                    margin-right: 1px;
+          }
+        "
+      )
+    )
+  ),
+
   tabItems(
     tabItem(tabName = "skade",
             fluidPage(
@@ -87,6 +107,7 @@ body <-  dashboardBody(
 
 ########################## Page ##################################
 ui <- dashboardPage(
+
   dashboardHeader(title = "Nasjonalt traumeregister",
                   titleWidth = 250
                   ),
