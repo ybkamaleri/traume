@@ -2,4 +2,4 @@ library(shiny)
 runApp("ntrApp")
 
 ## alternativ
-shinyAppDir("ntrApp")
+shiny::shinyAppDir("ntrApp")
