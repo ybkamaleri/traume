@@ -112,7 +112,6 @@ server <- function(input, output, session) {
     inBody <- as.numeric(input$kropp)
     body <- paste(inBody, collapse = "")
 
-    
     ## ulykke type
     accT <- as.numeric(input$ulykkeType)
 
@@ -126,14 +125,14 @@ server <- function(input, output, session) {
                       "acc_fire_inhal",
                       "acc_other")
 
-      ## skadegradering
+      ## Input for skadegradering
       gradKode <- as.numeric(input$sgrad)
 
-      ## transport type
+      ## Numeric type for transport type fra en reactive funksjon
       varValg <- "acc_trsp_rd_type"
       acd <- transValg()
 
-
+      ## Ja hvis minst en kroppsregion er skadet
       if (input$ulykkeType != 1){
 
         skadeGrad()[get(accKode) == 1 & !duplicated(ntrid) & !is.na(ntrid),
@@ -144,7 +143,7 @@ server <- function(input, output, session) {
                       strsplit(aiskode, split = ","))))) != 0, 1, 0),
                       Sykehus = i.HealthUnitName,
                       HF = HF,
-                      RHF = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
+                      RHF = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema - spør dem om dette er riktig
                     by = c("ntrid")]
       } else {
 
