@@ -7,3 +7,8 @@
     margin-left: 0px;
     margin-right: 1px;
 }
+
+/* color for valueBox */
+.small-box.bg-yellow {
+    background-color: #FFFF00 ;
+    color: #000000;  }

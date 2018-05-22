@@ -44,7 +44,21 @@ body <-  dashboardBody(
   ),
 
   tabItems(
-    tabItem(tabName = "info"),
+    tabItem(tabName = "info",
+            fluidRow(
+              valueBox(value = 20000,
+                       subtitle = "Antall traume",
+                       icon = icon("heartbeat"),
+                       color = "yellow"),
+              valueBox(value = 3000,
+                       subtitle = "Antall overflytting",
+                       icon = icon("ambulance"),
+                       color = "yellow"),
+              valueBox(value = 200,
+                       subtitle = "Antall døde",
+                       icon = icon("user-circle-o"),
+                       color = "yellow")
+            )),
     tabItem(tabName = "skade",
             fluidPage(
               tags$h3(textOutput("titleUT")),
