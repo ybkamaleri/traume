@@ -1,0 +1,9 @@
+/* align checkboxGroupInput */
+.checkbox-inline {
+    margin-left: 0px;
+    margin-right: 1px;
+}
+.checkbox-inline+.checkbox-inline {
+    margin-left: 0px;
+    margin-right: 1px;
+}
