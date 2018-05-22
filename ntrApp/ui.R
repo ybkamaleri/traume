@@ -37,21 +37,9 @@ sidebar <- dashboardSidebar(
 
 
 body <-  dashboardBody(
-  ## Align checkboxGroupInput
+  ## custom css
   tags$head(
-    tags$style(
-      HTML(
-        ".checkbox-inline {
-                    margin-left: 0px;
-                    margin-right: 1px;
-          }
-         .checkbox-inline+.checkbox-inline {
-                    margin-left: 0px;
-                    margin-right: 1px;
-          }
-        "
-      )
-    )
+    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
   ),
 
   tabItems(
