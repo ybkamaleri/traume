@@ -4,11 +4,12 @@
 #+options: toc:nil
 
 * Flowchart for analysen
-* Features [3/5]
+* Features [4/6]
 (k) betyr at features inneholder kommentarer nedenfor
  - [X] Sortere tabellen alphabetisk
  - [X] Align checkboxGroupInput (k)
  - [X] Tab for 'Generelle info' (k)
+ - [X] Antall traume valueBox (k)
  - [ ] Liggerdøgn
  - [ ] Reset
 * Features kommentarer
@@ -16,4 +17,8 @@
 - bruk CSS og filen ligger under *www* mappe.
 ** Tab for Generelle info
 - bruk CSS for å kunne endre farge. Nå er det valg for farge 'yellow' som er endret
+** Antall traume valueBox
+- base funksjon med unique er raskere enn data.table sine funksjoner dvs.
+  + length(!duplicated(ntrid))
+  + uniqueN(ntrid)
 * Bugfix
