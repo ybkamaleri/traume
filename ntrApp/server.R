@@ -3,12 +3,11 @@
 server <- function(input, output, session) {
 
   ########## generell info #######################
-
   output$ntrAntall <- renderValueBox({
     valueBox(
       length(unique(masterID$ntrid)), "Antall traume",
       icon = icon("heartbeat"),
-      color = "yellow"
+      color = "blue"
     )
   })
 
