@@ -21,4 +21,6 @@
 - base funksjon med unique er raskere enn data.table sine funksjoner dvs.
   + length(!duplicated(ntrid))
   + uniqueN(ntrid)
+- CSS for bakgrunnfarge og tekst i custom.css fil. Viktig å inkludere ~!important~
+  for det skal funker
 * Bugfix

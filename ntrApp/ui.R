@@ -44,6 +44,9 @@ body <-  dashboardBody(
     tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
   ),
 
+  ## css for valueBox
+  ## tags$style(".small-box.bg-blue { background-color: #FFFF00 ; color: #000000; }"),
+
   tabItems(
     tabItem(tabName = "info",
             fluidRow(
