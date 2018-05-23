@@ -46,10 +46,11 @@ body <-  dashboardBody(
   tabItems(
     tabItem(tabName = "info",
             fluidRow(
-              valueBox(value = 20000,
-                       subtitle = "Antall traume",
-                       icon = icon("heartbeat"),
-                       color = "yellow"),
+              valueBoxOutput("ntrAntall"), #dynamisk boks
+              ## valueBox(value = 20000,
+              ##          subtitle = "Antall traume",
+              ##          icon = icon("heartbeat"),
+              ##          color = "yellow"),
               valueBox(value = 3000,
                        subtitle = "Antall overflytting",
                        icon = icon("ambulance"),
