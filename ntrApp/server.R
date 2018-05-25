@@ -11,6 +11,23 @@ server <- function(input, output, session) {
     )
   })
 
+  output$ntrAlvor <- renderValueBox({
+    valueBox(
+      value = 3000,
+      subtitle = "Antall NISS≥16",
+      icon = icon("ambulance"),
+      color = "blue"
+    )
+  })
+
+  output$ntrDie <- renderValueBox({
+    valueBox(
+      value = paste0(12.1, "%"),
+      subtitle = "Andel døde innen 30 dagers",
+             icon = icon("user-circle-o"),
+      color = "blue"
+    )
+  })
 
 
   ## Viser transport type hvis transportulykke

@@ -36,8 +36,6 @@ sidebar <- dashboardSidebar(
 
 ############################## Body ##################################
 
-
-
 body <-  dashboardBody(
   ## custom css
   tags$head(
@@ -50,15 +48,10 @@ body <-  dashboardBody(
   tabItems(
     tabItem(tabName = "info",
             fluidRow(
-              valueBoxOutput("ntrAntall"), #dynamisk boks
-              valueBox(value = 3000,
-                       subtitle = "Antall overflytting",
-                       icon = icon("ambulance"),
-                       color = "blue"),
-              valueBox(value = 200,
-                       subtitle = "Antall døde",
-                       icon = icon("user-circle-o"),
-                       color = "blue")
+              ## dynamisk output
+              valueBoxOutput("ntrAntall"),
+              valueBoxOutput("ntrAlvor"),
+              valueBoxOutput("ntrDie")
             )),
     tabItem(tabName = "skade",
             fluidPage(
