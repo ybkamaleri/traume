@@ -6,7 +6,7 @@ server <- function(input, output, session) {
   output$ntrAntall <- renderValueBox({
     valueBox(
       length(unique(masterID$ntrid)), "Antall traume",
-      icon = icon("heartbeat"),
+      icon = icon("male"),
       color = "blue"
     )
   })
@@ -15,7 +15,7 @@ server <- function(input, output, session) {
     valueBox(
       value = 3000,
       subtitle = "Antall NISS≥16",
-      icon = icon("ambulance"),
+      icon = icon("heartbeat"),
       color = "blue"
     )
   })
