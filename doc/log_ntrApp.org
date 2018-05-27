@@ -11,7 +11,9 @@
  - [X] Tab for 'Generelle info' (k)
  - [X] Antall traume valueBox (k)
  - [ ] Liggerdøgn
- - [ ] Reset
+ - [ ] Reset knapp
+ - [ ] Antall alder og kjønn
+ - [ ] Tid fra AMK ble oppringt til fremmet til hendelsesstedet
 * Features kommentarer
 ** Align checkboxGroupInput
 - bruk CSS og filen ligger under *www* mappe.
