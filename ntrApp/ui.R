@@ -47,12 +47,21 @@ body <-  dashboardBody(
 
   tabItems(
     tabItem(tabName = "info",
-            fluidRow(
+            fluidPage(
+              fluidRow(
               ## dynamisk output
-              valueBoxOutput("ntrAntall"),
-              valueBoxOutput("ntrAlvor"),
-              valueBoxOutput("ntrDie")
+                valueBoxOutput("ntrAntall"),
+                valueBoxOutput("ntrAlvor"),
+                valueBoxOutput("ntrDie")
+              ),
+              fluidRow(
+                box(tags$h4("Kjønn og alder"), width = 12,
+                    plotlyOutput(outputId = "demoGender")
+
+                    )
+              )
             )),
+
     tabItem(tabName = "skade",
             fluidPage(
               tags$h3(textOutput("titleUT")),

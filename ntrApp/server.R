@@ -29,6 +29,37 @@ server <- function(input, output, session) {
     )
   })
 
+  output$demoGender <- renderPlotly({
+
+    ## bytt NA med 0
+    bNA <- function(DT, na = 0){
+      for (j in seq_len(ncol(DT)))
+        set(DT,which(is.na(DT[[j]])),j, na)
+    }
+
+    traume[PatientAge == -1, PatientAge := NA] #bytt -1 til NA
+    ## finner ut hvordan velger man -1 f.eks PatientAge!=-1 ikke funker. Koden nedenfor eksluderer ikke -1
+    ## demo <- traume[PatientAge > -1 | !is.na(PatientAge) , .N, keyby = list(PatientGender, PatientAge)]
+
+    demo <- traume[!is.na(PatientAge) , .N, keyby = list(PatientGender, PatientAge)]
+    ageMale <- demo[PatientGender == 1, list(Alder = PatientAge, menn = N)]
+    ageFemale <- demo[PatientGender == 2, list(Alder = PatientAge, kvinner = N)]
+    ## ageMF <- merge(ageMale, ageFemale, by.x = "Alder", by.y = "Alder")
+    ageMF <- ageMale[ageFemale, on = c(Alder = "Alder")]
+    bNA(ageMF)
+    ageMF[, alle := menn + kvinner]
+    ageDemo <- ggplot(ageMF, aes(x = Alder)) +
+      geom_line(aes(y = menn), color = "blue", size = 1.5) +
+      geom_line(aes(y = kvinner), color = "red", size = 1.5) +
+      geom_line(aes(y = alle), color = "green", size = 1.5) +
+      ## title(xlab = "Alder", ylab = "Antall") +
+      xlab("Alder") +
+      ylab("Antall") +
+      theme_minimal()
+
+    ggplotly(ageDemo)
+
+  })
 
   ## Viser transport type hvis transportulykke
   output[["box"]] <- renderUI({

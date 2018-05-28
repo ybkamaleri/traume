@@ -9,7 +9,7 @@ install.packages <- function(packages){
 }
 
 # usage
-req.packages <- c("shinydashboard", "DT", "data.table")
+req.packages <- c("shinydashboard", "DT", "data.table", "plotly")
 install.packages(req.packages)
 
 
