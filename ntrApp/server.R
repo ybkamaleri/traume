@@ -264,8 +264,9 @@ server <- function(input, output, session) {
                    "Sykehus",
                    "HF",
                    "RHF")
-
-    accData()[ja == 1, .N, keyby = unit]
+    alle <- dim(accData())[1]
+    tabAcc <- accData()[ja == 1, .N, keyby = unit]
+    tabAcc[, prosent := round((N / alle) * 100, digits = 2), keyby = unit]
 
   })
 
