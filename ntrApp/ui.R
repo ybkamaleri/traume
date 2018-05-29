@@ -95,7 +95,7 @@ body <-  dashboardBody(
                                      selected = 2,
                                      )),
                 ## Transport type
-                uiOutput(outputId = "box")
+                uiOutput(outputId = "typeTrans")
               ),
               fluidRow(
                 box(

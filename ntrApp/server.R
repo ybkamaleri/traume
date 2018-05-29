@@ -63,7 +63,7 @@ server <- function(input, output, session) {
   })
 
   ## Viser transport type hvis transportulykke
-  output[["box"]] <- renderUI({
+  output[["typeTrans"]] <- renderUI({
     if (input$ulykkeType == 1)
       box(
         width = 4,
