@@ -4,7 +4,7 @@
 #+options: toc:nil
 
 * Flowchart for analysen
-* Features [4/6]
+* Features [6/9]
 (k) betyr at features inneholder kommentarer nedenfor
  - [X] Sortere tabellen alphabetisk
  - [X] Align checkboxGroupInput (k)
@@ -12,7 +12,8 @@
  - [X] Antall traume valueBox (k)
  - [ ] Liggerdøgn
  - [ ] Reset knapp
- - [ ] Antall alder og kjønn
+ - [X] Antall alder og kjønn
+ - [X] Antall for hver ulykke typer og transport typer
  - [ ] Tid fra AMK ble oppringt til fremmet til hendelsesstedet
 * Features kommentarer
 ** Align checkboxGroupInput
