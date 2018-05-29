@@ -231,8 +231,8 @@ server <- function(input, output, session) {
   output[["accInfo"]] <- renderUI({
     if (input$ulykkeType != 1)
       box(
-        width = 4,
-        tags$h4(paste0("Total = ", accAntall()))
+        width = 4, background = "navy",
+        tags$h3(paste0("Total = ", accAntall()))
       )
   })
 
@@ -247,8 +247,8 @@ server <- function(input, output, session) {
   output[["transInfo"]] <- renderUI({
     if (input$ulykkeType == 1)
       box(
-        width = 4,
-        tags$h4(paste0("Total = ", transAntall()))
+        width = 4, background = "navy",
+        tags$h3(paste0("Total = ", transAntall()))
       )
   })
 
