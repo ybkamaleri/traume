@@ -82,7 +82,6 @@ server <- function(input, output, session) {
                     width = '98%'))
   })
 
-
   ####################
   ##  Ulykke typer  ##
   ####################
@@ -220,6 +219,24 @@ server <- function(input, output, session) {
 
       }
     })
+
+
+  ########################################
+  ## Info om antall transport ulykke type
+  ########################################
+  transAntall <- eventReactive(input$transTyp, {
+    dim(accData())[1]
+
+  })
+
+  output[["transInfo"]] <- renderUI({
+    if (input$ulykkeType == 1)
+      box(
+        width = 4,
+        tags$h4(paste0("Total = ", transAntall()))
+      )
+  })
+
 
 
   ########################################

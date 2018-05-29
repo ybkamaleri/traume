@@ -101,7 +101,9 @@ body <-  dashboardBody(
                 box(
                   width = 8,
                   DT::dataTableOutput("accTable")
-                )
+                ),
+                ## transport informasjon
+                uiOutput(outputId = "transInfo")
               )
             )
             ),
