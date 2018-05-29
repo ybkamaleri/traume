@@ -221,9 +221,24 @@ server <- function(input, output, session) {
     })
 
 
-  ########################################
-  ## Info om antall transport ulykke type
-  ########################################
+  ###############################################
+  ## Antall for hver ulykkeType untatt transport
+  ###############################################
+  accAntall <- eventReactive(input$ulykkeType, {
+    dim(accData())[1]
+  })
+
+  output[["accInfo"]] <- renderUI({
+    if (input$ulykkeType != 1)
+      box(
+        width = 4,
+        tags$h4(paste0("Total = ", accAntall()))
+      )
+  })
+
+  #######################################################
+  ## Info om total antall for hver transport ulykke type
+  #######################################################
   transAntall <- eventReactive(input$transTyp, {
     dim(accData())[1]
 

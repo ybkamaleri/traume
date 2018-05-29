@@ -102,6 +102,8 @@ body <-  dashboardBody(
                   width = 8,
                   DT::dataTableOutput("accTable")
                 ),
+                ## Ulykke antall
+                uiOutput(outputId = "accInfo"),
                 ## transport informasjon
                 uiOutput(outputId = "transInfo")
               )
