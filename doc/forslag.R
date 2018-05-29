@@ -30,6 +30,21 @@ ageDemo <- ggplot(ageMF, aes(x = PatientAge)) +
 library(plotly)
 ggplotly(ageDemo)
 
+
+## legend manually
+ggplot(df, aes(x = instance, y = total_hits))+geom_point(size = 1)+geom_line()+
+  geom_line(aes(x=instance, y = line1, colour="myline1")) +
+  geom_vline(xintercept=805)+geom_line(aes(x=df$instance, y = line2, colour="myline2"))+
+  geom_line(aes(x=instance, y = line3, colour="myline3")) +
+  scale_colour_manual(name="Line Color",
+                      values=c(myline1="red", myline2="blue", myline3="purple"))
+## option 2
+ggplot(d, aes(x)) +
+  geom_line(aes(y=y1, colour="1")) +
+  geom_line(aes(y=y2, colour="2")) +
+  scale_colour_manual(values=c("red", "blue"))
+
+
 library(ggplot2)
 ggplot(demo, aes(as.factor(PatientAge), N, group = PatientGender, color = as.factor(PatientGender))) +
   geom_line() + theme_linedraw()
@@ -90,6 +105,11 @@ chart_link
 ################
 ## Dygraphs
 ################
+## time - series
+require(xts)
+stockprices.ts <- xts(stockprices$prices, order.by=as.POSIXct(stockprices$timestamps))
+stockprices.ts
+
 library(dygraphs)
 ##library(magrittr)
 lungDeaths <- cbind(mdeaths, fdeaths)

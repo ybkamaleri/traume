@@ -49,13 +49,14 @@ server <- function(input, output, session) {
     bNA(ageMF)
     ageMF[, alle := menn + kvinner]
     ageDemo <- ggplot(ageMF, aes(x = Alder)) +
-      geom_line(aes(y = menn), color = "blue", size = 1.5) +
-      geom_line(aes(y = kvinner), color = "red", size = 1.5) +
-      geom_line(aes(y = alle), color = "green", size = 1.5) +
+      geom_line(aes(y = menn, color = "Menn"), size = 1) +
+      geom_line(aes(y = kvinner, color = "Kvinner"), size = 1) +
+      geom_line(aes(y = alle, color = "Begge"), size = 1) +
       ## title(xlab = "Alder", ylab = "Antall") +
       xlab("Alder") +
       ylab("Antall") +
-      theme_minimal()
+      theme_minimal() +
+      scale_color_manual(name = NULL, values = c(Menn = "blue", Kvinner = "lightblue", Begge = "orange"))
 
     ggplotly(ageDemo)
 
