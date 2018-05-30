@@ -37,17 +37,22 @@ server <- function(input, output, session) {
         set(DT,which(is.na(DT[[j]])),j, na)
     }
 
+
     traume[PatientAge == -1, PatientAge := NA] #bytt -1 til NA
     ## finner ut hvordan velger man -1 f.eks PatientAge!=-1 ikke funker. Koden nedenfor eksluderer ikke -1
     ## demo <- traume[PatientAge > -1 | !is.na(PatientAge) , .N, keyby = list(PatientGender, PatientAge)]
 
-    demo <- traume[!is.na(PatientAge) , .N, keyby = list(PatientGender, PatientAge)]
-    ageMale <- demo[PatientGender == 1, list(Alder = PatientAge, menn = N)]
-    ageFemale <- demo[PatientGender == 2, list(Alder = PatientAge, kvinner = N)]
+    demo <- traume[!is.na(PatientAge) , .N, keyby = list(PatientGender = as.factor(PatientGender), PatientAge = as.numeric(PatientAge))]
+    ## Ta bort missing PatientAge
+    ageMale <- demo[PatientGender == 1 & !is.na(PatientAge),
+                    list(Alder = PatientAge, menn = N)]
+    ageFemale <- demo[PatientGender == 2 & !is.na(PatientAge),
+                      list(Alder = PatientAge, kvinner = N)]
     ## ageMF <- merge(ageMale, ageFemale, by.x = "Alder", by.y = "Alder")
     ageMF <- ageMale[ageFemale, on = c(Alder = "Alder")]
     bNA(ageMF)
     ageMF[, alle := menn + kvinner]
+
     ageDemo <- ggplot(ageMF, aes(x = Alder)) +
       geom_line(aes(y = menn, color = "Menn"), size = 1) +
       geom_line(aes(y = kvinner, color = "Kvinner"), size = 1) +
@@ -56,7 +61,8 @@ server <- function(input, output, session) {
       xlab("Alder") +
       ylab("Antall") +
       theme_minimal() +
-      scale_color_manual(name = NULL, values = c(Menn = "blue", Kvinner = "lightblue", Begge = "orange"))
+      scale_color_manual(name = NULL,
+                         values = c(Menn = "blue", Kvinner = "lightblue", Begge = "orange"))
 
     ggplotly(ageDemo)
 
