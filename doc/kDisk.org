@@ -1,0 +1,48 @@
+#+Title: Flytting til K-området
+* datakilder
+Filen =datakilder.R= produserer to objecter dvs. ~ntrCSV~ og ~miscCSV~. Disse er navn
+til filene som er trekkes ut fra MRS og navn til RHF
+* deploy fil
+Disse må gjøres i =deployApp.R= fil:
+- Spesifisere sti til app direktori
+- ~source~ til filen =firstRun.R=" for installasjon og upload nødvendige pakker
+- ~source~ for filen =data.R=
+
+funksjon ~shinyAppDir()~ brukes til å kjøre app direktori
+* data fil
+- ~source~ filen =datakilder.R= som ligger under mappen =data/misc/=
+- Spesifisere sti til alle datasetter som skal brukes ie. =Yusman/data/=
+- Spesifisere ~miscDir~ for andre fil f.eks liste over sykehusnavn etc
+
+#+BEGIN_SRC R
+  ################
+  ## sti til data
+  ################
+  source("K:/Sensitivt/kvalitetsregistre/2013-9541_Nasjonalt_traumeregister/Yusman/data/misc/datakilder.R")
+  ntrDir <- "K:/Sensitivt/kvalitetsregistre/2013-9541_Nasjonalt_traumeregister/Yusman/data/"
+  miscDir <- "K:/Sensitivt/kvalitetsregistre/2013-9541_Nasjonalt_traumeregister/Yusman/data/misc/"
+
+  ###########################
+  ## load skjemaer by index
+  ###########################
+  indSkjema <- function(x, ntrdir = TRUE, fname = ntrCSV, encode = "UTF-8"){
+    indx <- grep(x, fname)
+
+    if (ntrdir) {
+      datafile  <- paste0(ntrDir, fname[indx])
+    } else {
+      datafile  <- paste0(miscDir, fname[indx])
+    }
+    DT <- fread(datafile, encoding = encode)
+    return(DT)
+  }
+
+  traume <- indSkjema("Traume")
+  akutt <- indSkjema("Akutt")
+  intensiv <- indSkjema("Intensiv")
+  prehosp <- indSkjema("Prehospital")
+  ulykke <- indSkjema("Ulykke")
+  skade <- indSkjema("Skadegradering")
+  ## bruk miscDir for å lese filen
+  resh <- indSkjema("Resh", ntrdir = FALSE, fname = miscCSV, encode = "Latin-1")
+#+END_SRC
