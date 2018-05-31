@@ -202,8 +202,8 @@ server <- function(input, output, session) {
                     list(ja = ifelse(sum(grepl(
                       paste0("^", paste0("[", body, "]"),
                              ".*[", paste(gradKode, collapse = ""), "]$"),
-                      as.numeric(unlist(
-                      strsplit(aiskode, split = ","))))) != 0, 1, 0),
+                      as.character(unlist(
+                        strsplit(aiskode, split = ","))))) != 0, 1, 0),
                       Sykehus = i.HealthUnitName,
                       HF = HF,
                       RHF = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema - spør dem om dette er riktig
@@ -214,8 +214,8 @@ server <- function(input, output, session) {
                     list(ja = ifelse(
                       sum(grepl(paste0("^", paste0("[", body, "]"),
                                        ".*[", paste(gradKode, collapse = ""), "]$"),
-                                as.numeric(unlist(
-                                strsplit(aiskode, split = ","))))) != 0, 1, 0),
+                                as.character(unlist(
+                                  strsplit(aiskode, split = ","))))) != 0, 1, 0),
                       Sykehus = i.HealthUnitName,
                       HF = HF,
                       RHF = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema
