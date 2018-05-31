@@ -116,19 +116,17 @@ server <- function(input, output, session) {
     indAis <- grep("Valgte ais", names(skade)) #finne indeks til kolonne
     names(skade)[indAis] <- "ais"  #gir nytt navn til Valgte ais-koder
 
-    ## - kombinere alle skadekoder fra samme NTR-nr
-    ## - tar bort dublikate koder
     ## - ta bort alle missing NTR-nr.
     skade <- skade[!is.na(ntrid), ]
 
     ## kombinere alle skadekoder og valgt bare unike koder
     ## fra forskjellige sykehus for hver NTR-nr og variable navn blir "aiskode"
-    skade[skade[!is.na(ntrid),
-                toString(unique(unlist(
-                  strsplit(ais, split = ",")))), by = ntrid],
+    ## referer til mitt spørsmål på Stackoverflow
+    skade[skade[, toString(unique(unlist(strsplit(ais, split = ",")))),
+                by = ntrid],
           on = "ntrid", aiskode := i.V1]
 
-
+    ### Kombinere skade og ulykke skjemaer
     ### Beholder alle var i skadeskjema
     ### alle var starter med i. kommer fra skade skjema
     skadeUlykke <- ulykke[skade, on = "ntrid"]
