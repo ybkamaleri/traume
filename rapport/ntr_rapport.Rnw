@@ -1,0 +1,47 @@
+\documentclass{article}
+
+%% Lage section deling
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+            {-2.5ex\@plus -1ex \@minus -.25ex}%
+            {1.25ex \@plus .25ex}%
+            {\normalfont\normalsize\bfseries}}
+\makeatother
+\setcounter{secnumdepth}{4} % antall section nivå å gi tall til
+\setcounter{tocdepth}{4}    % antall section nivå å vise i ToC
+
+%% kableExtra packages
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+
+%% margin
+\usepackage{geometry}
+\geometry{
+  verbose,
+  tmargin=2.5cm,
+  bmargin=2.5cm,
+  lmargin=2.5cm,
+  rmargin=2.5cm
+}
+
+%% for norske bokstaver
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\title{NTR rapport for\vspace{-1.5cm}}
+\date{}
+
+\begin{document}
+
+
+
+\end{document}
