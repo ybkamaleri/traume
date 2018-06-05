@@ -64,7 +64,8 @@ server <- function(input, output, session) {
       scale_color_manual(name = NULL,
                          values = c(Menn = "blue", Kvinner = "lightblue", Begge = "orange"))
 
-    ggplotly(ageDemo)
+    gg <- ggplotly(ageDemo)
+    rangeslider(gg)
 
   })
 
