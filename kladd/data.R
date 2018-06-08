@@ -89,3 +89,10 @@ skade[masterID, ntrid := ntrid]
 ##########################################
 ## Endre variable navn ved bruk av indeks
 
+## "Valgte ais" til "ais"
+setnames(skade, grep("Valgte ais-koder", names(skade)), "ais")
+
+
+#########################################
+## Finner ut om eg. 900001.1 er skrevet som 090001.1 i data uttrekket
+## fordi det bare vises som 900001.1 i GUI
