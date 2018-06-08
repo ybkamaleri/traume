@@ -129,3 +129,24 @@ skadeAndre[ja == 1, .N, by = c("hf", "rhf")]
 
 ## select 1 at first and either 2 or 3 at the end
 grepl("^1.*[23]$", test1)
+
+
+### Sjekke koder i datadump
+## OPS!! IKKE konvertere ais til numeric for å beholder koder som starter med 0
+skade09 <- skadeGrad[!is.na(ntrid), .(unlist(strsplit(ais, split = ",")))]
+head(skade09)
+nrow(skade09)
+
+skade099 <- skade09[, .(ais0 = grep("^09", V1, value = T))]
+nrow(skade099)
+
+skade0 <- skade09[, .(ais0 = grep("^0", V1, value = T))]
+nrow(skade0)
+
+skade9 <- skade09[, .(ais0 = grep("^9", V1, value = T))]
+nrow(skade9)
+
+
+a00 <- data.table(a = c("011", "112"))
+grep("^0", a00$a, value = TRUE)
+a00[, .(N = grep("^0", a, value = T))]
