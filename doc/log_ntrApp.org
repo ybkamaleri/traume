@@ -27,3 +27,10 @@
 - CSS for bakgrunnfarge og tekst i custom.css fil. Viktig å inkludere ~!important~
   for det skal funker
 * Bugfix
+** AIS kode for hud ikke vises
+Koden ble konvertert til numeric. Derfor forsvinner første tallet i koden som er
+~0~. Beholder koden som character evt. bruker ~as.character~ for sikrehet skyld.
+
+* Kommentar/observasjoner
+Kommentarer til data uttrekk som kan forbedres eller endres:
+1. Variablenavn ~Valgte ais-koder~ fra /skade/ datasett bør har variablenavn med bare *et ord*.
