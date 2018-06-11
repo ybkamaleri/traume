@@ -1,0 +1,29 @@
+#+Title: Analyser for NTR
+#+Date: 1 mai 2018
+
+* Kategorisering
+- Sykehus
+- Region
+* Liggerdøgn
+- Hvordan regner man liggerdøgn?
+- Startdato
+- Sluttdato
+* Skadekoder
+- Ullyketype
+  + Ullyketype med transport ulykke. Bør velge bare når svaret i /acc_transport/ er
+    JA når man analysere type transport ulykke)
+- Skadekoder
+* Tilhørighet
+- Hvilket sykehus for forskjellige skjemaer eg. Skadegradering og ulykke når skal
+  analysere skade pga. sykkelulykke (annet skjema fra annet sykehus) og
+  Skadegradering fra annet sykehus. eg. "NTR-000285"
+* AIS [1/8]
+- [ ] Kode 91000.1 vises som 010000.1 i GUI. Check at datadump har 091000.1
+- [X] kode ~******.9~ betyr skadegrad er ukjent
+- [ ] AIS ~******.1~ skal bort i analysen for nevne. Lage bare en knapp hvis man vil
+  inkluderer skadegrad 1
+- [ ] Bare høyest skadegradering som teller
+- [ ] ISS > 15 betyr alvorlig skade. For ISS beregning er kvadrat av 3 alvorligste AIS
+- [ ] Beregn eg. vanligste skade ved en vist type ulykke
+- [ ] Lage AIS fane uten ulykketype eller skade mekanismen
+- [ ] Beholder duplikater
