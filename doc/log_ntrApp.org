@@ -32,5 +32,5 @@ Koden ble konvertert til numeric. Derfor forsvinner første tallet i koden som e
 ~0~. Beholder koden som character evt. bruker ~as.character~ for sikrehet skyld.
 
 * Kommentar/observasjoner
-Kommentarer til data uttrekk som kan forbedres eller endres:
+Tilbakemelding til IKT og kommentarer til data uttrekk som kan forbedres eller endres:
 1. Variablenavn ~Valgte ais-koder~ fra /skade/ datasett bør har variablenavn med bare *et ord*.
