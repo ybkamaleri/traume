@@ -17,8 +17,8 @@
 - Hvilket sykehus for forskjellige skjemaer eg. Skadegradering og ulykke når skal
   analysere skade pga. sykkelulykke (annet skjema fra annet sykehus) og
   Skadegradering fra annet sykehus. eg. "NTR-000285"
-* AIS [1/8]
-- [ ] Kode 91000.1 vises som 010000.1 i GUI. Check at datadump har 091000.1
+* AIS [2/8]
+- [X] Kode 91000.1 vises som 010000.1 i GUI. Check at datadump har 091000.1 (Ingen som har 09**)
 - [X] kode ~******.9~ betyr skadegrad er ukjent
 - [ ] AIS ~******.1~ skal bort i analysen for nevne. Lage bare en knapp hvis man vil
   inkluderer skadegrad 1

@@ -4,7 +4,7 @@
 #+options: toc:nil
 
 * Flowchart for analysen
-* Features [6/9]
+* Features [6/10]
 (k) betyr at features inneholder kommentarer nedenfor
  - [X] Sortere tabellen alphabetisk
  - [X] Align checkboxGroupInput (k)
@@ -15,6 +15,7 @@
  - [X] Antall alder og kjønn
  - [X] Antall for hver ulykke typer og transport typer
  - [ ] Tid fra AMK ble oppringt til fremmet til hendelsesstedet
+ - [ ] Knapp for å inkludere AIS 1 dvs. mild skade
 * Features kommentarer
 ** Align checkboxGroupInput
 - bruk CSS og filen ligger under *www* mappe.
