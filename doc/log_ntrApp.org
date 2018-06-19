@@ -5,28 +5,24 @@
 
 * Flowchart for analysen
 * Features [6/10]
-(k) betyr at features inneholder kommentarer nedenfor
  - [X] Sortere tabellen alphabetisk
  - [X] Align checkboxGroupInput (k)
+   - bruk CSS og filen ligger under *www* mappe.
  - [X] Tab for 'Generelle info' (k)
+   - bruk CSS for å kunne endre farge. Nå er det valg for farge 'yellow' som er endret
  - [X] Antall traume valueBox (k)
+   - base funksjon med unique er raskere enn data.table sine funksjoner dvs.
+     + length(!duplicated(ntrid))
+     + uniqueN(ntrid)
+   - CSS for bakgrunnfarge og tekst i custom.css fil. Viktig å inkludere ~!important~
+     for det skal funker
  - [ ] Liggerdøgn
  - [ ] Reset knapp
  - [X] Antall alder og kjønn
  - [X] Antall for hver ulykke typer og transport typer
  - [ ] Tid fra AMK ble oppringt til fremmet til hendelsesstedet
  - [ ] Knapp for å inkludere AIS 1 dvs. mild skade
-* Features kommentarer
-** Align checkboxGroupInput
-- bruk CSS og filen ligger under *www* mappe.
-** Tab for Generelle info
-- bruk CSS for å kunne endre farge. Nå er det valg for farge 'yellow' som er endret
-** Antall traume valueBox
-- base funksjon med unique er raskere enn data.table sine funksjoner dvs.
-  + length(!duplicated(ntrid))
-  + uniqueN(ntrid)
-- CSS for bakgrunnfarge og tekst i custom.css fil. Viktig å inkludere ~!important~
-  for det skal funker
+
 * Bugfix
 ** AIS kode for hud ikke vises
 Koden ble konvertert til numeric. Derfor forsvinner første tallet i koden som er
