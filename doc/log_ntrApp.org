@@ -30,4 +30,5 @@ Koden ble konvertert til numeric. Derfor forsvinner første tallet i koden som e
 
 * Kommentar/observasjoner
 Tilbakemelding til IKT og kommentarer til data uttrekk som kan forbedres eller endres:
-1. Variablenavn ~Valgte ais-koder~ fra /skade/ datasett bør har variablenavn med bare *et ord*.
+1. Variablenavn ~Valgte ais-koder~ fra /skade/ datasett bør har variablenavn med bare
+   *et ord* dvs. uten mellomrom.
