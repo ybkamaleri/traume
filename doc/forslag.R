@@ -139,3 +139,97 @@ dygraph(lungDeaths, main = "Deaths from Lung Disease (UK)") %>%
   dyHighlight(highlightCircleSize = 5,
               highlightSeriesBackgroundAlpha = 0.2,
               hideOnMouseOut = FALSE)
+
+
+############################
+## Shiny subset
+#server
+library(shiny)
+
+ui2 <- fluidPage(
+  #User dropbox
+  selectInput("state", "Choose state", choices=c("MA", "CA", "NY"))
+  #Print table to UI
+ ,tableOutput("table1")
+)
+
+server2 <- function(input,output){
+
+  category <- c("MA", "CA", "NY")
+  population <- c(3,8,4)
+
+  df <- data.frame(category,population)
+
+  df_subset <- reactive({
+    a <- subset(df, category == input$state)
+    return(a)
+  })
+
+  output$table1 <- renderTable(df_subset()) #Note how df_subset() was used and not df_subset
+
+  ## observe({ df_subset <- get(input$state)})
+
+  ## output$table1 <- df_subset
+}
+
+shinyApp(ui = ui2, server = server2)
+
+
+############################
+## Dynamic input
+############################
+library(data.table)
+data <- fread("~/avid/ntr/data/ReshHF.csv", encoding = "Latin-1")
+
+valgRHF <- "HSØ"
+valgHF <- "OUS"
+subData <- data[RHF == valgRHF, ]
+subData2 <- data[, `:=`(valgEnhet = ifelse(HF == valgHF, 1, 0))]
+
+## data[, unique(RHF)]
+
+
+library(shiny)
+
+ui3 <- fluidPage(
+
+  headerPanel("NTR Test"),
+
+  sidebarLayout(
+    sidebarPanel(
+      uiOutput("valgEnhet"),
+      uiOutput("valgEnhetNavn"),
+
+      checkboxInput("compare", "Sammenligne med hele landet")
+    ),
+    mainPanel(
+
+    )
+  )
+)
+
+helseEnhet <- c("RHF", "HF", "Sykehus")
+
+ser3 <- function(input, output, session) {
+
+  output$valgEnhet <- renderUI({
+    radioButtons("enhet", "Valg Enheten",
+                 choices = as.list(helseEnhet),
+                selected = NULL)
+  })
+
+  output$valgEnhetNavn <- renderUI({
+    # if missing input, return to avoid error
+    if(is.null(input$enhet)) return()
+
+    valgetEnhet <- input$enhet
+    enhetNavn <- data[, sort(unique(get(valgetEnhet)))]
+
+    selectInput("helseNavn", "Helse Enheten",
+                choices = enhetNavn)
+
+  })
+
+}
+
+shinyApp(ui = ui3, server = ser3)
