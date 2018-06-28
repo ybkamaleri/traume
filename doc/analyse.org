@@ -27,3 +27,16 @@
 - [ ] Beregn eg. vanligste skade ved en vist type ulykke
 - [ ] Lage AIS fane uten ulykketype eller skade mekanismen
 - [ ] Beholder duplikater
+* Analyse [1/5]
+- [ ] Dashboard med ISS > 15
+- [X] Død etter 30 dager (som det er nå)
+- [ ] Filter for dato Nasjonal - inj_start_date (Traume skjema)
+- [ ] Filter for dato Sykehus - ed_arrival_dtg (Akutt skjema)
+  + Antall fordelt på tid og ukedag
+- [ ] Ulykke og pre-hospital skjema fra sykehus 1 (hosp_serial_num fra Traume Skjema)
+- [ ] Filter for Alder
+- [ ] Filter for kjønn
+- [ ] Filter for penetrerende skade
+- [ ] Sykehus opphold for liggertid (Intensiv skjema) hvis mulig
+- [ ] Transport forskjellige koder
+- [ ] Forklarer alle analysene i shiny
