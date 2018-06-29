@@ -17,6 +17,12 @@
 - Hvilket sykehus for forskjellige skjemaer eg. Skadegradering og ulykke når skal
   analysere skade pga. sykkelulykke (annet skjema fra annet sykehus) og
   Skadegradering fra annet sykehus. eg. "NTR-000285"
+* Førarbeid [0/3]
+Ting må gjøres for analsyen
+- [ ] Liste over Reshid mot HF og RHF er oppdatert og samsvær med databasen
+- [ ] Koder doublesjekke med kodebok. Ingen ekstra koder i datautrekk som ikke er i kodebook (definisjonskatalogen)
+- [ ] Tid er registret
+
 * AIS [2/8]
 - [X] Kode 91000.1 vises som 010000.1 i GUI. Check at datadump har 091000.1 (Ingen som har 09**)
 - [X] kode ~******.9~ betyr skadegrad er ukjent
@@ -27,7 +33,8 @@
 - [ ] Beregn eg. vanligste skade ved en vist type ulykke
 - [ ] Lage AIS fane uten ulykketype eller skade mekanismen
 - [ ] Beholder duplikater
-* Analyse [1/5]
+* Analyse ønsker [1/11]
+De er basert på diskusjonen med NTR og bestillingsdokument
 - [ ] Dashboard med ISS > 15
 - [X] Død etter 30 dager (som det er nå)
 - [ ] Filter for dato Nasjonal - inj_start_date (Traume skjema)
