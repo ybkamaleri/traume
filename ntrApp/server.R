@@ -1,6 +1,6 @@
 
 ######################## Server #################################
-server <- function(input, output, session) {
+function(input, output, session) {
 
   ########## generell info #######################
   output$ntrAntall <- renderValueBox({
@@ -24,7 +24,7 @@ server <- function(input, output, session) {
     valueBox(
       value = paste0(12.1, "%"),
       subtitle = "Andel døde innen 30 dagers",
-             icon = icon("user-circle-o"),
+      icon = icon("user-circle-o"),
       color = "blue"
     )
   })
@@ -77,79 +77,79 @@ server <- function(input, output, session) {
         selectInput(inputId = "transTyp", "Valg transport type:",
                     choices = list("Bil" = 1,
                                    "MC" = 2,
-                                   "Sykkel" = 3,
-                                   "Båt" = 4,
-                                   "Tog" = 5,
-                                   "Fly" = 6,
-                                   "Moped" = 7,
-                                   "Annet" = 99,
-                                   "Ukjent" = 999,
-                                   "Alle typer" = 50),
-                    selected = 50,
-                    width = '98%'))
-  })
+                                    "Sykkel" = 3,
+                                    "Båt" = 4,
+                                    "Tog" = 5,
+                                    "Fly" = 6,
+                                    "Moped" = 7,
+                                    "Annet" = 99,
+                                    "Ukjent" = 999,
+                                    "Alle typer" = 50),
+                     selected = 50,
+                     width = '98%'))
+   })
 
-  ####################
-  ##  Ulykke typer  ##
-  ####################
-  observeEvent(input$ulykkeType, {
+   ####################
+   ##  Ulykke typer  ##
+   ####################
+   observeEvent(input$ulykkeType, {
 
-    frameTitle <- switch(as.numeric(input$ulykkeType),
-                         "Transportulykke",
-                         "Fallulykke",
-                         "Voldsulykke",
-                         "Selvpåført skade",
-                         "Arbeidsulykke",
-                         "Sport og fritid relaterte skade",
-                         "Brann og inhalasjonsskade",
-                         "Annen type ulykke")
+     frameTitle <- switch(as.numeric(input$ulykkeType),
+                          "Transportulykke",
+                          "Fallulykke",
+                          "Voldsulykke",
+                          "Selvpåført skade",
+                          "Arbeidsulykke",
+                          "Sport og fritid relaterte skade",
+                          "Brann og inhalasjonsskade",
+                          "Annen type ulykke")
 
-    output$titleUT <- renderText(frameTitle)
-  })
-
-
-  ##########################
-  ## Skade og Ulykke data ##
-  ##########################
-  skadeGrad <- eventReactive(input$ulykkeType, {
-
-    ## Valgte ais-koder
-    indAis <- grep("Valgte ais", names(skade)) #finne indeks til kolonne
-    names(skade)[indAis] <- "ais"  #gir nytt navn til Valgte ais-koder
-
-    ## - ta bort alle missing NTR-nr.
-    skade <- skade[!is.na(ntrid), ]
-
-    ## kombinere alle skadekoder og valgt bare unike koder
-    ## fra forskjellige sykehus for hver NTR-nr og variable navn blir "aiskode"
-    ## referer til mitt spørsmål på Stackoverflow
-    skade[skade[, toString(unique(unlist(strsplit(ais, split = ",")))),
-                by = ntrid],
-          on = "ntrid", aiskode := i.V1]
-
-    ### Kombinere skade og ulykke skjemaer
-    ### Beholder alle var i skadeskjema
-    ### alle var starter med i. kommer fra skade skjema
-    skadeUlykke <- ulykke[skade, on = "ntrid"]
-
-    ## henter index fra acc_trans til acc_fire
-    accName <- grep("acc_transport", names(skadeUlykke)):grep("acc_fire_inhal", names(skadeUlykke))
-    ## convert to numeric
-    for (d in accName) {
-      set(skadeUlykke, j = d, value = as.numeric(skadeUlykke[[d]]))
-    }
+     output$titleUT <- renderText(frameTitle)
+   })
 
 
-    #### legger til HF og RHF ####
-    skadeUlykke[, i.UnitId := as.numeric(i.UnitId)]
-    resh[, reshid := as.numeric(reshid)]
+   ##########################
+   ## Skade og Ulykke data ##
+   ##########################
+   skadeGrad <- eventReactive(input$ulykkeType, {
 
-    resh[skadeUlykke, on = c(reshid = "i.UnitId")]
+     ## Valgte ais-koder
+     indAis <- grep("Valgte ais", names(skade)) #finne indeks til kolonne
+     names(skade)[indAis] <- "ais"  #gir nytt navn til Valgte ais-koder
 
-  })
+     ## - ta bort alle missing NTR-nr.
+     skade <- skade[!is.na(ntrid), ]
 
-  #####################
-  ## Transport typer ##
+     ## kombinere alle skadekoder og valgt bare unike koder
+     ## fra forskjellige sykehus for hver NTR-nr og variable navn blir "aiskode"
+     ## referer til mitt spørsmål på Stackoverflow
+     skade[skade[, toString(unique(unlist(strsplit(ais, split = ",")))),
+                 by = ntrid],
+           on = "ntrid", aiskode := i.V1]
+
+     ### Kombinere skade og ulykke skjemaer
+     ### Beholder alle var i skadeskjema
+     ### alle var starter med i. kommer fra skade skjema
+     skadeUlykke <- ulykke[skade, on = "ntrid"]
+
+     ## henter index fra acc_trans til acc_fire
+     accName <- grep("acc_transport", names(skadeUlykke)):grep("acc_fire_inhal", names(skadeUlykke))
+     ## convert to numeric
+     for (d in accName) {
+       set(skadeUlykke, j = d, value = as.numeric(skadeUlykke[[d]]))
+     }
+
+
+     #### legger til HF og RHF ####
+     skadeUlykke[, i.UnitId := as.numeric(i.UnitId)]
+     resh[, reshid := as.numeric(reshid)]
+
+     resh[skadeUlykke, on = c(reshid = "i.UnitId")]
+
+   })
+
+   #####################
+   ## Transport typer ##
   #####################
   transValg <- eventReactive(input$transTyp, {
 
