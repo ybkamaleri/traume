@@ -20,7 +20,8 @@
 * Førarbeid [0/3]
 Ting må gjøres for analsyen
 - [ ] Liste over Reshid mot HF og RHF er oppdatert og samsvær med databasen
-- [ ] Koder doublesjekke med kodebok. Ingen ekstra koder i datautrekk som ikke er i kodebook (definisjonskatalogen)
+- [ ] Koder doublesjekke med kodebok. Ingen ekstra koder i datautrekk som ikke er i
+  kodebook (definisjonskatalogen)
 - [ ] Tid er registret
 
 * AIS [2/8]
@@ -39,7 +40,7 @@ De er basert på diskusjonen med NTR og bestillingsdokument
 - [X] Død etter 30 dager (som det er nå)
 - [ ] Filter for dato Nasjonal - inj_start_date (Traume skjema)
 - [ ] Filter for dato Sykehus - ed_arrival_dtg (Akutt skjema)
-  + Antall fordelt på tid og ukedag
+- [ ] Antall fordelt på tid og ukedag
 - [ ] Ulykke og pre-hospital skjema fra sykehus 1 (hosp_serial_num fra Traume Skjema)
 - [ ] Filter for Alder
 - [ ] Filter for kjønn

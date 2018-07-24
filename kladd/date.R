@@ -2,10 +2,12 @@
 ## test for date
 ###################
 
-testDate <- head(traume$inj_start_date)
+## testDate <- head(traume$inj_start_date)
+set.seed(123)
+testDate <- sample(traume$inj_start_date, 10)
 length(testDate)
 str(testDate)
-testDate[7:8] <- c("11.11.2018 12:03:20", "12.06.2017 09:30:50")
+testDate[c(5,8)] <- c("11.11.2018 12:03:20", "12.06.2017 09:30:50")
 
 grep(".*00:00:00$", testDate)
 length(grep(".*00:00:00$", testDate))
@@ -17,7 +19,7 @@ sum(grepl(".*00:00:00$", testDate) == FALSE)
 
 grep("\\d{2}.\\d{2}.\\d{4} 12:03:\\d{2}", testDate)
 ## grep klokke og minutt
-grep(" [0-2][0-9]:\\d{2}:\\d{2}$", testDate)
+grep(" [0-2][0-9]:\\d{2}:\\d{2}$", x = testDate, value = TRUE)
 
 ###############
 ## ukenummer ##
