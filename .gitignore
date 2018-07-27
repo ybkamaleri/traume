@@ -6,3 +6,11 @@
 /*.zip
 /*.dcf
 /enhetapp.dcf
+/*.sty
+/*.tex
+*.sty
+*.tex
+*.log
+*.fls
+*.aux
+*.fdb_latexmk
