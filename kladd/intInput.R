@@ -6,21 +6,40 @@ library(data.table)
 set.seed(1234)
 
 DT <- data.table(
-  v1 <- c("Nord", "Midt", "Vest", "Sør", "Sør", "Nord", "Nord", "Nord"),
-  v2 <- rep(c("Satu", "Dua"), 8),
-  v3 <- sample(2:4, 8, replace = TRUE)
+  V1 <- c("Nord", "Midt", "Vest", "Sør", "Sør", "Nord", "Nord", "Nord"),
+  V2 <- c("Satu", "Dua", "Tiga", "Empat"),
+  V3 <- sample(2:4, 8, replace = TRUE),
+  V4 <- c("Ali", "Baba")
 )
 
 
 server <- function(input, output) {
 
+  ## ## denne funker også men gjøres på annen måte
+  ## namasyk <- eventReactive(input$nom, {
+  ##   if (input$nom == 1){
+  ##     namasyk <- unique(DT$V1)
+  ##   } else {
+  ##     namesyk <- unique(DT$V2)
+  ##   }
+  ## })
+
+  ## namasyk <- eventReactive(input$nom, {
+
+  ##   ifelse(input$nom == 1, unique(DT$V1),
+  ##          ifelse(input$nom == 2, unique(DT$V2),
+  ##                 unique(DT$V4)))
+  ## })
+
   namasyk <- eventReactive(input$nom, {
-    if (input$nom = 1){
-      namasyk <- unique(DT$V1)
-    } else {
-      namesyk <- unique(DT$V2)
-    }
+
+    namasyk <- switch(as.character(input$nom),
+                      '1' = unique(DT$V1),
+                      '2' = unique(DT$V2),
+                      '3' = unique(DT$V4))
+
   })
+
 
   output[["syke2"]] <- renderUI({
 
