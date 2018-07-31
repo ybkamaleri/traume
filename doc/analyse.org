@@ -48,3 +48,22 @@ De er basert på diskusjonen med NTR og bestillingsdokument
 - [ ] Sykehus opphold for liggertid (Intensiv skjema) hvis mulig
 - [ ] Transport forskjellige koder
 - [ ] Forklarer alle analysene i shiny
+* Outline
+** Generelle Info
+Dashboard som gir informasjon om:
+- Antall registerte i databasen
+- Antall AIS > 15
+- Antall døde etter 30 dager
+- Figur Alder og kjønn
+** Valg Enhet
+- Hele landet
+- RHF
+- HF
+- Sykehus
+** Periode
+- Valg av dato fra og til
+- Valg av dato fra og til for sykehus
+** Valg kjønn
+** Valg Alder
+** AIS
+** Ulykke
