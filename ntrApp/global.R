@@ -1,20 +1,11 @@
-library(shiny)
-pakke <- c("shinydashboard", "DT", "data.table", "plotly")
-sapply(pakke, library, character.only = TRUE)
+### pakker ###
 
-## #create a function to check for installed packages and install them if they are not installed
-## install.packages <- function(packages){
-##   new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]
-##   if (length(new.packages))
-##     install.packages(new.packages, dependencies = TRUE)
-##   sapply(packages, require, character.only = TRUE)
-## }
+pakke <- c("shiny", "shinydashboard", "data.table", "ggplot2")
 
-## # usage
-## req.packages <- c("shinydashboard", "DT", "data.table", "plotly")
-## install.packages(req.packages)
+sapply(pakke, require, character.only = TRUE)
 
 
-## useMe <- c("shiny", "shinydashboard", "DT", "data.table")
-## lapply(useMe, require)
-source('data.R', local = TRUE)
+## ## alternativ
+## lapply(pakke, FUN = function(X) {
+##   do.call("require", list(X))
+## })
