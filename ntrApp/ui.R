@@ -1,5 +1,5 @@
-#############
-## Sidebar ##
-#############
+source("uiBody.R")
+source("uiHeader.R")
+source("uiSidebar.R")
 
-sidebar <- dashboardSidebar()
+dashboardPage(header, sidebar, body)
