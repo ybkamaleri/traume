@@ -32,3 +32,5 @@ Koden ble konvertert til numeric. Derfor forsvinner første tallet i koden som e
 Tilbakemelding til IKT og kommentarer til data uttrekk som kan forbedres eller endres:
 1. Variablenavn ~Valgte ais-koder~ fra /skade/ datasett bør har variablenavn med bare
    *et ord* dvs. uten mellomrom.
+2. Navn for HF og RHF trekkes ikke ut i datadump. Den må gjøres for å ha riktig
+   navn. Akkurat nå lages liste for HF og RHF manuelt.
