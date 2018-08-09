@@ -8,13 +8,14 @@ set.seed(1234)
 DT <- data.table(
   V1 <- c("Nord", "Midt", "Vest", "Sør", "Sør", "Nord", "Nord", "Nord"),
   V2 <- c("Satu", "Dua", "Tiga", "Empat"),
-  V3 <- sample(2:4, 8, replace = TRUE),
-  V4 <- c("Ali", "Baba")
+  V3 <- c("Ali", "Baba", "Nonya", "Baba", "Nonya")
 )
 
 
+#################
+## Vanlig shiny
+##################
 server <- function(input, output) {
-
   ## ## denne funker også men gjøres på annen måte
   ## namasyk <- eventReactive(input$nom, {
   ##   if (input$nom == 1){
@@ -36,7 +37,7 @@ server <- function(input, output) {
     namasyk <- switch(as.character(input$nom),
                       '1' = unique(DT$V1),
                       '2' = unique(DT$V2),
-                      '3' = unique(DT$V4))
+                      '3' = unique(DT$V3))
 
   })
 
@@ -56,7 +57,7 @@ ui <- fluidPage(
   titlePanel("Test dynamisk input"),
 
   sidebarPanel(
-    numericInput("nom", "Pilih nombor", value = 1:3),
+    selectInput("nom", "Pilih nombor", choices = 1:3 ),
     uiOutput("syke2")
 
   ),
@@ -68,3 +69,16 @@ ui <- fluidPage(
 
 
 shinyApp(ui, server)
+
+
+#######################################
+## Module
+#######################################
+
+valgItem <- function(input, output, session, valg){
+
+  output$HelseEnhet <- renderUI({
+    selectInput(session$ns("enhetInput", "Valg Enhet", choices = ))
+  })
+
+}
