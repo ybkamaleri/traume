@@ -71,14 +71,96 @@ ui <- fluidPage(
 shinyApp(ui, server)
 
 
-#######################################
+##################
 ## Module
-#######################################
+##################
+valgInput <- function(id){
+  ns <- NS(id)
+  tagList(
+    selectInput(ns("valg1"), "Module input", choices = 1:3),
+    uiOutput(ns("valg2"))
+  )
+}
 
-valgItem <- function(input, output, session, valg){
+valg <- function(input, output, session){
+  output$valg2 <- renderUI({
+    selectInput(session$ns("enhet"), "Valg enhet", choices = as.list(letters[1:5]))
+  })
+}
 
+## implementation
+library(shiny)
+library(shinydashboard)
+
+ui <- dashboardPage(
+  dashboardHeader(title = "Enhet valg"),
+  dashboardSidebar(disable = TRUE),
+  dashboardBody(valgInput(id = "sykehus"))
+)
+
+server <- function(input, output, session){
+  callModule(valg, id = "sykehus")
+}
+
+shinyApp(ui = ui, server = server)
+
+
+
+
+
+
+
+
+
+
+
+
+
+#######################
+#### Doesn't work #####
+#######################
+
+valgItemInput <- function(id){
+  ns <- NS(id)
+  tagList(
+    uiOutput(ns("HelseEnhet")),
+    textOutput(ns("text"))
+  )
+}
+
+## valgItemOutput <- function(id){
+##   ns <- session$ns
+##   textOutput(ns("text"))
+## }
+
+valgItem <- function(input, output, session, valg = NULL){
+  valg <- 1:3
+  valgList <-  as.list(valg)
   output$HelseEnhet <- renderUI({
-    selectInput(session$ns("enhetInput", "Valg Enhet", choices = ))
+    selectInput(session$ns("enhetInput", "Valg Enhet", choices = valgList))
+  })
+
+  output$text <- renderText({
+    req(input$enhetInput)
+    input$enhetInput
   })
 
 }
+
+
+## implementation
+library(shiny)
+library(shinydashboard)
+
+ui <- dashboardPage(
+  dashboardHeader(title = "Enhet valg"),
+  dashboardSidebar(disable = TRUE),
+  dashboardBody(valgItemInput(id = "sykehus"))
+)
+
+
+server <- function(input, output, session){
+  callModule(valgItem, id = "sykehus", valg = 1:3)
+}
+
+shinyApp(ui = ui, server = server)
