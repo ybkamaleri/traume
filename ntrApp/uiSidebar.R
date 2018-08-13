@@ -1,3 +1,17 @@
 sidebar <-  dashboardSidebar(width = 250,
                              sidebarMenu(id = "sidebarMain",
-                                         menuItem("Generell informasjon", tabName = "dashboard", icon = icon("info-circle"))))
+                                         menuItem("Generell informasjon",
+                                                  tabName = "tab_dashboard",
+                                                  icon = icon("info-circle")),
+                                         menuItem("Analysenivå",
+                                                  tabName = "tab_analyse_level",
+                                                  icon = icon("h-square"),
+                                                  selectInput(inputId = "input_analyse_level",
+                                                              label = "Valg nivå",
+                                                              choices = c("Hele landet" = 1,
+                                                                          "RHF" = 2,
+                                                                          "HF" = 3,
+                                                                          "Sykehus" = 4),
+                                                              selected = 1),
+                                                  uiOutput("output_health_level"))
+                                         ))
