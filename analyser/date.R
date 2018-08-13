@@ -42,3 +42,10 @@ while (i <= 5) {
   print(i)
   i <- i + 1
 }
+
+#####################
+## Ukerdager
+####################
+dat <- as.Date("06.08.1973", format = "%d.%m.%Y")
+weekdays(dat)
+wday(dat) #gir dag tall fra 1-7 hvor 1 er søndag
