@@ -31,13 +31,20 @@ sidebar <-  dashboardSidebar(width = 250,
                                                   icon = icon("venus-mars"),
                                                   selectInput(inputId = "input_kjonn",
                                                               label = "Valg kjønn",
-                                                              choices = c("Kvinner" = 1,
-                                                                          "Menn" = 2))),
+                                                              choices = c("Alle" = 1,
+                                                                          "Kvinner" = 2,
+                                                                          "Menn" = 3))),
                                          menuItem("Alder",
                                                   tabName = "tab_alder",
                                                   icon = icon("hourglass-half"),
                                                   sliderInput(inputId = "input_alder",
                                                               label = "Valg aldersgruppe",
                                                               min = 0, max = 120,
-                                                              value = c(15,50)))
-                                         ))
+                                                              value = c(0,100)))
+                                         ),
+                             tags$br(), #blank line
+                             fluidRow(
+                               ## Filter button
+                               column(4, offset = 2,
+                                      submitButton("Kjør filter", icon = icon("filter")))
+                             ))
