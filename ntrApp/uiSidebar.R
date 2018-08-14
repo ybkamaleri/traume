@@ -46,5 +46,7 @@ sidebar <-  dashboardSidebar(width = 250,
                              fluidRow(
                                ## Filter button
                                column(4, offset = 2,
-                                      submitButton("Kjør filter", icon = icon("filter")))
+                                      actionButton(inputId = "input_filter",
+                                                   label = "Kjør filter",
+                                                   icon = icon("filter")))
                              ))
