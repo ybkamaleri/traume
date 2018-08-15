@@ -1,6 +1,9 @@
 #+Title: Analyser for NTR
 #+Date: 1 mai 2018
-
+* Kobling av data
+- NTR nummer representerer 1 pasient.
+- Traumeskjema har /SkjemaGUID/ som er 1 til 1 mot NTR nummer
+- Andre skjema har /HovedskjemaGUID/ som er nøkkelen mot Traumeskjema
 * Kategorisering
 - Sykehus
 - Region
@@ -42,9 +45,9 @@ De er basert på diskusjonen med NTR og bestillingsdokument
 - [ ] Filter for dato Sykehus - ed_arrival_dtg (Akutt skjema)
 - [ ] Antall fordelt på tid og ukedag
 - [ ] Ulykke og pre-hospital skjema fra sykehus 1 (hosp_serial_num fra Traume Skjema)
-- [ ] Filter for Alder
-- [ ] Filter for kjønn
-- [ ] Filter for penetrerende skade
+- [ ] Filter for Alder (traumeskjema "PatientAge")
+- [ ] Filter for kjønn (traumeskjema "PatientGender" 1=Mann 2=Kvinne)
+- [ ] Filter for penetrerende skade (ulykkeskjema - "inj_penetrating" 0:ikke valgt 1:Ja 2:Nei 3:Ukjent)
 - [ ] Sykehus opphold for liggertid (Intensiv skjema) hvis mulig
 - [ ] Transport forskjellige koder
 - [ ] Forklarer alle analysene i shiny
