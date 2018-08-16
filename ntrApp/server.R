@@ -14,6 +14,9 @@ function(input, output, session) {
     selectInput("input_health_level", label = "Valg enhet", choices = helseEnhet)
   })
 
+  regdata <- eventReactive(input$input_filter, {
+
+  })
 
   session$onSessionEnded(stopApp)
 }

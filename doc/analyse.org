@@ -1,6 +1,8 @@
 #+Title: Analyser for NTR
 #+Date: 1 mai 2018
 
+#+options: html-postamble:nil
+
 * Kategorisering
 - Sykehus
 - Region
