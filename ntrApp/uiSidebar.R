@@ -3,30 +3,41 @@ sidebar <-  dashboardSidebar(width = 250,
                                          menuItem("Generell informasjon",
                                                   tabName = "tab_dashboard",
                                                   icon = icon("info-circle")),
-                                         menuItem("Analysenivå",
-                                                  tabName = "tab_analyse_level",
-                                                  icon = icon("h-square"),
-                                                  selectInput(inputId = "input_analyse_level",
-                                                              label = "Valg nivå",
-                                                              choices = c("Hele landet" = 1,
-                                                                          "RHF" = 2,
-                                                                          "HF" = 3,
-                                                                          "Sykehus" = 4),
-                                                              selected = 1),
-                                                  conditionalPanel(condition = "input.input_analyse_level != 1",
-                                                                   uiOutput("output_health_level"))),
-                                         menuItem("Periode",
-                                                  tabName = "tab_periode",
-                                                  icon = icon("calendar"),
-                                                  dateRangeInput(inputId = "input_date",
-                                                                 label = "Valg dato fra og til",
-                                                                 ## start = Sys.Date() - 30, #alt. min date
-                                                                 end = Sys.Date(),
-                                                                 separator = "til",
-                                                                 format = "dd-mm-yyyy",
-                                                                 startview = "month",
-                                                                 language = "no",
-                                                                 weekstart = 1)),
+                                         menuItem("Valg data", icon = icon("filter"), startExpanded = TRUE,
+                                                  menuItem("Analysenivå",
+                                                           tabName = "tab_analyse_level",
+                                                           icon = icon("h-square"),
+                                                           selectInput(inputId = "input_analyse_level",
+                                                                       label = "Valg nivå",
+                                                                       choices = c("Hele landet" = 1,
+                                                                                   "RHF" = 2,
+                                                                                   "HF" = 3,
+                                                                                   "Sykehus" = 4),
+                                                                       selected = 1),
+                                                           conditionalPanel(condition = "input.input_analyse_level != 1",
+                                                                            uiOutput("output_health_level"))),
+                                                  menuItem("Periode",
+                                                           tabName = "tab_periode",
+                                                           icon = icon("calendar"),
+                                                           dateRangeInput(inputId = "input_date",
+                                                                          label = "Valg dato fra og til",
+                                                                          ## start = Sys.Date() - 30, #alt. min date
+                                                                          end = Sys.Date(),
+                                                                          separator = "til",
+                                                                          format = "dd-mm-yyyy",
+                                                                          startview = "month",
+                                                                          language = "no",
+                                                                          weekstart = 1)),
+                                                  tags$br(), #blank line
+                                                  fluidRow(
+                                                    ## Filter button
+                                                    column(4, offset = 2,
+                                                           actionButton(inputId = "input_filter",
+                                                                        label = "Kjør filter",
+                                                                        icon = icon("arrow-right"))
+                                                           ))
+
+                                                  ),
                                          menuItem("Kjønn",
                                                   tabName = "tab_kjonn",
                                                   icon = icon("venus-mars"),
@@ -38,18 +49,10 @@ sidebar <-  dashboardSidebar(width = 250,
                                                               selected = 1)),
                                          menuItem("Alder",
                                                   tabName = "tab_alder",
-                                                  icon = icon("hourglass-half"),
+                                                  icon = icon("user"),
                                                   sliderInput(inputId = "input_alder",
                                                               label = "Valg aldersgruppe",
                                                               min = 0, max = 120,
                                                               value = c(0,100)))
-                                         ),
-                             tags$br(), #blank line
-                             fluidRow(
-                               ## Filter button
-                               column(4, offset = 2,
-                                      actionButton(inputId = "input_filter",
-                                                   label = "Kjør filter",
-                                                   icon = icon("filter"))
-                                      )
-                             ))
+                                         )
+                             )
