@@ -42,7 +42,7 @@ De er basert på diskusjonen med NTR og bestillingsdokument
 - [X] Død etter 30 dager (som det er nå)
 - [ ] Filter for dato Nasjonal - inj_start_date (Traume skjema)
 - [ ] Filter for dato Sykehus - ed_arrival_dtg (Akutt skjema)
-- [ ] Antall fordelt på tid og ukedag
+- [ ] Antall fordelt på tid - ukedag
 - [ ] Ulykke og pre-hospital skjema fra sykehus 1 (hosp_serial_num fra Traume Skjema)
 - [ ] Filter for Alder (traumeskjema "PatientAge")
 - [ ] Filter for kjønn (traumeskjema "PatientGender" 1=Mann 2=Kvinne)
