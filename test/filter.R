@@ -22,12 +22,15 @@ ntrid  <- as.numeric(gsub("^NTR-", "", masterFile$ntrid))
 length(unique(ntrid))
 length(unique(masterFile$ntrid))
 
+#####################
+## Dygraphs figure ##
+#####################
 
 ## Time - series
-masterFile[, datoAlle := as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S")]
+masterFile[, datoAlle := as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S")]
 
-masterFile[, `:=` (datoSykehus = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"),
-                   datoAlle = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"))]
+masterFile[, `:=` (datoSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"),
+                   datoAlle = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"))]
 
 
 alle <- masterFile[!is.na(datoAlle), .N, by = .(datoAlle)]
@@ -37,4 +40,16 @@ timeAlle <- xts(alle$N, order.by = alle$datoAlle)
 
 ## install.packages("dygraphs")
 library(dygraphs)
-dygraph(timeAlle) %>% dyRangeSelector()
+maxDato <- strftime(max(alle$datoAlle), format = "%Y-%m-%d")
+
+## Finne dato et år tidligere fra maxDato
+library(zoo)
+minDato <- strftime(as.Date(as.yearmon(as.Date(maxDato)) - 1, frac = 1))
+
+## dygraph
+dygraph(timeAlle,, main = "Antall traume") %>%
+  dyRangeSelector(dateWindow = c(minDato, maxDato))
+
+
+testDate <- strftime(maxDato, format = "%Y-%m-%d")
+
