@@ -18,5 +18,34 @@ function(input, output, session) {
 
   })
 
+
+  ## valueBox
+  output$o_traume <- renderValueBox({
+    valueBox(
+      value = masterFile[unique(ntrid), .N],
+      subtitle = "Antall traume",
+      icon = icon("male"),
+      color = "blue"
+    )
+  })
+
+  output$o_ais <- renderValueBox({
+    valueBox(
+      value = 3000,
+      subtitle = "Antall NISS > 15",
+      icon = icon("heartbeat"),
+      color = "blue"
+    )
+  })
+
+  output$o_dead <- renderValueBox({
+    valueBox(
+      value = paste0(12.1, "%"),
+      subtitle = "Andel døde innen 30 dagers",
+      icon = icon("user-circle-o"),
+      color = "blue"
+    )
+  })
+
   session$onSessionEnded(stopApp)
 }

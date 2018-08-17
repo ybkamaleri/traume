@@ -53,6 +53,19 @@ sidebar <-  dashboardSidebar(width = 250,
                                                   sliderInput(inputId = "input_alder",
                                                               label = "Valg aldersgruppe",
                                                               min = 0, max = 120,
-                                                              value = c(0,100)))
+                                                              value = c(0,100))),
+                                         tags$hr(),
+                                         menuItem("Ulykke",
+                                                  tabName = "tab_ulykke",
+                                                  icon = icon("bar-chart")),
+                                         menuItem("Akutt",
+                                                  tabName = "tab_ulykke",
+                                                  icon = icon("bar-chart")),
+                                         menuItem("Intensiv",
+                                                  tabName = "tab_ulykke",
+                                                  icon = icon("bar-chart")),
+                                         menuItem("Skadegradering",
+                                                  tabName = "tab_ulykke",
+                                                  icon = icon("bar-chart"))
                                          )
                              )

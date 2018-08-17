@@ -9,4 +9,4 @@ sapply(pakke, require, character.only = TRUE)
 ##   do.call("require", list(X))
 ## })
 
-source("~/Git-work/traume/analyser/data.R")
+source("data.R")
