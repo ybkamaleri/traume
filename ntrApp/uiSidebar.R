@@ -36,7 +36,6 @@ sidebar <-  dashboardSidebar(width = 250,
                                                                         label = "Kjør filter",
                                                                         icon = icon("arrow-right"))
                                                            ))
-
                                                   ),
                                          menuItem("Kjønn",
                                                   tabName = "tab_kjonn",

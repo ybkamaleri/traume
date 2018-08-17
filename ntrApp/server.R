@@ -19,7 +19,7 @@ function(input, output, session) {
   })
 
 
-  ## valueBox
+  ## valueBox Antall traume
   output$o_traume <- renderValueBox({
     valueBox(
       value = masterFile[unique(ntrid), .N],
@@ -29,6 +29,7 @@ function(input, output, session) {
     )
   })
 
+  ## valueBox niss > 15
   output$o_ais <- renderValueBox({
     valueBox(
       value = 3000,
@@ -38,10 +39,11 @@ function(input, output, session) {
     )
   })
 
+  ## valueBox døde innen 30 dager
   output$o_dead <- renderValueBox({
     valueBox(
       value = paste0(12.1, "%"),
-      subtitle = "Andel døde innen 30 dagers",
+      subtitle = "Andel døde innen 30 dager",
       icon = icon("user-circle-o"),
       color = "blue"
     )
