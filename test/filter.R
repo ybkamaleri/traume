@@ -6,6 +6,8 @@ baseFile <- traume[, c("pt_id_ntr",
                        "inj_start_date")]
 sykehusFile <- akutt[, c("HovedskjemaGUID", "ed_arrival_dtg")]
 
+## Beholder alle i baseFile. Row i akuttfil som ikke har kombling til SkjemaGUID i
+## traume slettes
 masterFile <- sykehusFile[baseFile, on = c(HovedskjemaGUID = "SkjemaGUID")]
 
 newName <- c("ntrid","Age", "Gender", "dateSykehus", "dateAll")
@@ -21,6 +23,7 @@ ntrid  <- as.numeric(gsub("^NTR-", "", masterFile$ntrid))
 ## lik antall
 length(unique(ntrid))
 length(unique(masterFile$ntrid))
+
 
 #####################
 ## Dygraphs figure ##
