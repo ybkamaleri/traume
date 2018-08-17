@@ -64,6 +64,11 @@ setkey(ulykke, HovedskjemaGUID)
 setkey(skade, HovedskjemaGUID)
 setkey(resh, reshid)
 
+## "Valgte ais" til "ais"
+###########################################
+setnames(skade, grep("Valgte ais-koder", names(skade)), "ais")
+
+
 ## Master File
 ################
 baseFile <- traume[, c("pt_id_ntr",
@@ -77,19 +82,33 @@ sykehusFile <- akutt[, c("HovedskjemaGUID", "ed_arrival_dtg")]
 ## traume slettes
 masterFile <- sykehusFile[baseFile, on = c(HovedskjemaGUID = "SkjemaGUID")]
 
-## Endre kolonenavn
-newName <- c("Age", "Gender", "dateSykehus", "dateAll")
-setnames(masterFile, c("PatientAge",
-                       "PatientGender",
-                       "ed_arrival_dtg",
-                       "inj_start_date"), newName)
+## set key for masterFile
+setkey(masterFile, HovedskjemaGUID)
 
 ## tar bort prefix "NTR-" for ntr-ID
 masterFile[, ntrid := as.numeric(gsub("^NTR-", "", pt_id_ntr))]
 
-## set key for masterFile
-setkey(masterFile, HovedskjemaGUID)
+## Endre kolonenavn
+newName <- c("pt_id_ntr",
+             "ntrid",
+             "Age",
+             "Gender",
+             "dateSykehus",
+             "dateAll")
 
-## "Valgte ais" til "ais"
-###########################################
-setnames(skade, grep("Valgte ais-koder", names(skade)), "ais")
+setnames(masterFile, c("pt_id_ntr",
+                       "ntrid",
+                       "PatientAge",
+                       "PatientGender",
+                       "ed_arrival_dtg",
+                       "inj_start_date"), newName)
+
+
+
+## merge files
+##############
+akutt[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
+intensiv[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
+prehosp[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
+ulykke[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
+skade[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
