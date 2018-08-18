@@ -15,3 +15,4 @@
 *.aux
 *.fdb_latexmk
 /ntrApp/.shiny_run/shinyShortcut.r
+/ntrApp/shinyShortcut.desktop
