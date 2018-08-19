@@ -105,8 +105,8 @@ setnames(masterFile, c("pt_id_ntr",
 
 
 
-## merge files
-##############
+## merge masterFile to all files
+##################################
 akutt[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
 intensiv[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
 prehosp[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]

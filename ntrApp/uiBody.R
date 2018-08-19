@@ -6,7 +6,9 @@ body <- dashboardBody(
               fluidRow(
                 valueBoxOutput("o_traume"),
                 valueBoxOutput("o_ais"),
-                valueBoxOutput("o_dead"))))
+                valueBoxOutput("o_dead")),
+              fluidRow(
+                box(verbatimTextOutput("test")))))
 
   )
 )

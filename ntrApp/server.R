@@ -14,10 +14,18 @@ function(input, output, session) {
     selectInput("input_health_level", label = "Valg enhet", choices = helseEnhet)
   })
 
-  regdata <- eventReactive(input$input_filter, {
+  ## Filtrerer data for Enhet og Dato
+  filterData <- eventReactive(input$input_filter, {
+
+    datoFra <- as.character(input$input_date[1])
+    datoTil <- as.character(input$input_date[2])
+
+    paste0(datoFra, " til ", datoTil)
 
   })
 
+  ## Test output
+  output$test <- renderPrint({filterData()})
 
   ## valueBox Antall traume
   output$o_traume <- renderValueBox({
