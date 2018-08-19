@@ -1,0 +1,80 @@
+{
+  "input": {
+    "input_alder": [
+      0,
+      100
+    ],
+    "input_analyse_level": "1",
+    "input_date": [
+      "2018-08-18",
+      "2018-08-18"
+    ],
+    "input_filter": 0,
+    "input_kjonn": "1",
+    "sidebarCollapsed": false,
+    "sidebarItemExpanded": "Valgdata",
+    "sidebarMain": "tab_dashboard"
+  },
+  "output": {
+    "o_ais": {
+      "html": "<div class=\"small-box bg-blue\">\n  <div class=\"inner\">\n    <h3>3000<\/h3>\n    <p>Antall NISS &gt; 15<\/p>\n  <\/div>\n  <div class=\"icon-large\">\n    <i class=\"fa fa-heartbeat\"><\/i>\n  <\/div>\n<\/div>",
+      "deps": [
+        {
+          "name": "font-awesome",
+          "version": "4.7.0",
+          "src": {
+            "href": "shared/font-awesome"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": "css/font-awesome.min.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        }
+      ]
+    },
+    "o_dead": {
+      "html": "<div class=\"small-box bg-blue\">\n  <div class=\"inner\">\n    <h3>12.1%<\/h3>\n    <p>Andel døde innen 30 dager<\/p>\n  <\/div>\n  <div class=\"icon-large\">\n    <i class=\"fa fa-user-circle-o\"><\/i>\n  <\/div>\n<\/div>",
+      "deps": [
+        {
+          "name": "font-awesome",
+          "version": "4.7.0",
+          "src": {
+            "href": "shared/font-awesome"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": "css/font-awesome.min.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        }
+      ]
+    },
+    "o_traume": {
+      "html": "<div class=\"small-box bg-blue\">\n  <div class=\"inner\">\n    <h3>21212<\/h3>\n    <p>Antall traume<\/p>\n  <\/div>\n  <div class=\"icon-large\">\n    <i class=\"fa fa-male\"><\/i>\n  <\/div>\n<\/div>",
+      "deps": [
+        {
+          "name": "font-awesome",
+          "version": "4.7.0",
+          "src": {
+            "href": "shared/font-awesome"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": "css/font-awesome.min.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        }
+      ]
+    }
+  },
+  "export": {
+
+  }
+}
