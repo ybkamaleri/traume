@@ -27,10 +27,16 @@ function(input, output, session) {
   ## Test output
   output$test <- renderPrint({filterData()})
 
+  ## Antall traume
+  sumTraume <- masterFile[unique(ntrid), .N]
+
+  ## Antall døde innen 30 dager når svaret er 1 = Ja eller 2 = Nei
+  sumDead30 <- intensiv[unique(ntrid)][res_survival == 1, .N]
+
   ## valueBox Antall traume
   output$o_traume <- renderValueBox({
     valueBox(
-      value = masterFile[unique(ntrid), .N],
+      value = sumTraume,
       subtitle = "Antall traume",
       icon = icon("male"),
       color = "blue"
@@ -40,7 +46,7 @@ function(input, output, session) {
   ## valueBox niss > 15
   output$o_ais <- renderValueBox({
     valueBox(
-      value = 3000,
+      value = skade[unique(ntrid),][inj_niss > 15, .N],
       subtitle = "Antall NISS > 15",
       icon = icon("heartbeat"),
       color = "blue"
@@ -50,8 +56,8 @@ function(input, output, session) {
   ## valueBox døde innen 30 dager
   output$o_dead <- renderValueBox({
     valueBox(
-      value = paste0(12.1, "%"),
-      subtitle = "Andel døde innen 30 dager",
+      value = sumDead30,
+      subtitle = "Antall registert døde innen 30 dager",
       icon = icon("user-circle-o"),
       color = "blue"
     )
