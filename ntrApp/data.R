@@ -72,6 +72,8 @@ setnames(skade, grep("Valgte ais-koder", names(skade)), "ais")
 ## Master File
 ################
 baseFile <- traume[, c("pt_id_ntr",
+                       "UnitId",
+                       "hosp_serial_num",
                        "SkjemaGUID",
                        "PatientAge",
                        "PatientGender",
@@ -80,25 +82,26 @@ sykehusFile <- akutt[, c("HovedskjemaGUID", "ed_arrival_dtg")]
 
 ## Beholder alle i baseFile. Row i akuttfil som ikke har kombling til SkjemaGUID i
 ## traume slettes
-masterFile <- sykehusFile[baseFile, on = c(HovedskjemaGUID = "SkjemaGUID")]
+bsFile <- sykehusFile[baseFile, on = c(HovedskjemaGUID = "SkjemaGUID")]
 
-## set key for masterFile
-setkey(masterFile, HovedskjemaGUID)
+## set key for bsFile (base og sykehus data)
+setkeyv(bsFile, c("HovedskjemaGUID", "UnitId"))
 
 ## tar bort prefix "NTR-" for ntr-ID
-masterFile[, ntrid := as.numeric(gsub("^NTR-", "", pt_id_ntr))]
+bsFile[, ntrid := as.numeric(gsub("^NTR-", "", pt_id_ntr))]
+
+## legge RHF, HF og Sykehusnavn
+## Dette skal slettes når man kan trekke ut de fra MRS direkte
+masterFile <- bsFile[resh, on = c(UnitId = "reshid")]
+
 
 ## Endre kolonenavn
-newName <- c("pt_id_ntr",
-             "ntrid",
-             "Age",
-             "Gender",
+newName <- c("age",
+             "gender",
              "dateSykehus",
              "dateAll")
 
-setnames(masterFile, c("pt_id_ntr",
-                       "ntrid",
-                       "PatientAge",
+setnames(masterFile, c("PatientAge",
                        "PatientGender",
                        "ed_arrival_dtg",
                        "inj_start_date"), newName)
