@@ -95,21 +95,22 @@ bsFile[, ntrid := as.numeric(gsub("^NTR-", "", pt_id_ntr))]
 masterFile <- bsFile[resh, on = c(UnitId = "reshid")]
 
 
-## Endre kolonenavn
-newName <- c("age",
-             "gender",
-             "dateSykehus",
-             "dateAll")
+## Endre kolonenavn og var list for merge til andre filer
+changeName <- c("age",
+                "gender",
+                "dateSykehus",
+                "dateAll")
 
 setnames(masterFile, c("PatientAge",
                        "PatientGender",
                        "ed_arrival_dtg",
-                       "inj_start_date"), newName)
+                       "inj_start_date"), changeName)
 
 
 
 ## merge masterFile to all files
 ##################################
+newName <- c("pt_id_ntr","ntrid","gender","age","dateAll","dateSykehus")
 akutt[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
 intensiv[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
 prehosp[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
