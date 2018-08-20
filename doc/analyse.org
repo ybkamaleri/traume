@@ -55,9 +55,11 @@ De er basert på diskusjonen med NTR og bestillingsdokument
 - NTR nummer representerer 1 pasient.
 - Traumeskjema har /SkjemaGUID/ som er 1 til 1 mot NTR nummer
 - Andre skjema har /HovedskjemaGUID/ som er nøkkelen mot Traumeskjema
-** HealthUnitId
-- Alle skjemaer har /HealthUnitId/. Filtering for Sykehus, RHF og HF basert på
+** UnitId
+- Alle skjemaer har /UnitId/. Filtering for Sykehus, RHF og HF basert på
   /HealthUnitId/ til hvert skjema
+** hosp_serial_num fra traumeskjema
+- hva skal det brukers til?
 * Outline
 ** Generelle Info
 Dashboard som gir informasjon om:
