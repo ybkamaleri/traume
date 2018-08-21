@@ -1,6 +1,13 @@
 ### pakker ###
 
-pakke <- c("shiny", "shinyBS", "shinydashboard", "data.table", "ggplot2")
+pakke <- c("shiny",
+           "shinyBS",
+           "shinydashboard",
+           "data.table",
+           "ggplot2",
+           "dygraphs",
+           "xts",
+           "zoo")
 
 sapply(pakke, require, character.only = TRUE)
 

@@ -106,9 +106,7 @@ setnames(masterFile, c("PatientAge",
                        "ed_arrival_dtg",
                        "inj_start_date"), changeName)
 
-
-
-## merge masterFile to all files
+## merge selected variables from masterFile to all files
 ##################################
 newName <- c("pt_id_ntr","ntrid","gender","age","dateAll","dateSykehus")
 akutt[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
@@ -116,3 +114,11 @@ intensiv[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", new
 prehosp[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
 ulykke[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
 skade[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
+
+
+## Time - series
+##########################
+## Time - series
+## masterFile[, datoAlle := as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S")]
+masterFile[, `:=` (timeSykehus = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"),
+                   timeAll = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"))]

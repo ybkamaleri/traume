@@ -8,7 +8,9 @@ body <- dashboardBody(
                 valueBoxOutput("o_ais"),
                 valueBoxOutput("o_dead")),
               fluidRow(
-                box(verbatimTextOutput("test")))))
+                box(width = 12,
+                    dygraphOutput("traume_dygraph"))
+              )))
 
   )
 )

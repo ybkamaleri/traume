@@ -24,14 +24,25 @@ function(input, output, session) {
 
   })
 
-  ## Test output
-  output$test <- renderPrint({filterData()})
 
-  ## Antall traume
+  ## Dygraphs for antall traume with timeseries
+  ##################################################
+  output$traume_dygraph <- renderDygraph({
+    ## Time-series antall traume per dag
+    timeDataAll <- masterFile[!is.na(timeAll), .N, by = list(timeAll)]
+    timeDataTraume <- xts::xts(timeDataAll$N, order.by = timeDataAll$timeAll)
+    maxDato <- strftime(max(timeDataAll$timeAll))
+    minDato <- strftime(zoo::as.yearmon((maxDato)) - 1, frac = 1)
+
+    dygraph(timeDataTraume, main = "Antall Traume per dag", ylab = "Antall") %>%
+      dyRangeSelector(dateWindow = c(minDato, maxDato)) %>%
+      dySeries("V1", label = "Antall traume") %>%
+      dyLegend(width = 400, show = "always", hideOnMouseOut = FALSE)
+  })
+
+
+  ## Antall traume for valueBox
   sumTraume <- masterFile[unique(ntrid), .N]
-
-  ## Antall døde innen 30 dager når svaret er 1 = Ja eller 2 = Nei
-  sumDead30 <- intensiv[unique(ntrid)][res_survival == 1, .N]
 
   ## valueBox Antall traume
   output$o_traume <- renderValueBox({
@@ -56,7 +67,7 @@ function(input, output, session) {
   ## valueBox døde innen 30 dager
   output$o_dead <- renderValueBox({
     valueBox(
-      value = sumDead30,
+      value = intensiv[unique(ntrid)][res_survival == 1, .N],
       subtitle = "Antall registert døde innen 30 dager",
       icon = icon("user-circle-o"),
       color = "blue"

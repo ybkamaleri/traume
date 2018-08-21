@@ -39,15 +39,15 @@ masterFile[, `:=` (datoSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S
 alle <- masterFile[!is.na(datoAlle), .N, by = .(datoAlle)]
 
 library(xts)
-timeAlle <- xts(alle$N, order.by = alle$datoAlle)
+timeAlle <- xts::xts(alle$N, order.by = alle$datoAlle)
 
 ## install.packages("dygraphs")
 library(dygraphs)
-maxDato <- strftime(max(alle$datoAlle), format = "%Y-%m-%d")
+maxDato <- strftime(as.POSIXct(max(alle$datoAlle)),format = "%d.%m.%Y %H:%M:%S")
 
 ## Finne dato et år tidligere fra maxDato
 library(zoo)
-minDato <- strftime(as.Date(as.yearmon(as.Date(maxDato)) - 1, frac = 1))
+minDato <- strftime(as.POSIXct(zoo::as.yearmon(as.POSIXct(maxDato, format = "%d.%m.%Y %H:%M:%S")) - 1, frac = 1))
 
 ## dygraph
 dygraph(timeAlle,, main = "Antall traume") %>%
