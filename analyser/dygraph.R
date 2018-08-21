@@ -67,3 +67,36 @@ minDato <- strftime(as.POSIXct(zoo::as.yearmon(as.POSIXct(maxDato, format = "%d.
 ## dygraph
 dygraph(timeAlle,, main = "Antall traume") %>%
   dyRangeSelector(dateWindow = c(minDato, maxDato))
+
+
+
+###########################
+## ggplot2
+##########################
+library(ggplot2)
+
+ggAll <- ggplot(tsTraumeAll, aes(x = dateAll)) +
+  geom_line(aes(y = N, text = paste0("Kvinner"))) +
+  geom_line(aes(y = i.N, color = "Menn")) +
+  geom_line(aes(y = i.N.1, color = "Alle")) +
+  ylab("Antall") +
+  theme_minimal() +
+  scale_color_manual(name = NULL,
+                     values = c(Menn = "blue", Kvinner = "lightblue", Alle = "orange"))
+
+
+library(plotly)
+ggplotly(ggAll)
+
+
+## lagt long data
+gName <- c("Kvinner","Menn","Alle")
+setnames(tsTraumeAll, 2:4, gName)
+
+tsTraumeAll_long <- melt(tsTraumeAll, id.vars = "dateAll")
+
+genderLong <- ggplot(tsTraumeAll_long,
+                     aes(x = dateAll, y = value,
+                         colour = variable)) + geom_line()
+
+ggplotly(genderLong)
