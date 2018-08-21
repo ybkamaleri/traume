@@ -118,7 +118,8 @@ skade[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newNam
 
 ## Time - series
 ##########################
-## Time - series
-## masterFile[, datoAlle := as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S")]
-masterFile[, `:=` (timeSykehus = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"),
-                   timeAll = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"))]
+## timeSykehus - dato med klokkelsett
+## dateAll og dateSykehus inneholder bare dato
+masterFile[, `:=` (timeSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"),
+                   dateAll = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"),
+                   dateSykehus = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"))]

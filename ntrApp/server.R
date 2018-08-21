@@ -29,15 +29,45 @@ function(input, output, session) {
   ##################################################
   output$traume_dygraph <- renderDygraph({
     ## Time-series antall traume per dag
-    timeDataAll <- masterFile[!is.na(timeAll), .N, by = list(timeAll)]
-    timeDataTraume <- xts::xts(timeDataAll$N, order.by = timeDataAll$timeAll)
-    maxDato <- strftime(max(timeDataAll$timeAll))
-    minDato <- strftime(zoo::as.yearmon((maxDato)) - 1, frac = 1)
+    dateAll_dt <- masterFile[!is.na(dateAll), .N, by = .(dateAll)]
+    dateMann_dt <- masterFile[!is.na(dateAll)][gender == 1,.N, by = .(dateAll)]
+    dateKvinne_dt <- masterFile[!is.na(dateAll)][gender == 2,.N, by = .(dateAll)]
 
-    dygraph(timeDataTraume, main = "Antall Traume per dag", ylab = "Antall") %>%
-      dyRangeSelector(dateWindow = c(minDato, maxDato)) %>%
-      dySeries("V1", label = "Antall traume") %>%
-      dyLegend(width = 400, show = "always", hideOnMouseOut = FALSE)
+    tsTraumeSub <- dateMann_dt[dateAll_dt, on = c(dateAll = "dateAll")]
+    tsTraumeAll <- dateKvinne_dt[tsTraumeSub, on = c(dateAll = "dateAll")]
+
+    ## replace NA to 0 with function by number - RASKERE!
+    rep0 <- function(DT){
+      for (j in seq_len(ncol(DT)))
+        set(DT, which(is.na(DT[[j]])),j,0)
+    }
+    rep0(tsTraumeAll)
+
+
+    library(xts)
+    tsAlle <- xts::xts(tsTraumeAll$i.N.1, order.by = tsTraumeAll$dateAll)
+    tsMann <- xts::xts(tsTraumeAll$i.N, order.by = tsTraumeAll$dateAll)
+    tsKvinne <- xts::xts(tsTraumeAll$N, order.by = tsTraumeAll$dateAll)
+
+    timeTraumeAlle <- cbind(tsAlle, tsMann, tsKvinne)
+
+    ## maxDato og minDato for dyRangeSelector()
+    maxDato <- strftime(max(dateAll_dt$dateAll))
+    minDato <- strftime(zoo::as.yearqtr(as.Date(maxDato)) - 1, frac = 2)
+
+    ## install.packages("dygraphs")
+    library(dygraphs)
+    dygraph(timeTraumeAlle,
+            main = "Antall Traume per dag og kjønn",
+            ylab = "Antall") %>%
+      dySeries("..1", label = "Alle") %>%
+      dySeries("..2", label = "Menn") %>%
+      dySeries("..3", label = "Kvinner") %>%
+      dyHighlight(highlightCircleSize = 5,
+                  highlightSeriesBackgroundAlpha = 0.3,
+                  hideOnMouseOut = FALSE) %>%
+      dyLegend(show = "always", hideOnMouseOut = FALSE, width = 500) %>%
+      dyRangeSelector(dateWindow = c(minDato, maxDato))
   })
 
 
