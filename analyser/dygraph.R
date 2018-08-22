@@ -100,3 +100,13 @@ genderLong <- ggplot(tsTraumeAll_long,
                          colour = variable)) + geom_line()
 
 ggplotly(genderLong)
+
+
+######################
+## dygraph month year
+######################
+
+tsTraumeAll_my <- tsTraumeAll[, list(kvinner = N,
+                                     menn = i.N,
+                            alle = i.N.1,
+                            dateAll = format(dateAll, "%Y-%m"))]

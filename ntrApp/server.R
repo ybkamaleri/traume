@@ -99,9 +99,15 @@ function(input, output, session) {
     valueBox(
       value = intensiv[unique(ntrid)][res_survival == 1, .N],
       subtitle = "Antall registert døde innen 30 dager",
-      icon = icon("user-circle-o"),
+      icon = icon("bed"),
       color = "blue"
     )
+  })
+
+  ## Virksomhetsdata på sykehus
+  output[["virk_out_sykehus"]] <- renderUI({
+    helseEnhet <- as.list(unique(resh$Sykehus))
+    selectInput("virk_in_sykehus", label = "Valg enhet", choices = helseEnhet)
   })
 
   session$onSessionEnded(stopApp)
