@@ -12,7 +12,8 @@ body <- dashboardBody(
                     dygraphOutput("traume_dygraph"))
               ))),
     tabItem(tabName = "tab_rapport",
-            h2("Rapport")),
+            h2("Rapport"),
+            textOutput("test")),
     tabItem(tabName = "tab_virk_rap",
             h2("Virksomhetsdata"))
 

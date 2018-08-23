@@ -29,7 +29,6 @@ intensiv <- indSkjema("Intensiv")
 prehosp <- indSkjema("Prehospital")
 ulykke <- indSkjema("Ulykke")
 skade <- indSkjema("Skadegradering")
-resh <- indSkjema("Resh", encode = "Latin-1")
 
 
 ## Resh HF
@@ -51,8 +50,6 @@ delW(intensiv)
 delW(prehosp)
 delW(ulykke)
 delW(skade)
-delW(resh)
-
 
 ## set key
 ###########
@@ -62,12 +59,10 @@ setkey(intensiv, HovedskjemaGUID)
 setkey(prehosp, HovedskjemaGUID)
 setkey(ulykke, HovedskjemaGUID)
 setkey(skade, HovedskjemaGUID)
-setkey(resh, reshid)
 
 ## "Valgte ais" til "ais"
 ###########################################
 setnames(skade, grep("Valgte ais-koder", names(skade)), "ais")
-
 
 ## Master File
 ################
@@ -90,10 +85,16 @@ setkeyv(bsFile, c("HovedskjemaGUID", "UnitId"))
 ## tar bort prefix "NTR-" for ntr-ID
 bsFile[, ntrid := as.numeric(gsub("^NTR-", "", pt_id_ntr))]
 
-## legge RHF, HF og Sykehusnavn
-## Dette skal slettes når man kan trekke ut de fra MRS direkte
+##########################################################################
+## OBS!!! -- Dette skal slettes når man kan trekke ut de fra MRS direkte
+## legge RHF, HF og Sykehusnavn fra resh fil
+resh <- indSkjema("Resh", encode = "Latin-1")
+delW(resh)
+setkey(resh, reshid)
 masterFile <- bsFile[resh, on = c(UnitId = "reshid")]
 
+
+##########################################################################
 
 ## Endre kolonenavn og var list for merge til andre filer
 changeName <- c("age",
@@ -116,8 +117,8 @@ ulykke[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newNa
 skade[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
 
 
-## Time - series
-##########################
+## Time - series for dygraph
+##############################
 ## timeSykehus - dato med klokkelsett
 ## dateAll og dateSykehus inneholder bare dato
 masterFile[, `:=` (timeSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"),

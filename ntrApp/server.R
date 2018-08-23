@@ -5,25 +5,29 @@ function(input, output, session) {
     switch(as.character(input$input_analyse_level),
            '2' = unique(resh$RHF),
            '3' = unique(resh$HF),
-           '4' = unique(resh$Sykehus))
+           '4' = unique(resh$Hospital))
   })
 
   ## Output analysenivå
   output[["output_health_level"]] <- renderUI({
     helseEnhet <- as.list(AnalyseLevel())
-    selectInput("input_health_level", label = "Valg enhet", choices = helseEnhet)
+    selectInput("input_health_level", label = NULL, choices = helseEnhet)
   })
 
   ## Filtrerer data for Enhet og Dato
-  filterData <- eventReactive(input$input_filter, {
+  filterData <- eventReactive(input$input_tidsrom, {
 
-    datoFra <- as.character(input$input_date[1])
-    datoTil <- as.character(input$input_date[2])
+    datoFra <- as.character(input$input_tidsrom[1])
+    datoTil <- as.character(input$input_tidsrom[2])
 
     paste0(datoFra, " til ", datoTil)
 
   })
 
+  ## TEST
+  output$test <- renderText({
+    filterData()
+  })
 
   ## Dygraphs for antall traume with timeseries
   ##################################################
@@ -106,8 +110,8 @@ function(input, output, session) {
 
   ## Virksomhetsdata på sykehus
   output[["virk_out_sykehus"]] <- renderUI({
-    helseEnhet <- as.list(unique(resh$Sykehus))
-    selectInput("virk_in_sykehus", label = "Valg enhet", choices = helseEnhet)
+    helseEnhet <- as.list(unique(resh$Hospital))
+    selectInput("virk_in_sykehus", label = NULL, choices = helseEnhet)
   })
 
   session$onSessionEnded(stopApp)
