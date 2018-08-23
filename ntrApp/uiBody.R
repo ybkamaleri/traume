@@ -10,7 +10,11 @@ body <- dashboardBody(
               fluidRow(
                 box(width = 12,
                     dygraphOutput("traume_dygraph"))
-              )))
+              ))),
+    tabItem(tabName = "tab_rapport",
+            h2("Rapport")),
+    tabItem(tabName = "tab_virk_rap",
+            h2("Virksomhetsdata"))
 
   )
 )
