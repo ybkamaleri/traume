@@ -1,26 +1,29 @@
 function(input, output, session) {
 
   ## Valg analysenivå
-  AnalyseLevel  <- eventReactive(input$input_analyse_level, {
-    switch(as.character(input$input_analyse_level),
+  AnalyseLevel  <- eventReactive(input$analyse_level_in, {
+    switch(as.character(input$analyse_level_in),
            '2' = unique(resh$RHF),
            '3' = unique(resh$HF),
            '4' = unique(resh$Hospital))
   })
 
   ## Output analysenivå
-  output[["output_health_level"]] <- renderUI({
+  output[["health_level_out"]] <- renderUI({
     helseEnhet <- as.list(AnalyseLevel())
-    selectInput("input_health_level", label = NULL, choices = helseEnhet)
+    selectInput("health_level_in", label = NULL, choices = helseEnhet)
   })
 
   ## Filtrerer data for Enhet og Dato
-  filterData <- eventReactive(input$input_tidsrom, {
+  filterData <- eventReactive(input$tidsrom_in, {
 
-    datoFra <- as.character(input$input_tidsrom[1])
-    datoTil <- as.character(input$input_tidsrom[2])
+    datoFra <- as.character(input$tidsrom_in[1])
+    datoTil <- as.character(input$tidsrom_in[2])
 
-    paste0(datoFra, " til ", datoTil)
+    paste0("Valgte tidsrom: ",
+           format(as.Date(datoFra, format = "%Y-%m-%d"), "%d/%m/%Y"),
+           " til ",
+           format(as.Date(datoTil, format = "%Y-%m-%d"), "%d/%m/%Y"))
 
   })
 
@@ -109,9 +112,13 @@ function(input, output, session) {
   })
 
   ## Virksomhetsdata på sykehus
-  output[["virk_out_sykehus"]] <- renderUI({
+  output[["virk_sykehus_out"]] <- renderUI({
     helseEnhet <- as.list(unique(resh$Hospital))
-    selectInput("virk_in_sykehus", label = NULL, choices = helseEnhet)
+    selectInput("virk_sykehus_in", label = NULL, choices = helseEnhet)
+  })
+
+  output$test2 <- renderText({
+    paste0(input$virk_sykehus_in)
   })
 
   session$onSessionEnded(stopApp)

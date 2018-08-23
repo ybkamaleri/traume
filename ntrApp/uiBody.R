@@ -15,7 +15,8 @@ body <- dashboardBody(
             h2("Rapport"),
             textOutput("test")),
     tabItem(tabName = "tab_virk_rap",
-            h2("Virksomhetsdata"))
+            h2("Virksomhetsdata"),
+            textOutput("test2"))
 
   )
 )
