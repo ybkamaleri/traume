@@ -8,8 +8,8 @@ body <- dashboardBody(
   tabItems(
     tabItem(tabName = "tab_dashboard",
             fluidPage(
-              tags$h3("Oversikt informasjon for hele NTR databasen"),
-              tags$br(),
+              tags$h4("Oversikt informasjon for hele NTR databasen"),
+              ## tags$br(),
               fluidRow(
                 valueBoxOutput("o_traume"),
                 valueBoxOutput("o_ais"),
@@ -21,7 +21,7 @@ body <- dashboardBody(
     tabItem(tabName = "tab_rapport",
             tags$h3(textOutput("text_enhetNavn")),
             tags$h5(textOutput("text_Dato")),
-            plotOutput("plotAlderTraume"),
+            plotOutput("plotAT"),
             verbatimTextOutput("test"),
             verbatimTextOutput("testText")),
     tabItem(tabName = "tab_virk_rap",

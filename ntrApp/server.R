@@ -75,7 +75,7 @@ function(input, output, session) {
       dyHighlight(highlightCircleSize = 5,
                   highlightSeriesBackgroundAlpha = 0.3,
                   hideOnMouseOut = FALSE) %>%
-      dyLegend(show = "always", hideOnMouseOut = FALSE, width = 500) %>%
+      dyLegend(show = "always", hideOnMouseOut = FALSE, width = 280) %>%
       dyRangeSelector(dateWindow = c(minDato, maxDato))
   })
 
@@ -157,12 +157,54 @@ function(input, output, session) {
 
   })
 
+  ## Filter for kjønn og alder
+
+
+
 
   ## Plot Alder og Traume
-  output$plotAlderTraume <- renderPlot({
-    tellAge <- filterData()[, .N, by=list(gender, age)]
-    ggplot(tellAge, aes(age, gender)) + geom_line(stat = "identity")
+  output$plotAT <- renderPlot({
+    ## reactive data
+    ## data <- filterData()
+
+    ## Renser data - bort med NA og -1
+    cleanAgeTraume <- filterData()[!is.na(age) & age != -1, .N, keyby = list(age, gender)]
+
+    ## Teller antall kvinner og menn for hver aldersgruppe
+    ageMan <- cleanAgeTraume[gender == 1, list(mann = N), key = age]
+    ageKvinne <- cleanAgeTraume[gender == 2, list(kvinne = N), key = age]
+    ageMK <- merge(ageMan, ageKvinne, all = TRUE)
+
+    ## Erstater NA med 0
+    bNA(ageMK)
+
+    ## lage summen for begge kjønn
+    ageMK[, alle := mann + kvinne, by = age]
+
+    ## konverterer data til long
+    dataLongAK <-melt(ageMK, id.vars="age", measure.vars=c("mann","kvinne","alle"), variable.name="gender", value.name="n")
+
+    ## plot with long data
+    plotAT <- ggplot(dataLongAK, aes(age, n, group = gender, color = gender)) +
+      geom_line() +
+      geom_point()
+
+    ## ## plot
+    ## plotAT <- ggplot(ageMK, aes(x = age)) +
+    ##   geom_line(aes(y = mann, color = "Menn"), size = 1) +
+    ##   geom_line(aes(y = kvinne, color = "Kvinner"), size = 1) +
+    ##   geom_line(aes(y = alle, color = "Begge"), size = 1) +
+    ##   ## title(xlab = "Alder", ylab = "Antall") +
+    ##   xlab("Alder") +
+    ##   ylab("Antall") +
+    ##   theme_minimal() +
+    ##   scale_color_manual(name = NULL,
+    ##                      values = c(Menn = "blue", Kvinner = "lightblue", Begge = "orange"))
+
+    print(plotAT)
+
   })
+
 
   ## Virksomhetsdata på sykehus
   ###############################
@@ -179,11 +221,12 @@ function(input, output, session) {
   ## TEST TEST TEST TEST TEST
   #################################
   output$test <- renderPrint({
-    head(filterData())
+    str(filterData())
   })
 
   output$testText <- renderPrint({
-
+    data <- filterData()
+    str(data)
   })
   #####################################
 
