@@ -146,6 +146,7 @@ function(input, output, session) {
            " til ", format(valgDatoTil(), "%d/%m/%Y"))
   })
 
+
   ## Aldersgruppe
   ageRange <- reactive({
 
@@ -156,15 +157,6 @@ function(input, output, session) {
 
   })
 
-  ## TEST
-  #################################
-  output$test <- renderPrint({
-    str(filterData())
-  })
-
-  output$testText <- renderPrint({
-
-  })
 
 
   ## Virksomhetsdata på sykehus
@@ -177,6 +169,18 @@ function(input, output, session) {
   output$test2 <- renderText({
     paste0(input$virk_sykehus_in)
   })
+
+
+  ## TEST TEST TEST TEST TEST
+  #################################
+  output$test <- renderPrint({
+    str(filterData())
+  })
+
+  output$testText <- renderPrint({
+    names(filterData())
+  })
+  #####################################
 
   session$onSessionEnded(stopApp)
 }
