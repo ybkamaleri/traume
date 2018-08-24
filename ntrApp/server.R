@@ -14,17 +14,39 @@ function(input, output, session) {
     selectInput("health_level_in", label = NULL, choices = helseEnhet)
   })
 
-  ## Filtrerer data for Enhet og Dato
+  ## Dato fra og til
+  valgDatoFra <- reactive(
+    as.Date(as.character(input$tidsrom_in[1]),
+            format = "%Y-%m-%d")
+  )
+
+  valgDatoTil <- reactive(
+    as.Date(as.character(input$tidsrom_in[2]),
+            format = "%Y-%m-%d")
+  )
+
+  ## Filtret data for Enhet og Dato
+  ##################################
   filterData <- reactive({
 
-    datoFra <- as.character(input$tidsrom_in[1])
-    datoTil <- as.character(input$tidsrom_in[2])
+    datoFra <- valgDatoFra()
+    datoTil <- valgDatoTil()
 
-    paste0("Valgte tidsrom: ",
-           format(as.Date(datoFra, format = "%Y-%m-%d"), "%d/%m/%Y"),
-           " til ",
-           format(as.Date(datoTil, format = "%Y-%m-%d"), "%d/%m/%Y"))
+    switch(as.character(input$analyse_level_in),
+           '1' = {masterFile[dateAll >= as.Date(datoFra, format = "%Y-%m-%d") &
+                               dateAll <= as.Date(datoTil, format = "%Y-%m-%d")]},
+           '2' = {masterFile[RHF == input$health_level_in &
+                               dateAll >= as.Date(datoFra, format = "%Y-%m-%d") &
+                               dateAll <= as.Date(datoTil, format = "%Y-%m-%d")]},
+           '3' = {masterFile[HF == input$health_level_in &
+                               dateAll >= as.Date(datoFra, format = "%Y-%m-%d") &
+                               dateAll <= as.Date(datoTil, format = "%Y-%m-%d")]},
+           '4' = {masterFile[Hospital == input$health_level_in &
+                               dateAll >= as.Date(datoFra, format = "%Y-%m-%d") &
+                               dateAll <= as.Date(datoTil, format = "%Y-%m-%d")]})
   })
+
+
 
   ## HelseEnhet
   enhetNavn <- reactive({input$health_level_in})
@@ -42,7 +64,7 @@ function(input, output, session) {
 
   ## TEST
   output$test <- renderText({
-    enhetNavn()
+    dim(filterData())
   })
 
   ## Dygraphs for antall traume with timeseries
