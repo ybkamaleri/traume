@@ -127,9 +127,9 @@ function(input, output, session) {
                                dateAll <= as.Date(datoTil, format = "%Y-%m-%d")]})
   })
 
-  ## Title
-  #########################################
-  ## tekst for utvalgte enhetNavn
+
+  ## tekst for utvalgte enhetNavn og alder
+  ########################################
   observeEvent(input$analyse_level_in, {
 
     output$text_enhetNavn <- renderText({
@@ -141,21 +141,18 @@ function(input, output, session) {
     })
   })
 
-  output$text_Dato <- renderText({
-    paste0("Valgte tidsrom er fra ", format(valgDatoFra(), "%d/%m/%Y"),
-           " til ", format(valgDatoTil(), "%d/%m/%Y"))
-  })
-
-
-  ## Aldersgruppe
-  ageRange <- reactive({
+  output$text_info <- renderText({
     ageFra <- input$alder_in[1]
     ageTil <- input$alder_in[2]
-    paste0(ageFra, " til ", ageTil)
+
+    paste0("Tidsrom er fra ", format(valgDatoFra(), "%d-%m-%Y"),
+           " til ", format(valgDatoTil(), "%d-%m-%Y"), ".",
+           " Alder er fra ", ageFra, " til ", ageTil, " år")
   })
 
 
-  ## Filter for kjønn og alder
+  ## Filter for og alder
+  ##########################
   filterDataAge <- reactive({
     ageFra <- input$alder_in[1]
     ageTil <- input$alder_in[2]
