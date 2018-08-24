@@ -7,7 +7,8 @@ pakke <- c("shiny",
            "ggplot2",
            "dygraphs",
            "xts",
-           "zoo")
+           "zoo",
+           "DT")
 
 sapply(pakke, require, character.only = TRUE)
 

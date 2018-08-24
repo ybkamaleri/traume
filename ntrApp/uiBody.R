@@ -19,11 +19,17 @@ body <- dashboardBody(
                     dygraphOutput("traume_dygraph"))
               ))),
     tabItem(tabName = "tab_rapport",
-            tags$h3(textOutput("text_enhetNavn")),
-            tags$h5(textOutput("text_info")),
-            plotOutput("plotAT"),
-            verbatimTextOutput("test"),
-            verbatimTextOutput("testText")),
+            fluidPage(
+              tags$h3(textOutput("text_enhetNavn")),
+              tags$h5(textOutput("text_info")),
+              fluidRow(
+                tabBox(side = "left", selected = "Figur", width = 12,
+                       tabPanel("Figur", plotOutput("plotAT")),
+                       tabPanel("Tabell", DT::dataTableOutput("tabAT")))
+              ),
+              ## plotOutput("plotAT"),
+              verbatimTextOutput("test"),
+              verbatimTextOutput("testText"))),
     tabItem(tabName = "tab_virk_rap",
             h2("Virksomhetsdata"),
             textOutput("test2"))
