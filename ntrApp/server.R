@@ -149,26 +149,30 @@ function(input, output, session) {
 
   ## Aldersgruppe
   ageRange <- reactive({
+    ageFra <- input$alder_in[1]
+    ageTil <- input$alder_in[2]
+    paste0(ageFra, " til ", ageTil)
+  })
 
+
+  ## Filter for kjønn og alder
+  filterDataAge <- reactive({
     ageFra <- input$alder_in[1]
     ageTil <- input$alder_in[2]
 
-    paste0(ageFra, " til ", ageTil)
+    filterData()[age >= ageFra & age <= ageTil]
 
   })
-
-  ## Filter for kjønn og alder
-
 
 
 
   ## Plot Alder og Traume
   output$plotAT <- renderPlot({
     ## reactive data
-    ## data <- filterData()
+    data <- filterDataAge()
 
     ## Renser data - bort med NA og -1
-    cleanAgeTraume <- filterData()[!is.na(age) & age != -1, .N, keyby = list(age, gender)]
+    cleanAgeTraume <- data[!is.na(age) & age != -1, .N, keyby = list(age, gender)]
 
     ## Teller antall kvinner og menn for hver aldersgruppe
     ageMan <- cleanAgeTraume[gender == 1, list(mann = N), key = age]

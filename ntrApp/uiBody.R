@@ -8,7 +8,7 @@ body <- dashboardBody(
   tabItems(
     tabItem(tabName = "tab_dashboard",
             fluidPage(
-              tags$h4("Oversikt informasjon for hele NTR databasen"),
+              ## tags$h4("Oversikt informasjon for hele NTR databasen"),
               ## tags$br(),
               fluidRow(
                 valueBoxOutput("o_traume"),
