@@ -96,7 +96,10 @@ masterFile <- bsFile[resh, on = c(UnitId = "reshid")]
 
 ##########################################################################
 
+
+
 ## Endre kolonenavn og var list for merge til andre filer
+##########################################################
 changeName <- c("age",
                 "gender",
                 "dateSykehus",
@@ -107,9 +110,18 @@ setnames(masterFile, c("PatientAge",
                        "ed_arrival_dtg",
                        "inj_start_date"), changeName)
 
+## Dato format
+##############################
+## timeSykehus - dato med klokkelsett
+## dateAll og dateSykehus inneholder bare dato
+masterFile[, `:=` (timeSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"),
+                   dateAll = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"),
+                   dateSykehus = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"))]
+
+
 ## merge selected variables from masterFile to all files
 ##################################
-newName <- c("pt_id_ntr","ntrid","gender","age","dateAll","dateSykehus")
+newName <- c("pt_id_ntr","ntrid","gender","age","dateAll","dateSykehus", "timeSykehus")
 akutt[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
 intensiv[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
 prehosp[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
@@ -117,10 +129,6 @@ ulykke[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newNa
 skade[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
 
 
-## Time - series for dygraph
-##############################
-## timeSykehus - dato med klokkelsett
-## dateAll og dateSykehus inneholder bare dato
-masterFile[, `:=` (timeSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"),
-                   dateAll = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"),
-                   dateSykehus = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"))]
+## setkey
+#####################
+setkey(masterFile, ntrid)
