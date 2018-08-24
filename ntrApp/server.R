@@ -170,8 +170,8 @@ function(input, output, session) {
   ## Virksomhetsdata på sykehus
   ###############################
   output[["virk_sykehus_out"]] <- renderUI({
-    helseEnhet <- as.list(unique(resh$Hospital))
-    selectInput("virk_sykehus_in", label = NULL, choices = helseEnhet)
+    helseEnhet <- as.factor(unique(resh$Hospital))
+    selectInput("virk_sykehus_in", label = NULL, choices = sort(helseEnhet))
   })
 
   output$test2 <- renderText({
