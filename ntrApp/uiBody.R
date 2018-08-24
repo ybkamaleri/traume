@@ -27,6 +27,10 @@ body <- dashboardBody(
                        tabPanel("Figur", plotOutput("plotAT")),
                        tabPanel("Tabell", DT::dataTableOutput("tabAT")))
               ),
+              fluidRow(
+                tags$h5("Tallene ekluderer missing data for 'alder' og 'kjønn'"),
+                infoBoxOutput("traume_info")
+              ),
               ## plotOutput("plotAT"),
               verbatimTextOutput("test"),
               verbatimTextOutput("testText"))),

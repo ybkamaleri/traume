@@ -157,7 +157,7 @@ function(input, output, session) {
     ageFra <- input$alder_in[1]
     ageTil <- input$alder_in[2]
 
-    filterData()[age >= ageFra & age <= ageTil]
+    data <- filterData()[!duplicated(ntrid) & age >= ageFra & age <= ageTil]
 
   })
 
@@ -196,6 +196,8 @@ function(input, output, session) {
 
   })
 
+  ## Tabell for Alder og kjønn
+  ############################
   output$tabAT <- DT::renderDataTable({
 
     data <- filterDataAge()
@@ -219,6 +221,11 @@ function(input, output, session) {
     data.table::setnames(ageMK, 1:4, newNavn)
     ageMK
 
+  })
+
+  output$traume_info <- renderInfoBox({
+    data <- filterDataAge()
+    infoBox("Antall traume", uniqueN(data$ntrid))
   })
 
   ## Virksomhetsdata på sykehus
