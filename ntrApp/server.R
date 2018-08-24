@@ -10,8 +10,8 @@ function(input, output, session) {
 
   ## Output analysenivå
   output[["health_level_out"]] <- renderUI({
-    helseEnhet <- as.list(AnalyseLevel())
-    selectInput("health_level_in", label = NULL, choices = helseEnhet)
+    helseEnhet <- as.factor(AnalyseLevel())
+    selectInput("health_level_in", label = NULL, choices = sort(helseEnhet))
   })
 
   ## Dato fra og til
@@ -114,7 +114,7 @@ function(input, output, session) {
 
 
   ## Antall traume for valueBox
-  sumTraume <- masterFile[unique(ntrid), .N]
+  sumTraume <- uniqueN(masterFile$ntrid)
 
   ## valueBox Antall traume
   output$o_traume <- renderValueBox({
