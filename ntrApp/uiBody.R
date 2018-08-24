@@ -13,7 +13,7 @@ body <- dashboardBody(
               ))),
     tabItem(tabName = "tab_rapport",
             h2("Rapport"),
-            textOutput("test")),
+            verbatimTextOutput("test")),
     tabItem(tabName = "tab_virk_rap",
             h2("Virksomhetsdata"),
             textOutput("test2"))
