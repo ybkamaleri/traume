@@ -1,7 +1,7 @@
 function(input, output, session) {
 
   ## Valg analysenivå
-  AnalyseLevel  <- eventReactive(input$analyse_level_in, {
+  AnalyseLevel  <- reactive({
     switch(as.character(input$analyse_level_in),
            '2' = unique(resh$RHF),
            '3' = unique(resh$HF),
@@ -15,7 +15,7 @@ function(input, output, session) {
   })
 
   ## Filtrerer data for Enhet og Dato
-  filterData <- eventReactive(input$tidsrom_in, {
+  filterData <- reactive({
 
     datoFra <- as.character(input$tidsrom_in[1])
     datoTil <- as.character(input$tidsrom_in[2])
@@ -24,12 +24,25 @@ function(input, output, session) {
            format(as.Date(datoFra, format = "%Y-%m-%d"), "%d/%m/%Y"),
            " til ",
            format(as.Date(datoTil, format = "%Y-%m-%d"), "%d/%m/%Y"))
+  })
+
+  ## HelseEnhet
+  enhetNavn <- reactive({input$health_level_in})
+
+
+  ## Aldersgruppe
+  ageRange <- reactive({
+
+    ageFra <- input$alder_in[1]
+    ageTil <- input$alder_in[2]
+
+    paste0(ageFra, " til ", ageTil)
 
   })
 
   ## TEST
   output$test <- renderText({
-    filterData()
+    enhetNavn()
   })
 
   ## Dygraphs for antall traume with timeseries

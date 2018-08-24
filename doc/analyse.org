@@ -36,13 +36,13 @@ Ting må gjøres for analsyen
 - [ ] Beregn eg. vanligste skade ved en vist type ulykke
 - [ ] Lage AIS fane uten ulykketype eller skade mekanismen
 - [ ] Beholder duplikater
-* Analyse ønsker [1/11]
+* Analyse ønsker [2/12]
 De er basert på diskusjonen med NTR og bestillingsdokument
-- [ ] Dashboard med ISS > 15
+- [X] Dashboard med ISS > 15
 - [X] Død etter 30 dager (som det er nå)
 - [ ] Filter for dato Nasjonal - inj_start_date (Traume skjema)
 - [ ] Filter for dato Sykehus - ed_arrival_dtg (Akutt skjema)
-- [ ] Antall fordelt på tid - ukedag
+- [ ] Antall fordelt på tid - ukedag (virksomhetsdata)
 - [ ] Ulykke og pre-hospital skjema fra sykehus 1 (hosp_serial_num fra Traume Skjema)
 - [ ] Filter for Alder (traumeskjema "PatientAge")
 - [ ] Filter for kjønn (traumeskjema "PatientGender" 1=Mann 2=Kvinne)
