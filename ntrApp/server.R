@@ -54,8 +54,7 @@ function(input, output, session) {
     }
     rep0(tsTraumeAll)
 
-
-    ## library(xts)
+    ## Konvertere til timeseries
     tsAlle <- xts::xts(tsTraumeAll$i.N.1, order.by = tsTraumeAll$dateAll)
     tsMann <- xts::xts(tsTraumeAll$i.N, order.by = tsTraumeAll$dateAll)
     tsKvinne <- xts::xts(tsTraumeAll$N, order.by = tsTraumeAll$dateAll)
