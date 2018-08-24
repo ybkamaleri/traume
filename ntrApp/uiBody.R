@@ -1,8 +1,15 @@
 body <- dashboardBody(
 
+  ## custom css
+  tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
+  ),
+
   tabItems(
     tabItem(tabName = "tab_dashboard",
             fluidPage(
+              tags$h3("Oversikt informasjon for hele NTR databasen"),
+              tags$br(),
               fluidRow(
                 valueBoxOutput("o_traume"),
                 valueBoxOutput("o_ais"),
@@ -12,8 +19,10 @@ body <- dashboardBody(
                     dygraphOutput("traume_dygraph"))
               ))),
     tabItem(tabName = "tab_rapport",
-            h2("Rapport"),
-            verbatimTextOutput("test")),
+            tags$h3(textOutput("text_enhetNavn")),
+            tags$h5(textOutput("text_Dato")),
+            verbatimTextOutput("test"),
+            verbatimTextOutput("testText")),
     tabItem(tabName = "tab_virk_rap",
             h2("Virksomhetsdata"),
             textOutput("test2"))

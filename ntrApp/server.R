@@ -127,11 +127,24 @@ function(input, output, session) {
                                dateAll <= as.Date(datoTil, format = "%Y-%m-%d")]})
   })
 
+  ## Title
+  #########################################
+  ## tekst for utvalgte enhetNavn
+  observeEvent(input$analyse_level_in, {
 
+    output$text_enhetNavn <- renderText({
+      if (input$analyse_level_in == 1){
+        paste0("Rapport for hele landet")
+      }else{
+        paste0("Rapport for ",input$health_level_in)
+      }
+    })
+  })
 
-  ## HelseEnhet
-  enhetNavn <- reactive({input$health_level_in})
-
+  output$text_Dato <- renderText({
+    paste0("Valgte tidsrom er fra ", format(valgDatoFra(), "%d/%m/%Y"),
+           " til ", format(valgDatoTil(), "%d/%m/%Y"))
+  })
 
   ## Aldersgruppe
   ageRange <- reactive({
@@ -144,9 +157,15 @@ function(input, output, session) {
   })
 
   ## TEST
+  #################################
   output$test <- renderPrint({
     str(filterData())
   })
+
+  output$testText <- renderPrint({
+
+  })
+
 
   ## Virksomhetsdata på sykehus
   ###############################
