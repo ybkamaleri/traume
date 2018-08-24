@@ -63,8 +63,8 @@ function(input, output, session) {
   })
 
   ## TEST
-  output$test <- renderText({
-    dim(filterData())
+  output$test <- renderPrint({
+    str(filterData())
   })
 
   ## Dygraphs for antall traume with timeseries
@@ -129,7 +129,7 @@ function(input, output, session) {
   ## valueBox niss > 15
   output$o_ais <- renderValueBox({
     valueBox(
-      value = skade[unique(ntrid),][inj_niss > 15, .N],
+      value = skade[!duplicated(ntrid) & inj_niss > 15, .N],
       subtitle = "Antall NISS > 15",
       icon = icon("heartbeat"),
       color = "blue"
@@ -139,14 +139,16 @@ function(input, output, session) {
   ## valueBox døde innen 30 dager
   output$o_dead <- renderValueBox({
     valueBox(
-      value = intensiv[unique(ntrid)][res_survival == 1, .N],
+      value = intensiv[!duplicated(ntrid) & res_survival == 1, .N],
       subtitle = "Antall registert døde innen 30 dager",
       icon = icon("bed"),
       color = "blue"
     )
   })
 
+
   ## Virksomhetsdata på sykehus
+  ###############################
   output[["virk_sykehus_out"]] <- renderUI({
     helseEnhet <- as.list(unique(resh$Hospital))
     selectInput("virk_sykehus_in", label = NULL, choices = helseEnhet)
