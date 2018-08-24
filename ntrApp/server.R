@@ -158,6 +158,11 @@ function(input, output, session) {
   })
 
 
+  ## Plot Alder og Traume
+  output$plotAlderTraume <- renderPlot({
+    tellAge <- filterData()[, .N, by=list(gender, age)]
+    ggplot(tellAge, aes(age, gender)) + geom_line(stat = "identity")
+  })
 
   ## Virksomhetsdata på sykehus
   ###############################
@@ -174,11 +179,11 @@ function(input, output, session) {
   ## TEST TEST TEST TEST TEST
   #################################
   output$test <- renderPrint({
-    str(filterData())
+    head(filterData())
   })
 
   output$testText <- renderPrint({
-    names(filterData())
+
   })
   #####################################
 

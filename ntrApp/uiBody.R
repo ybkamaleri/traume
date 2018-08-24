@@ -21,6 +21,7 @@ body <- dashboardBody(
     tabItem(tabName = "tab_rapport",
             tags$h3(textOutput("text_enhetNavn")),
             tags$h5(textOutput("text_Dato")),
+            plotOutput("plotAlderTraume"),
             verbatimTextOutput("test"),
             verbatimTextOutput("testText")),
     tabItem(tabName = "tab_virk_rap",
