@@ -17,7 +17,8 @@ body <- dashboardBody(
               fluidRow(
                 box(width = 12,
                     dygraphOutput("traume_dygraph"))
-              ))),
+              )
+            )),
     tabItem(tabName = "tab_rapport",
             fluidPage(
               tags$h3(textOutput("text_enhetNavn")),
@@ -28,15 +29,17 @@ body <- dashboardBody(
                        tabPanel("Tabell", DT::dataTableOutput("tabAT")))
               ),
               fluidRow(
-                tags$h5("Tallene ekluderer missing data for 'alder' og 'kjønn'"),
-                infoBoxOutput("traume_info")
-              ),
-              ## plotOutput("plotAT"),
-              verbatimTextOutput("test"),
-              verbatimTextOutput("testText"))),
+                tags$div(tags$blockquote(textOutput("alderNA"))),
+                infoBoxOutput("traume_info"),
+                infoBoxOutput("mann_info"),
+                infoBoxOutput("kvinne_info")
+              )
+            )),
     tabItem(tabName = "tab_virk_rap",
             h2("Virksomhetsdata"),
-            textOutput("test2"))
+            textOutput("test2"),
+            verbatimTextOutput("test"),
+            verbatimTextOutput("testText"))
 
   )
 )

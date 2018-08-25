@@ -161,6 +161,16 @@ function(input, output, session) {
 
   })
 
+  ## Antall missing alder
+  ########################
+  output$alderNA <- renderText({
+    ageNA <- masterFile[!duplicated(ntrid) & is.na(age), .N]
+    paste0("Missing data for 'alder' i databasen er ", ageNA, " personer og er eksludert i analysen")
+  })
+
+  ## Filtert data til analysen
+  #############################
+
 
 
   ## Plot Alder og Traume
@@ -223,9 +233,21 @@ function(input, output, session) {
 
   })
 
+  ## InfoBox
+  ##################
   output$traume_info <- renderInfoBox({
     data <- filterDataAge()
-    infoBox("Antall traume", uniqueN(data$ntrid))
+    infoBox("Antall traume", uniqueN(data$ntrid), icon = icon("pie-chart"))
+  })
+
+  output$mann_info <- renderInfoBox({
+    data <- filterDataAge()[!duplicated(ntrid) & gender == 1, .N]
+    infoBox("Antall menn", data, icon = icon("male"))
+  })
+
+  output$kvinne_info <- renderInfoBox({
+    data <- filterDataAge()[!duplicated(ntrid) & gender == 2, .N]
+    infoBox("Antall kvinner", data, icon = icon("female"))
   })
 
   ## Virksomhetsdata på sykehus
