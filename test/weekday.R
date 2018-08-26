@@ -32,10 +32,11 @@ valgDato <- akutt[!duplicated(ntrid) & !is.na(dateSykehus) &
                      dateSykehus <= as.Date("2018-01-01", format = "%Y-%m-%d")]
 valgDag <- valgDato[, dag := weekdays(dateSykehus)]
 ntot <- dim(valgDag)[1]
-dager <- valgDag[, (pros = round((.N / ntot) * 100)), by = dag]
+dager <- valgDag[, .(pros = round((.N / ntot) * 100),
+                     n = .N), by = dag]
 
 library(ggplot2)
 dager$dag <- factor(dager$dag, levels = c("mandag", "tirsdag", "onsdag", "torsdag",
                                           "fredag", "lørdag", "søndag"))
 
-ggplot(dager, aes(dag, V1)) + geom_bar(stat = "identity")
+ggplot(dager, aes(dag, pros)) + geom_bar(stat = "identity")
