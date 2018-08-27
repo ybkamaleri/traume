@@ -260,6 +260,13 @@ function(input, output, session) {
     paste0("Virksomhetsrapport for ", navn)
   })
 
+  output$virkDato <- renderText({
+
+    datoFra <- as.Date(sykNavn$datoFra())
+    datoTil <- as.Date(sykNavn$datoTil())
+    paste0("Tidsrom: ", datoFra, " til ", datoTil)
+  })
+
 
   ## TEST TEST TEST TEST TEST
   #################################
