@@ -28,18 +28,20 @@ body <- dashboardBody(
                        tabPanel("Figur", plotOutput("plotAT")),
                        tabPanel("Tabell", DT::dataTableOutput("tabAT")))
               ),
+              tags$h5(textOutput("alderNA")),
+              tags$br(),
               fluidRow(
-                tags$div(tags$blockquote(textOutput("alderNA"))),
+                ## tags$div(tags$blockquote(textOutput("alderNA"))),
                 infoBoxOutput("traume_info"),
                 infoBoxOutput("mann_info"),
                 infoBoxOutput("kvinne_info")
               )
             )),
     tabItem(tabName = "tab_virk_rap",
-            h2("Virksomhetsdata"),
-            textOutput("test2"),
+            tags$h3(textOutput("virkText")),
             verbatimTextOutput("test"),
-            verbatimTextOutput("testText"))
+            verbatimTextOutput("testText")
+            )
 
   )
 )

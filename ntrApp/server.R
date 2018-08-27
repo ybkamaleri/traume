@@ -145,9 +145,9 @@ function(input, output, session) {
     ageFra <- input$alder_in[1]
     ageTil <- input$alder_in[2]
 
-    paste0("Tidsrom er fra ", format(valgDatoFra(), "%d-%m-%Y"),
+    paste0("Valgt tidsrom: ", format(valgDatoFra(), "%d-%m-%Y"),
            " til ", format(valgDatoTil(), "%d-%m-%Y"), ".",
-           " Alder er fra ", ageFra, " til ", ageTil, " år")
+           " Aldersgruppe: ", ageFra, " til ", ageTil, " år")
   })
 
 
@@ -165,7 +165,7 @@ function(input, output, session) {
   ########################
   output$alderNA <- renderText({
     ageNA <- masterFile[!duplicated(ntrid) & is.na(age), .N]
-    paste0("Missing data for 'alder' i databasen er ", ageNA, " personer og er eksludert i analysen")
+    paste0("Missing: ", ageNA, " personer mangler data for alder og er eksludert i analysen")
   })
 
   ## Filtert data til analysen
@@ -252,27 +252,25 @@ function(input, output, session) {
 
   ## Virksomhetsdata på sykehus
   ###############################
-  ## output[["virk_sykehus_out"]] <- renderUI({
-  ##   helseEnhet <- as.factor(unique(resh$Hospital))
-  ##   selectInput("virk_sykehus_in", label = NULL, choices = sort(helseEnhet))
-  ## })
+  sykNavn <-   callModule(ukeDag, "virksomhet", resh)
 
-  ## output$test2 <- renderText({
-  ##   paste0(input$virk_sykehus_in)
-  ## })
+  ## text sykehusnavn
+  output$virkText <- renderText({
+    navn <- sykNavn$value()
+    paste0("Virksomhetsrapport for ", navn)
+  })
 
-  callModule(ukeDag, "virksomhet", resh)
 
   ## TEST TEST TEST TEST TEST
   #################################
   output$test <- renderPrint({
 
-  })
+    })
 
-  output$testText <- renderPrint({
+    output$testText <- renderPrint({
 
-  })
-  #####################################
+    })
+    #####################################
 
-  session$onSessionEnded(stopApp)
+    session$onSessionEnded(stopApp)
 }

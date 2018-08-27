@@ -3,7 +3,7 @@ sidebar <-  dashboardSidebar(width = 250,
                                          menuItem("Generell informasjon",
                                                   tabName = "tab_dashboard",
                                                   icon = icon("info-circle")),
-                                         menuItem("Valg data",
+                                         menuItem("Valg spesifiserte data",
                                                   ## tabName = "tab_valg_data",
                                                   icon = icon("database"), startExpanded = TRUE,
                                                   menuItem("Analysenivå:",
@@ -88,7 +88,9 @@ sidebar <-  dashboardSidebar(width = 250,
                                          ##                   icon = icon("share")))
                                          menuItem("Virksomhetsdata",
                                                   menuItem("Sykehusnavn:",
-                                                           ukeDagInput("virksomhet")))
+                                                           ukeDagInput("virksomhet")),
+                                                  menuItem("Vis rapport", tabName = "tab_virk_rap",
+                                                           icon = icon("share")))
 
                                          )
                              )

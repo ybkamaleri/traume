@@ -1,4 +1,4 @@
-## Input
+
 ukeDagInput <- function(id){
   ns <- NS(id)
 
@@ -10,14 +10,15 @@ ukeDagInput <- function(id){
 
 
 ukeDag <- function(input, output, session, data){
-
   ns <- session$ns
-
   helseEnhet <- as.factor(unique(data$Hospital))
 
+  ## list sykehusnavn
   output$hosp <- renderUI({
-    selectInput("hosp_in", label = NULL, choices = sort(helseEnhet))
+    selectInput(ns("hosp_in"), label = NULL, choices = sort(helseEnhet))
   })
 
-  return(helseEnhet)
+  ## Sykehusnavn
+  return(list(value = reactive({input$hosp_in})))
+
 }
