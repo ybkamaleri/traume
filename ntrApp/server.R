@@ -252,15 +252,16 @@ function(input, output, session) {
 
   ## Virksomhetsdata på sykehus
   ###############################
-  output[["virk_sykehus_out"]] <- renderUI({
-    helseEnhet <- as.factor(unique(resh$Hospital))
-    selectInput("virk_sykehus_in", label = NULL, choices = sort(helseEnhet))
-  })
+  ## output[["virk_sykehus_out"]] <- renderUI({
+  ##   helseEnhet <- as.factor(unique(resh$Hospital))
+  ##   selectInput("virk_sykehus_in", label = NULL, choices = sort(helseEnhet))
+  ## })
 
-  output$test2 <- renderText({
-    paste0(input$virk_sykehus_in)
-  })
+  ## output$test2 <- renderText({
+  ##   paste0(input$virk_sykehus_in)
+  ## })
 
+  callModule(ukeDag, "virksomhet", resh)
 
   ## TEST TEST TEST TEST TEST
   #################################
