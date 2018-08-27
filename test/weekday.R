@@ -1,6 +1,7 @@
-source("data.R")
+source("../ntrApp/data.R")
 
-masterFile[duplicated(ntrid),.N]
+masterFile[duplicated(ntrid),.N] #antall duplicated ntrid
+masterFile[!duplicated(ntrid), .N] #antall unique
 dim(masterFile)
 
 wday <- masterFile[!is.na(dateSykehus), list(wday = weekdays(dateSykehus),
@@ -22,6 +23,7 @@ akkdayN[, .(sum = sum(N))]
 akkdayNA <- akutt[!duplicated(ntrid) & !is.na(dateSykehus), .N, by = dateSykehus]
 akkdayNA[, .(sum = sum(N))]
 
+##### Bruk denne metoden ######
 ## ukedager slik skal gjøres:
 ## - valg tidsrom
 ## - lager new col med dager
@@ -31,12 +33,12 @@ valgDato <- akutt[!duplicated(ntrid) & !is.na(dateSykehus) &
                     dateSykehus >= as.Date("2015-01-01", format = "%Y-%m-%d") &
                      dateSykehus <= as.Date("2018-01-01", format = "%Y-%m-%d")]
 valgDag <- valgDato[, dag := weekdays(dateSykehus)]
-ntot <- dim(valgDag)[1]
-dager <- valgDag[, .(pros = round((.N / ntot) * 100),
-                     n = .N), by = dag]
+ntot <- dim(valgDag)[1] #total dager
+ukeDag <- valgDag[, .(pros = round((.N / ntot) * 100),
+                      n = .N), by = dag]
 
 library(ggplot2)
-dager$dag <- factor(dager$dag, levels = c("mandag", "tirsdag", "onsdag", "torsdag",
-                                          "fredag", "lørdag", "søndag"))
+ukeDag$dag <- factor(ukeDag$dag, levels = c("mandag", "tirsdag", "onsdag", "torsdag",
+                                            "fredag", "lørdag", "søndag"))
 
-ggplot(dager, aes(dag, pros)) + geom_bar(stat = "identity")
+ggplot(ukeDag, aes(dag, pros)) + geom_bar(stat = "identity")
