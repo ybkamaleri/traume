@@ -66,13 +66,15 @@ setnames(skade, grep("Valgte ais-koder", names(skade)), "ais")
 
 ## Master File
 ################
-baseFile <- traume[, c("pt_id_ntr",
-                       "UnitId",
-                       "hosp_serial_num",
-                       "SkjemaGUID",
-                       "PatientAge",
-                       "PatientGender",
-                       "inj_start_date")]
+## slett row med missing ntrid eller pt_id_ntr == ""
+
+baseFile <- traume[pt_id_ntr != "", c("pt_id_ntr",
+                                      "UnitId",
+                                      "hosp_serial_num",
+                                      "SkjemaGUID",
+                                      "PatientAge",
+                                      "PatientGender",
+                                      "inj_start_date")]
 ## henter dato for datovalg til Virksomhetrapport
 sykehusFile <- akutt[, c("HovedskjemaGUID", "ed_arrival_dtg")]
 
@@ -84,8 +86,7 @@ bsFile <- sykehusFile[baseFile, on = c(HovedskjemaGUID = "SkjemaGUID")]
 setkeyv(bsFile, c("HovedskjemaGUID", "UnitId"))
 
 ## tar bort prefix "NTR-" for ntr-ID
-## slett row med missing ntrid eller pt_id_ntr == ""
-bsFile[pt_id_ntr != "", ntrid := as.numeric(gsub("^NTR-", "", pt_id_ntr))]
+bsFile[, ntrid := as.numeric(gsub("^NTR-", "", pt_id_ntr))]
 
 
 ##########################################################################
@@ -120,6 +121,7 @@ setnames(masterFile, c("PatientAge",
 masterFile[, `:=` (timeSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"),
                    dateAll = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"),
                    dateSykehus = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"))]
+
 
 
 ## merge selected variables from masterFile to all files
