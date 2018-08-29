@@ -38,10 +38,6 @@ body <- dashboardBody(
               )
             )),
     tabItem(tabName = "tab_virk_rap",
-            ## tags$h3(textOutput("virkText")),
-            ## tags$h5(textOutput("virkDato")),
-            ## verbatimTextOutput("test"),
-            ## verbatimTextOutput("testText")
             fluidPage(
               tags$h3("Virksomhetsrapport"),
               fluidRow(

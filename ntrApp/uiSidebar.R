@@ -30,14 +30,6 @@ sidebar <-  dashboardSidebar(width = 250,
                                                                           startview = "month",
                                                                           language = "no",
                                                                           weekstart = 1)),
-                                                  ## tags$br(), #blank line
-                                                  ## fluidRow(
-                                                  ##   ## Filter button
-                                                  ##   column(4, offset = 2,
-                                                  ##          actionButton(inputId = "input_filter",
-                                                  ##                       label = "Kjør filter",
-                                                  ##                       icon = icon("arrow-right"))
-                                                  ##          )),
                                                   menuItem("Vis rapport",
                                                            tabName = "tab_rapport",
                                                            icon = icon("share"))
@@ -66,31 +58,6 @@ sidebar <-  dashboardSidebar(width = 250,
                                                   tabName = "tab_ulykke",
                                                   icon = icon("bar-chart")),
                                          tags$hr(), #linje
-                                         ## menuItem("Virksomhetsdata",
-                                         ##          tabName = "virk_hospt",
-                                         ##          icon = icon("h-square"),
-                                         ##          menuItem("Sykehusnavn:",
-                                         ##                   tabName = "virk_sykehus",
-                                         ##                   uiOutput("virk_sykehus_out")
-                                         ##                   ),
-                                         ##          menuItem("Valg tidsrom:",
-                                         ##                   tabName = "virk_periode",
-                                         ##                   dateRangeInput(inputId = "virk_date_in",
-                                         ##                                  label = "Valg dato fra og til",
-                                         ##                                  ## start = Sys.Date() - 30, #alt. min date
-                                         ##                                  end = Sys.Date(),
-                                         ##                                  separator = "til",
-                                         ##                                  format = "dd-mm-yyyy",
-                                         ##                                  startview = "month",
-                                         ##                                  language = "no",
-                                         ##                                  weekstart = 1)),
-                                         ##          menuItem("Vis rapport", tabName = "tab_virk_rap",
-                                         ##                   icon = icon("share")))
-                                         ## menuItem("Virksomhetsdata",
-                                         ##          menuItem("Sykehusnavn:",
-                                         ##                   ukeDagInput("virksomhet")),
-                                         ##          menuItem("Vis rapport", tabName = "tab_virk_rap",
-                                         ##                   icon = icon("share")))
                                          menuItem("Virksomhetsrapport",
                                                   tabName = "tab_virk_rap",
                                                   icon = icon("h-square"))

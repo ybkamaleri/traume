@@ -252,23 +252,9 @@ function(input, output, session) {
 
   ## Virksomhetsdata på sykehus
   ###############################
-  ## sykNavn <-   callModule(ukeDag, "virksomhet", resh)
-
-  ## ## text sykehusnavn
-  ## output$virkText <- renderText({
-  ##   navn <- sykNavn$value()
-  ##   paste0("Virksomhetsrapport for ", navn)
-  ## })
-
-  ## output$virkDato <- renderText({
-
-  ##   datoFra <- as.Date(sykNavn$datoFra())
-  ##   datoTil <- as.Date(sykNavn$datoTil())
-  ##   paste0("Tidsrom: ", datoFra, " til ", datoTil)
-  ## })
-
   valgHosp <- callModule(virk_Mod, "virk", resh)
   callModule(virkPlot, "vplot", valg = valgHosp, data = akutt2)
+
 
 
   ## TEST TEST TEST TEST TEST
