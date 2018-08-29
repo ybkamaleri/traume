@@ -31,3 +31,4 @@ bNA <- function(DT, na = 0){
 ## modules
 ###########
 source("./modules/ukeDag.R")
+source("./modules/virksomhet.R")

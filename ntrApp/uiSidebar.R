@@ -86,11 +86,14 @@ sidebar <-  dashboardSidebar(width = 250,
                                          ##                                  weekstart = 1)),
                                          ##          menuItem("Vis rapport", tabName = "tab_virk_rap",
                                          ##                   icon = icon("share")))
-                                         menuItem("Virksomhetsdata",
-                                                  menuItem("Sykehusnavn:",
-                                                           ukeDagInput("virksomhet")),
-                                                  menuItem("Vis rapport", tabName = "tab_virk_rap",
-                                                           icon = icon("share")))
+                                         ## menuItem("Virksomhetsdata",
+                                         ##          menuItem("Sykehusnavn:",
+                                         ##                   ukeDagInput("virksomhet")),
+                                         ##          menuItem("Vis rapport", tabName = "tab_virk_rap",
+                                         ##                   icon = icon("share")))
+                                         menuItem("Virksomhetsrapport",
+                                                  tabName = "tab_virk_rap",
+                                                  icon = icon("h-square"))
 
                                          )
                              )

@@ -252,21 +252,22 @@ function(input, output, session) {
 
   ## Virksomhetsdata på sykehus
   ###############################
-  sykNavn <-   callModule(ukeDag, "virksomhet", resh)
+  ## sykNavn <-   callModule(ukeDag, "virksomhet", resh)
 
-  ## text sykehusnavn
-  output$virkText <- renderText({
-    navn <- sykNavn$value()
-    paste0("Virksomhetsrapport for ", navn)
-  })
+  ## ## text sykehusnavn
+  ## output$virkText <- renderText({
+  ##   navn <- sykNavn$value()
+  ##   paste0("Virksomhetsrapport for ", navn)
+  ## })
 
-  output$virkDato <- renderText({
+  ## output$virkDato <- renderText({
 
-    datoFra <- as.Date(sykNavn$datoFra())
-    datoTil <- as.Date(sykNavn$datoTil())
-    paste0("Tidsrom: ", datoFra, " til ", datoTil)
-  })
+  ##   datoFra <- as.Date(sykNavn$datoFra())
+  ##   datoTil <- as.Date(sykNavn$datoTil())
+  ##   paste0("Tidsrom: ", datoFra, " til ", datoTil)
+  ## })
 
+  callModule(virksomhet, "virk", resh)
 
   ## TEST TEST TEST TEST TEST
   #################################
