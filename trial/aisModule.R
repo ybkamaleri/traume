@@ -13,7 +13,7 @@ aisModUI <- function(id){
 
   fluidPage(
     fluidRow(
-      box(width = 3,
+      box(width = 4,
           title = "Type ulykke",
           selectInput(inputId = ns("ulykke"),
                       label = NULL,
@@ -27,8 +27,23 @@ aisModUI <- function(id){
                                      "Annen" = 8,
                                      "Alle type ulykker" = 9),
                       selected = 9,
-                      width = '90%')),
-      box(width = 3,
+                      width = '95%'),
+          conditionalPanel(condition = paste0("input['", ns("ulykke"), "'] == 1"),
+                           selectInput(inputId = ns("transTyp"),
+                                       label = "Valg transport type:",
+                                       choices = list("Bil" = 1,
+                                                      "MC" = 2,
+                                                      "Sykkel" = 3,
+                                                      "Båt" = 4,
+                                                      "Tog" = 5,
+                                                      "Fly" = 6,
+                                                      "Moped" = 7,
+                                                      "Annet" = 99,
+                                                      "Ukjent" = 999,
+                                                      "Alle typer" = 50),
+                                       selected = 50,
+                                       width = '95%'))),
+      box(width = 4,
           title = "Kroppsregion",
           selectInput(inputId = ns("kropp"),
                       label = NULL,
@@ -43,8 +58,8 @@ aisModUI <- function(id){
                       selected = 1,
                       multiple = TRUE,
                       width = '99%')),
-      box(width = 3,
-          title = 'Skadegradering untatt grad 1',
+      box(width = 4,
+          title = 'Skadegradering fra 2-6',
           checkboxGroupInput(inputId = "sgrad",
                              label = NULL,
                              choices = list("2" = 2,
@@ -53,10 +68,11 @@ aisModUI <- function(id){
                                             "5" = 5,
                                             "6" = 6),
                              inline = TRUE,
-                             selected = 2
+                             selected = NULL
                              ),
           checkboxInput(inputId = ns("grad1"),
-                        label = " include skadegrad 1 i analysen"))
+                        label = "include skadegrad 1 i analysen",
+                        value = TRUE))
     ))
 }
 
@@ -69,8 +85,8 @@ aisMod <- function(input, output, session, data){
 
 
 ui <- dashboardPage(
-  dashboardHeader(),
-  dashboardSidebar(),
+  dashboardHeader(disable = TRUE),
+  dashboardSidebar(disable = TRUE),
   dashboardBody(
     fluidPage(
       fluidRow(
