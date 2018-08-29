@@ -268,6 +268,7 @@ function(input, output, session) {
   ## })
 
   valgHosp <- callModule(virk_Mod, "virk", resh)
+  callModule(virkPlot, "vplot", valg = valgHosp, data = akutt2)
 
 
   ## TEST TEST TEST TEST TEST

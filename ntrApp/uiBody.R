@@ -42,9 +42,13 @@ body <- dashboardBody(
             ## tags$h5(textOutput("virkDato")),
             ## verbatimTextOutput("test"),
             ## verbatimTextOutput("testText")
-            virk_ModUI("virk")
-
-            )
+            fluidPage(
+              tags$h3("Virksomhetsrapport"),
+              fluidRow(
+                virk_ModUI("virk")),
+              fluidRow(
+                virkPlotUI("vplot"))
+            ))
 
   )
 )

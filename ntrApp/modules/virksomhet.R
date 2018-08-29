@@ -4,8 +4,8 @@
 virk_ModUI <- function(id){
 
   ns <- NS(id)
-
-  fluidRow(
+  fluidPage(
+    fluidRow(
     ## Valg hospital
     box(width = 3,
         height = 100,
@@ -21,14 +21,14 @@ virk_ModUI <- function(id){
         solidHeader = TRUE,
         dateRangeInput(inputId = ns("virk_date_in"),
                        label = NULL,
-                       start = Sys.Date() - 30, #alt. min date
+                       start = Sys.Date() - 360, #alt. min date
                        end = Sys.Date(),
                        separator = "til",
                        format = "dd-mm-yyyy",
                        startview = "month",
                        language = "no",
                        weekstart = 1))
-  )
+    ))
 }
 
 virk_Mod <- function(input, output, session, resh) {
