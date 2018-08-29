@@ -78,8 +78,9 @@ aisModUI <- function(id){
 
 aisMod <- function(input, output, session, data){
 
+  dataNTR <- data()[, list(ntrid, Hospital, HF, RHF, age, gender)]
 
-
+  return(dataNTR)
 }
 
 
@@ -97,7 +98,7 @@ ui <- dashboardPage(
 
 
 server <- function(input, output, session){
-  callModule(aisMod, "ais")
+  callModule(aisMod, "ais", masterFile)
 
   session$onSessionEnded(stopApp)
 }
