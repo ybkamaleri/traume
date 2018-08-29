@@ -29,7 +29,7 @@ aisModUI <- function(id){
                       selected = 9,
                       width = '95%'),
           conditionalPanel(condition = paste0("input['", ns("ulykke"), "'] == 1"),
-                           selectInput(inputId = ns("transTyp"),
+                           selectInput(inputId = ns("transport"),
                                        label = "Valg transport type:",
                                        choices = list("Bil" = 1,
                                                       "MC" = 2,
@@ -60,7 +60,7 @@ aisModUI <- function(id){
                       width = '99%')),
       box(width = 4,
           title = 'Skadegradering fra 2-6',
-          checkboxGroupInput(inputId = "sgrad",
+          checkboxGroupInput(inputId = ns("skadegrad"),
                              label = NULL,
                              choices = list("2" = 2,
                                             "3" = 3,
@@ -70,7 +70,7 @@ aisModUI <- function(id){
                              inline = TRUE,
                              selected = NULL
                              ),
-          checkboxInput(inputId = ns("grad1"),
+          checkboxInput(inputId = ns("skadegrad1"),
                         label = "include skadegrad 1 i analysen",
                         value = TRUE))
     ))
