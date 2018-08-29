@@ -84,7 +84,9 @@ bsFile <- sykehusFile[baseFile, on = c(HovedskjemaGUID = "SkjemaGUID")]
 setkeyv(bsFile, c("HovedskjemaGUID", "UnitId"))
 
 ## tar bort prefix "NTR-" for ntr-ID
-bsFile[, ntrid := as.numeric(gsub("^NTR-", "", pt_id_ntr))]
+## slett row med missing ntrid eller pt_id_ntr == ""
+bsFile[pt_id_ntr != "", ntrid := as.numeric(gsub("^NTR-", "", pt_id_ntr))]
+
 
 ##########################################################################
 ## OBS!!! -- Dette skal slettes når man kan trekke ut de fra MRS direkte
