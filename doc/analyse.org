@@ -36,13 +36,13 @@ Ting må gjøres for analsyen
 - [ ] Beregn eg. vanligste skade ved en vist type ulykke
 - [ ] Lage AIS fane uten ulykketype eller skade mekanismen
 - [ ] Beholder duplikater
-* Analyse ønsker [2/12]
+* Analyse ønsker [5/12]
 De er basert på diskusjonen med NTR og bestillingsdokument
 - [X] Dashboard med ISS > 15
 - [X] Død etter 30 dager (som det er nå)
-- [ ] Filter for dato Nasjonal - inj_start_date (Traume skjema)
-- [ ] Filter for dato Sykehus - ed_arrival_dtg (Akutt skjema)
-- [ ] Antall fordelt på tid - ukedag (virksomhetsdata)
+- [X] Filter for dato Nasjonal - inj_start_date (Traume skjema)
+- [X] Filter for dato Sykehus - ed_arrival_dtg (Akutt skjema)
+- [X] Antall fordelt på tid - ukedag (virksomhetsdata)
 - [ ] Ulykke og pre-hospital skjema fra sykehus 1 (hosp_serial_num fra Traume Skjema)
 - [ ] Filter for Alder (traumeskjema "PatientAge")
 - [ ] Filter for kjønn (traumeskjema "PatientGender" 1=Mann 2=Kvinne)
@@ -57,7 +57,7 @@ De er basert på diskusjonen med NTR og bestillingsdokument
 - Andre skjema har /HovedskjemaGUID/ som er nøkkelen mot Traumeskjema
 ** UnitId
 - Alle skjemaer har /UnitId/. Filtering for Sykehus, RHF og HF basert på
-  /HealthUnitId/ til hvert skjema
+  /UnitId/ til hvert skjema
 ** hosp_serial_num fra traumeskjema
 - hva skal det brukers til?
 * Outline
@@ -75,7 +75,6 @@ Dashboard som gir informasjon om:
 ** Periode
 - Valg av dato fra og til
 - Valg av dato fra og til for sykehus
-** Valg kjønn
 ** Valg Alder
 ** AIS
 ** Ulykke

@@ -151,13 +151,13 @@ function(input, output, session) {
   })
 
 
-  ## Filter for og alder
-  ##########################
+  ## Filter alder for data som er allerede filtert for tidsrom
+  ##############################################################
   filterDataAge <- reactive({
     ageFra <- input$alder_in[1]
     ageTil <- input$alder_in[2]
 
-    data <- filterData()[!duplicated(ntrid) & age >= ageFra & age <= ageTil]
+    filterData()[!duplicated(ntrid) & age >= ageFra & age <= ageTil]
 
   })
 
@@ -168,15 +168,15 @@ function(input, output, session) {
     paste0("Missing: ", ageNA, " personer mangler data for alder og er eksludert i analysen")
   })
 
-  ## Filtert data til analysen
-  #############################
-
+  ## Filtert data for tidsrom og alder
+  #####################################
+  ## observe({data <- filterDataAge()})
 
 
   ## Plot Alder og Traume
   #########################
   output$plotAT <- renderPlot({
-    ## reactive data
+    ## Reactive data
     data <- filterDataAge()
 
     ## Renser data - bort med NA og -1
