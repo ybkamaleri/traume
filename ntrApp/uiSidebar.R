@@ -60,7 +60,10 @@ sidebar <-  dashboardSidebar(width = 250,
                                          tags$hr(), #linje
                                          menuItem("Virksomhetsrapport",
                                                   tabName = "tab_virk_rap",
-                                                  icon = icon("h-square"))
+                                                  icon = icon("h-square")),
+                                         menuItem("TEST",
+                                                  tabName = "test",
+                                                  icon = icon("wrench"))
 
                                          )
                              )

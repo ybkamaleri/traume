@@ -260,8 +260,8 @@ function(input, output, session) {
   ## TEST TEST TEST TEST TEST
   #################################
   output$test <- renderPrint({
-
-    })
+    str(filterDataAge())
+  })
 
     output$testText <- renderPrint({
 

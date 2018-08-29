@@ -44,7 +44,13 @@ body <- dashboardBody(
                 virk_ModUI("virk")),
               fluidRow(
                 virkPlotUI("vplot"))
-            ))
+            )),
+    ## TEST
+    tabItem(tabName = "test",
+            tags$h3("Test side"),
+            fluidPage(
+              fluidRow(
+                verbatimTextOutput("test"))))
 
   )
 )
