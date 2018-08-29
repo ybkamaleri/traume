@@ -132,3 +132,7 @@ skade[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newNam
 ## setkey
 #####################
 setkey(masterFile, ntrid)
+
+## akutt med HF, RHF, Hospital
+##############################
+akutt2 <- akutt[resh, on = c(UnitId = "reshid")]

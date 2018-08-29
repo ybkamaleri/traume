@@ -42,7 +42,8 @@ body <- dashboardBody(
             ## tags$h5(textOutput("virkDato")),
             ## verbatimTextOutput("test"),
             ## verbatimTextOutput("testText")
-            virksomhetUI("virk")
+            virk_ModUI("virk")
+
             )
 
   )

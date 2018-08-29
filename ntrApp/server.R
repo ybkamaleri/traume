@@ -267,7 +267,8 @@ function(input, output, session) {
   ##   paste0("Tidsrom: ", datoFra, " til ", datoTil)
   ## })
 
-  callModule(virksomhet, "virk", resh)
+  valgHosp <- callModule(virk_Mod, "virk", resh)
+
 
   ## TEST TEST TEST TEST TEST
   #################################
