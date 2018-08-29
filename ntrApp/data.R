@@ -73,10 +73,11 @@ baseFile <- traume[, c("pt_id_ntr",
                        "PatientAge",
                        "PatientGender",
                        "inj_start_date")]
+## henter dato for datovalg til Virksomhetrapport
 sykehusFile <- akutt[, c("HovedskjemaGUID", "ed_arrival_dtg")]
 
-## Beholder alle i baseFile. Row i akuttfil som ikke har kombling til SkjemaGUID i
-## traume slettes
+## Merge begge filer ved å beholder alle i baseFile. Row i akuttfil som ikke har
+## kombling til SkjemaGUID i traume blir slettes ved koblingen til bsFile
 bsFile <- sykehusFile[baseFile, on = c(HovedskjemaGUID = "SkjemaGUID")]
 
 ## set key for bsFile (base og sykehus data)
