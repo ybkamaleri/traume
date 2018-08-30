@@ -156,11 +156,11 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
 
 
 
-  ### First filter Data for ulykketype
+  ### Ulykketype valgte ntrid
   ###################################
   ## Hvis "Alle" er valg så velges hele data
 
-  ulykkeFData  <- reactive({
+  ulykkeID  <- reactive({
 
     ## Valg ulykketype annen enn alle
     if (as.numeric(input$ulykke) != 9){
@@ -175,27 +175,26 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
                       "acc_fire_inhal",
                       "acc_other")
 
-      mainData[get(kode) == 1]
+      mainData[get(kode) == 1, list(ntrid = ntrid)]
     } else {
       ## Alle type ulykke
-      ## as.numeric(input$ulykke)
-      mainData
+      mainData[, list(ntrid = ntrid)]
     }
   })
 
 
-  ## Second filter for transport
-  ###############################
-  transFData <- reactive({
+  ## Transport type - valgte ntrid
+  #################################
+  transID <- reactive({
 
     varValg <- "acc_trsp_rd_type"
-
+    ## Alle transport
     if (as.numeric(input$transport) == 50){
       kode <- c(1:7, 99, 999)
-      ulykkeFData()[get(varValg) %in% kode]
+      mainData[get(varValg) %in% kode, list(ntrid = ntrid)]
     } else {
       kode <- as.numeric(input$transport)
-      ulykkeFData()[get(varValg) %in% kode]
+      mainData[get(varValg) %in% kode, list(ntrid = ntrid)]
     }
   })
 
@@ -221,7 +220,7 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
     ## setkey(skadeData, ntrid)
     ## skadeData[duplicated(ntrid) | duplicated(ntrid, fromLast = TRUE)]
     ## as.numeric(input$kropp)
-    str(transFData())
+    ulykkeID()
   })
 
   output$test2 <- renderPrint({
