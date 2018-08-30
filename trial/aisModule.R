@@ -7,7 +7,7 @@ library(shinydashboard)
 library(data.table)
 library(ggplot2)
 
-## source("~/Git-work/traume/ntrApp/data.R")
+source("~/Git-work/traume/ntrApp/data.R")
 
 ## Abdomen Tilleggsuttrekk
 exAbdomen <- factor(c( "Leverskader", "Miltskader"))
@@ -209,10 +209,39 @@ aisMod <- function(input, output, session, data, skadeData, ulykkeData){
   })
 
 
-  ## Kroppsregion
-  ###############
+  ## Kroppsregion og skadegradering
+  #################################
+  aisID <- reactive({
+    ## kroppsregion
+    if(as.numeric(input$kropp) == 10){
+      kode <- 1:9
+    } else {
+      kode <- as.numeric(input$kropp)
+    }
+
+    ##Skadegradering
+    if(input$skadegrad1 == FALSE){
+      skadeData <- copy(mainData)
+      ## slett alle med skadegrad 1
+      skadeData[mainData[, grep("[23456]$", toString(unlist(strsplit(aiskode, split = ","))), value = TRUE), by = ntrid], on = "ntrid", aiskode1 := i.V1]
+
+    } else {
+      skadeData <- copy(mainData)
+    }
+
+  })
 
 
+  ## skadeGrad()[get(accKode) == 1 & !duplicated(ntrid) & !is.na(ntrid),
+  ##             list(ja = ifelse(sum(grepl(
+  ##               paste0("^", paste0("[", body, "]"),
+  ##                      ".*[", paste(gradKode, collapse = ""), "]$"),
+  ##               as.character(unlist(
+  ##                 strsplit(aiskode, split = ","))))) != 0, 1, 0),
+  ##               Sykehus = i.HealthUnitName,
+  ##               HF = HF,
+  ##               RHF = RHF), #bruk i.HealthUnitName som kommer fra skadeskjema - spør dem om dette er riktig
+  ##             by = c("ntrid")]
 
 
   ### Data
@@ -230,7 +259,7 @@ aisMod <- function(input, output, session, data, skadeData, ulykkeData){
     ## setkey(skadeData, ntrid)
     ## skadeData[duplicated(ntrid) | duplicated(ntrid, fromLast = TRUE)]
     ## as.numeric(input$kropp)
-    head(transID())
+    aisID()
   })
 
   output$test2 <- renderPrint({
