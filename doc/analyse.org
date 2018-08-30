@@ -78,5 +78,6 @@ Dashboard som gir informasjon om:
 ** Valg Alder
 ** AIS
 ** Ulykke
-* Påminnelse [0/1]
-- [ ] Tar bort NA i dataset i data.R
+* Påminnelse [1/2]
+- [X] Tar bort NA i dataset i data.R
+- [ ] Text for hver tab hva dataene gjelder
