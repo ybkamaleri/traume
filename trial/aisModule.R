@@ -108,12 +108,13 @@ aisModUI <- function(id){
 ## Variablenavn i data uttrekk
 varUlykkeType <- c("ntrid",
                    "acc_transport",
+                   "acc_trsp_rd_type", #transport typer
                    "acc_fall",
                    "acc_violence",
                    "acc_self_inflict",
                    "acc_work",
                    "acc_other",
-                   "acc_sprt_recreat",
+                   "acc_sprt_recreat", #sport og fritid
                    "acc_fire_inhal")
 
 
