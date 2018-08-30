@@ -8,6 +8,13 @@ library(ggplot2)
 
 ## source("~/Git-work/traume/ntrApp/data.R")
 
+## Abdomen Tilleggsuttrekk
+exAbdomen <- factor(c( "Leverskader", "Miltskader"))
+
+## Ryggsøyle tillegguttrekk
+exRygg <- factor(c("cervicalcolumna","lumbalcolumna", "thoracalcolumna"))
+
+
 aisModUI <- function(id){
   ns <- NS(id)
 
@@ -15,6 +22,7 @@ aisModUI <- function(id){
     fluidRow(
       box(width = 4,
           title = "Type ulykke",
+          status = "primary",
           selectInput(inputId = ns("ulykke"),
                       label = NULL,
                       choices = list("Transport" = 1,
@@ -26,8 +34,8 @@ aisModUI <- function(id){
                                      "Brann og inhalasjon" = 7,
                                      "Annen" = 8,
                                      "Alle type ulykker" = 9),
-                      selected = 9,
-                      width = '95%'),
+                      selected = 9
+                      ),
           conditionalPanel(condition = paste0("input['", ns("ulykke"), "'] == 1"),
                            selectInput(inputId = ns("transport"),
                                        label = "Valg transport type:",
@@ -41,10 +49,11 @@ aisModUI <- function(id){
                                                       "Annet" = 99,
                                                       "Ukjent" = 999,
                                                       "Alle typer" = 50),
-                                       selected = 50,
-                                       width = '95%'))),
+                                       selected = 50
+                                       ))),
       box(width = 4,
           title = "Kroppsregion",
+          status = "primary",
           selectInput(inputId = ns("kropp"),
                       label = NULL,
                       choices = list("Head" = 1,
@@ -52,14 +61,27 @@ aisModUI <- function(id){
                                      "Neck" = 3,
                                      "Thorax" = 4,
                                      "Abdomen" = 5,
+                                     "Ryggsøyle" = 6,
                                      "Upper extremity" = 7,
                                      "Lower extremity" = 8,
-                                     "External and other" = 9),
-                      selected = 1,
-                      multiple = TRUE,
-                      width = '99%')),
+                                     "External and other" = 9,
+                                     "Alle kroppsregioner" = 10),
+                      selected = 10
+                      ),
+          ## Tillegg abdomen
+          conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 5"),
+                           selectInput(inputId = ns("tillegg_abdomen"),
+                                       label = "Tilleggsuttrekk:",
+                                       choices = exAbdomen)),
+          ## Tillegg Ryggsøyle
+          conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 6"),
+                           selectInput(inputId = ns("tillegg_rygg"),
+                                       label = "Tilleggsuttrekk:",
+                                       choices = exRygg))
+          ),
       box(width = 4,
           title = 'Skadegradering fra 2-6',
+          status = "primary",
           checkboxGroupInput(inputId = ns("skadegrad"),
                              label = NULL,
                              choices = list("2" = 2,
@@ -73,14 +95,30 @@ aisModUI <- function(id){
           checkboxInput(inputId = ns("skadegrad1"),
                         label = "include skadegrad 1 i analysen",
                         value = TRUE))
+    ),
+    fluidRow(
+      verbatimTextOutput(ns("test"))
     ))
 }
 
 aisMod <- function(input, output, session, data){
 
-  dataNTR <- data()[, list(ntrid, Hospital, HF, RHF, age, gender)]
+  ## ##Reactive input
+  ## ais <- reactiveValues()
 
-  return(dataNTR)
+  ## observe(
+  ##   ais$data <- data()[, list(ntrid, Hospital, HF, RHF, age, gender)]
+  ## )
+  ## return(ais)
+
+  valgData <- data[, list(ntrid, Hospital, HF, RHF, age, gender)]
+
+
+  output$test <- renderPrint({
+
+    str(valgData)
+  })
+
 }
 
 
