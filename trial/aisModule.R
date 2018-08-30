@@ -151,7 +151,9 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
   mergeData <- ulykkeData[skadeData, on = "ntrid"]
 
   ## Merge med subset data fra menyen
-  mainData <- valgData[mergeData, on = "ntrid"]
+  rowMainData <- valgData[mergeData, on = "ntrid"]
+  mainData <- rowMainData[!duplicated(ntrid)]
+
 
 
   ### First filter Data for ulykketype
