@@ -120,7 +120,7 @@ varUlykkeType <- c("ntrid",
                    "acc_fire_inhal")
 
 
-aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
+aisMod <- function(input, output, session, data, skadeData, ulykkeData){
 
   ## ##Reactive input
   ## ais <- reactiveValues()
@@ -130,17 +130,21 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
   ## )
   ## return(ais)
 
-
+  ## Henter data som er filtert for helse enhet, dato og alder
   valgData <- data[, list(ntrid, Hospital, HF, RHF, age, gender), key = .(ntrid)]
 
+  ## Velg ntrid fra filtert data og lage liste som vector
+  valgID <- valgData[["ntrid"]]
+
   ## select only ais and ntr skade fil
-  skadeData <- skade[ntrid %in% minNTR:maxNTR, list(ntrid, ais), key = .(ntrid)]
+  skadeData <- skade[ntrid %in% valgID, list(ais), key = .(ntrid)]
+
   ## Merge alle koder fra samme ntrid
   skadeData[skadeData[, toString(unlist(strsplit(ais, split = ","))),
                       by = ntrid], on = "ntrid", aiskode := i.V1]
 
   ## select ulykketype variabler fra ulykke data
-  ulykkeData <- ulykke[ntrid %in% minNTR:maxNTR, varUlykkeType,
+  ulykkeData <- ulykke[ntrid %in% valgID, varUlykkeType,
                        with = FALSE, key = .(ntrid)]
   ## Convert code to numeric
   for (i in varUlykkeType){
@@ -152,6 +156,8 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
 
   ## Merge med subset data fra menyen
   rowMainData <- valgData[mergeData, on = "ntrid"]
+
+  ## Slett alle duplicated ntrid siden alle aiskoder er merged
   mainData <- rowMainData[!duplicated(ntrid)]
 
 
@@ -175,10 +181,12 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
                       "acc_fire_inhal",
                       "acc_other")
 
-      mainData[get(kode) == 1, list(ntrid = ntrid)]
+      listID <- mainData[get(kode) == 1, list(ntrid = ntrid)]
+      listID[["ntrid"]] #get id list as vector
     } else {
       ## Alle type ulykke
-      mainData[, list(ntrid = ntrid)]
+      listID <- mainData[, list(ntrid = ntrid)]
+      listID[["ntrid"]] #get id list as vector
     }
   })
 
@@ -191,10 +199,12 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
     ## Alle transport
     if (as.numeric(input$transport) == 50){
       kode <- c(1:7, 99, 999)
-      mainData[get(varValg) %in% kode, list(ntrid = ntrid)]
+      listID <- mainData[get(varValg) %in% kode, list(ntrid = ntrid)]
+      listID[["ntrid"]] #get id list as vector
     } else {
       kode <- as.numeric(input$transport)
-      mainData[get(varValg) %in% kode, list(ntrid = ntrid)]
+      listID <- mainData[get(varValg) %in% kode, list(ntrid = ntrid)]
+      listID[["ntrid"]]
     }
   })
 
@@ -220,7 +230,7 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
     ## setkey(skadeData, ntrid)
     ## skadeData[duplicated(ntrid) | duplicated(ntrid, fromLast = TRUE)]
     ## as.numeric(input$kropp)
-    ulykkeID()
+    head(transID())
   })
 
   output$test2 <- renderPrint({
@@ -253,7 +263,7 @@ ui <- dashboardPage(
 
 
 server <- function(input, output, session){
-  callModule(aisMod, "ais", masterFile, skade, ulykke, 600, 4000)
+  callModule(aisMod, "ais", masterFile, skade, ulykke)
 
   session$onSessionEnded(stopApp)
 }
