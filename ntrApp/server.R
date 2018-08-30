@@ -250,6 +250,9 @@ function(input, output, session) {
     infoBox("Antall kvinner", data, icon = icon("female"))
   })
 
+  ## AIS Skadegradering
+  aisGrad <- callModule(aisMod, "ais", filterDataAge)
+
   ## Virksomhetsdata på sykehus
   ###############################
   valgHosp <- callModule(virk_Mod, "virk", resh)
@@ -260,13 +263,13 @@ function(input, output, session) {
   ## TEST TEST TEST TEST TEST
   #################################
   output$test <- renderPrint({
-    str(filterDataAge())
+    str(aisGrad$data)
   })
 
-    output$testText <- renderPrint({
+  output$testText <- renderPrint({
 
-    })
-    #####################################
+  })
+  #####################################
 
-    session$onSessionEnded(stopApp)
+  session$onSessionEnded(stopApp)
 }

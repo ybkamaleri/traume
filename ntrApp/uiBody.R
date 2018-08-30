@@ -37,6 +37,19 @@ body <- dashboardBody(
                 infoBoxOutput("kvinne_info")
               )
             )),
+    tabItem(tabName = "tab_ulykke",
+            tags$h3("Ulykke data")
+            ),
+    tabItem(tabName = "tab_akutt",
+            tags$h3("Akutt data")
+            ),
+    tabItem(tabName = "tab_intensiv",
+            tags$h3("Intensiv data")
+            ),
+    ## AIS Skadegradering
+    tabItem(tabName = "tab_skade",
+            aisModUI("ais")
+            ),
     tabItem(tabName = "tab_virk_rap",
             fluidPage(
               tags$h3("Virksomhetsrapport"),
