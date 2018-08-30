@@ -98,11 +98,16 @@ aisModUI <- function(id){
     ),
     fluidRow(
       verbatimTextOutput(ns("test"))
-    ))
+    ),
+    fluidRow(
+      verbatimTextOutput(ns("test2"))
+    )
+  )
 }
 
 ## Variablenavn i data uttrekk
-varUlykkeType <- c("acc_transport",
+varUlykkeType <- c("ntrid",
+                   "acc_transport",
                    "acc_fall",
                    "acc_violence",
                    "acc_self_inflict",
@@ -112,7 +117,7 @@ varUlykkeType <- c("acc_transport",
                    "acc_fire_inhal")
 
 
-aisMod <- function(input, output, session, data, skade, ulykke){
+aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
 
   ## ##Reactive input
   ## ais <- reactiveValues()
@@ -122,12 +127,49 @@ aisMod <- function(input, output, session, data, skade, ulykke){
   ## )
   ## return(ais)
 
-  valgData <- data[, list(ntrid, Hospital, HF, RHF, age, gender)]
+
+  valgData <- data[, list(ntrid, Hospital, HF, RHF, age, gender), key = .(ntrid)]
+
+  ## select only ais and ntr skade fil
+  skadeData <- skade[ntrid %in% minNTR:maxNTR, list(ntrid, ais), key = .(ntrid)]
+  ## Merge alle koder fra samme ntrid
+  skadeData[skadeData[, toString(unlist(strsplit(ais, split = ","))),
+                      by = ntrid], on = "ntrid", aiskode := i.V1]
+
+  ## select ulykketype variabler fra ulykke data
+  ulykkeData <- ulykke[ntrid %in% minNTR:maxNTR, varUlykkeType,
+                       with = FALSE, key = .(ntrid)]
+  ## Convert code to numeric
+  for (i in varUlykkeType){
+    set(ulykkeData, j = i, value = as.numeric(ulykkeData[[i]]))
+  }
+
+  ## Merge skade og ulykke data
+  mergeData <- ulykkeData[skadeData, on = "ntrid"]
+
+  ## Merge med subset data fra menyen
+  mainData <- valgData[mergeData, on = "ntrid"]
 
 
   output$test <- renderPrint({
+    dim(mergeData)
 
-    str(valgData)
+    ## setkey(skadeData, ntrid)
+    ## skadeData[duplicated(ntrid) | duplicated(ntrid, fromLast = TRUE)]
+
+  })
+
+  output$test2 <- renderPrint({
+    sk <- dim(skadeData)
+    ul <- dim(ulykkeData)
+    all <- dim(mainData)
+    ba <- mainData[!duplicated(ntrid), .N]
+
+    paste0("skade: ", sk,
+           " ulykke: ", ul,
+           " master: ", all,
+           " unique: ", ba)
+
   })
 
 }
@@ -147,7 +189,7 @@ ui <- dashboardPage(
 
 
 server <- function(input, output, session){
-  callModule(aisMod, "ais", skade, ulykke, 200, 4000)
+  callModule(aisMod, "ais", masterFile, skade, ulykke, 600, 900)
 
   session$onSessionEnded(stopApp)
 }
