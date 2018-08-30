@@ -262,12 +262,14 @@ function(input, output, session) {
 
   ## TEST TEST TEST TEST TEST
   #################################
-  output$test <- renderPrint({
+  output$test2 <- renderPrint({
     str(aisGrad$data)
+    dim(aisGrad$data)
   })
 
-  output$testText <- renderPrint({
-
+  output$test1 <- renderPrint({
+    data <- aisGrad$data
+    data[, .N, by = .(Hospital, RHF, HF)]
   })
   #####################################
 

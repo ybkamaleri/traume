@@ -63,7 +63,10 @@ body <- dashboardBody(
             tags$h3("Test side"),
             fluidPage(
               fluidRow(
-                verbatimTextOutput("test"))))
+                verbatimTextOutput("test1")),
+              fluidRow(
+                verbatimTextOutput("test2"))
+            ))
 
   )
 )
