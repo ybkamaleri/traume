@@ -172,10 +172,11 @@ function(input, output, session) {
   ## Filtert data med ntrid for tidsrom og alder ##
   #################################################
   valg <- reactiveValues()
+   ## maxNTRID
   observe(
     valg$maxAge <- max(filterDataAge()$ntrid)
   )
-
+  ## minNTRID
   observe(
     valg$minAge <- min(filterDataAge()$ntrid)
   )
