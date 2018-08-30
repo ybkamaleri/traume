@@ -168,10 +168,17 @@ function(input, output, session) {
     paste0("Missing: ", ageNA, " personer mangler data for alder og er eksludert i analysen")
   })
 
-  ## Filtert data for tidsrom og alder
-  #####################################
-  ## observe({data <- filterDataAge()})
+  #################################################
+  ## Filtert data med ntrid for tidsrom og alder ##
+  #################################################
+  valg <- reactiveValues()
+  observe(
+    valg$maxAge <- max(filterDataAge()$ntrid)
+  )
 
+  observe(
+    valg$minAge <- min(filterDataAge()$ntrid)
+  )
 
   ## Plot Alder og Traume
   #########################
@@ -194,7 +201,9 @@ function(input, output, session) {
     ageMK[, alle := mann + kvinne, by = age]
 
     ## konverterer data til long
-    dataLongAK <-melt(ageMK, id.vars="age", measure.vars=c("mann","kvinne","alle"), variable.name="gender", value.name="n")
+    dataLongAK <-melt(ageMK, id.vars="age",
+                      measure.vars=c("mann","kvinne","alle"),
+                      variable.name="gender", value.name="n")
 
     ## plot with long data
     plotAT <- ggplot(dataLongAK, aes(age, n, group = gender, color = gender)) +
@@ -263,8 +272,9 @@ function(input, output, session) {
   ## TEST TEST TEST TEST TEST
   #################################
   output$test2 <- renderPrint({
-    str(aisGrad$data)
-    dim(aisGrad$data)
+    ## str(aisGrad$data)
+    ## dim(aisGrad$data)
+    paste0("min ntrid ",valg$minAge, " og max ntrid ", valg$maxAge)
   })
 
   output$test1 <- renderPrint({
