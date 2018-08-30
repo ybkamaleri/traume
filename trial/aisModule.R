@@ -34,7 +34,7 @@ aisModUI <- function(id){
                                      "Sport og fritid" = 6,
                                      "Brann og inhalasjon" = 7,
                                      "Annen" = 8,
-                                     "Alle type ulykker" = 9),
+                                     "Alle" = 9),
                       selected = 9
                       ),
           conditionalPanel(condition = paste0("input['", ns("ulykke"), "'] == 1"),
@@ -106,7 +106,8 @@ aisModUI <- function(id){
   )
 }
 
-## Variablenavn i data uttrekk
+
+## Liste av variablenavn i ullyke datasett som skal plukkes ut
 varUlykkeType <- c("ntrid",
                    "acc_transport",
                    "acc_trsp_rd_type", #transport typer
@@ -153,25 +154,41 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
   mainData <- valgData[mergeData, on = "ntrid"]
 
 
-  ### Filter for ulykketype
+  ### Filter Data for ulykketype
   ###################################
-  UlykkeType <- reactive({
+  ## Hvis "Alle" er valg så velges hele data
 
-    if (as.numeric(input$ulykke) == 9){
-      1:8
+  ukodeInput <- reactive({
+
+    ## Valg ulykketype annen enn alle
+    if (as.numeric(input$ulykke) != 9){
+
+      switch(as.numeric(input$ulykke),
+             "acc_transport",
+             "acc_fall",
+             "acc_violence",
+             "acc_self_inflict",
+             "acc_work",
+             "acc_sprt_recreat",
+             "acc_fire_inhal",
+             "acc_other")
     } else {
+      ## Alle type ulykke
       as.numeric(input$ulykke)
     }
   })
+
+
+
 
   ## Filter for transport
   ########################
   TransportType <- reactive({
 
     if (as.numeric(input$transport) == 50){
-     c(1:7, 99, 999)
+      c(1:7, 99, 999)
     } else {
-     as.numeric(input$transport)
+      as.numeric(input$transport)
     }
   })
 
@@ -187,7 +204,7 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
   output$test <- renderPrint({
     ## setkey(skadeData, ntrid)
     ## skadeData[duplicated(ntrid) | duplicated(ntrid, fromLast = TRUE)]
-    str(TransportType())
+    ukodeInput()
   })
 
   output$test2 <- renderPrint({
