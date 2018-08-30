@@ -101,7 +101,18 @@ aisModUI <- function(id){
     ))
 }
 
-aisMod <- function(input, output, session, data){
+## Variablenavn i data uttrekk
+varUlykkeType <- c("acc_transport",
+                   "acc_fall",
+                   "acc_violence",
+                   "acc_self_inflict",
+                   "acc_work",
+                   "acc_other",
+                   "acc_sprt_recreat",
+                   "acc_fire_inhal")
+
+
+aisMod <- function(input, output, session, data, skade, ulykke){
 
   ## ##Reactive input
   ## ais <- reactiveValues()
@@ -136,7 +147,7 @@ ui <- dashboardPage(
 
 
 server <- function(input, output, session){
-  callModule(aisMod, "ais", masterFile)
+  callModule(aisMod, "ais", skade, ulykke, 200, 4000)
 
   session$onSessionEnded(stopApp)
 }
