@@ -49,7 +49,7 @@ aisModUI <- function(id){
                                                       "Moped" = 7,
                                                       "Annet" = 99,
                                                       "Ukjent" = 999,
-                                                      "Alle typer" = 50),
+                                                      "Alle" = 50),
                                        selected = 50
                                        ))),
       box(width = 4,
@@ -66,7 +66,7 @@ aisModUI <- function(id){
                                      "Upper extremity" = 7,
                                      "Lower extremity" = 8,
                                      "External and other" = 9,
-                                     "Alle kroppsregioner" = 10),
+                                     "Alle" = 10),
                       selected = 10
                       ),
           ## Tillegg abdomen
@@ -154,43 +154,57 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
   mainData <- valgData[mergeData, on = "ntrid"]
 
 
-  ### Filter Data for ulykketype
+  ### First filter Data for ulykketype
   ###################################
   ## Hvis "Alle" er valg så velges hele data
 
-  ukodeInput <- reactive({
+  ulykkeFData  <- reactive({
 
     ## Valg ulykketype annen enn alle
     if (as.numeric(input$ulykke) != 9){
 
-      switch(as.numeric(input$ulykke),
-             "acc_transport",
-             "acc_fall",
-             "acc_violence",
-             "acc_self_inflict",
-             "acc_work",
-             "acc_sprt_recreat",
-             "acc_fire_inhal",
-             "acc_other")
+      kode <-  switch(as.numeric(input$ulykke),
+                      "acc_transport",
+                      "acc_fall",
+                      "acc_violence",
+                      "acc_self_inflict",
+                      "acc_work",
+                      "acc_sprt_recreat",
+                      "acc_fire_inhal",
+                      "acc_other")
+
+      mainData[get(kode) == 1]
     } else {
       ## Alle type ulykke
-      as.numeric(input$ulykke)
+      ## as.numeric(input$ulykke)
+      mainData
     }
   })
 
 
+  ## Second filter for transport
+  ###############################
+  transFData <- reactive({
 
-
-  ## Filter for transport
-  ########################
-  TransportType <- reactive({
+    varValg <- "acc_trsp_rd_type"
 
     if (as.numeric(input$transport) == 50){
-      c(1:7, 99, 999)
+      kode <- c(1:7, 99, 999)
+      ulykkeFData()[get(varValg) %in% kode]
     } else {
-      as.numeric(input$transport)
+      kode <- as.numeric(input$transport)
+      ulykkeFData()[get(varValg) %in% kode]
     }
   })
+
+
+  ## Kroppsregion
+  ###############
+
+
+
+
+  ### Data
 
 
 
@@ -204,7 +218,8 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
   output$test <- renderPrint({
     ## setkey(skadeData, ntrid)
     ## skadeData[duplicated(ntrid) | duplicated(ntrid, fromLast = TRUE)]
-    ukodeInput()
+    ## as.numeric(input$kropp)
+    str(transFData())
   })
 
   output$test2 <- renderPrint({
@@ -237,7 +252,7 @@ ui <- dashboardPage(
 
 
 server <- function(input, output, session){
-  callModule(aisMod, "ais", masterFile, skade, ulykke, 600, 900)
+  callModule(aisMod, "ais", masterFile, skade, ulykke, 600, 4000)
 
   session$onSessionEnded(stopApp)
 }
