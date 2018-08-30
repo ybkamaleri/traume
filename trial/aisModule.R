@@ -1,3 +1,4 @@
+
 ## test AIS module
 ##################
 
@@ -152,12 +153,41 @@ aisMod <- function(input, output, session, data, skade, ulykke, minNTR, maxNTR){
   mainData <- valgData[mergeData, on = "ntrid"]
 
 
-  output$test <- renderPrint({
-    dim(mergeData)
+  ### Filter for ulykketype
+  ###################################
+  UlykkeType <- reactive({
 
+    if (as.numeric(input$ulykke) == 9){
+      1:8
+    } else {
+      as.numeric(input$ulykke)
+    }
+  })
+
+  ## Filter for transport
+  ########################
+  TransportType <- reactive({
+
+    if (as.numeric(input$transport) == 50){
+     c(1:7, 99, 999)
+    } else {
+     as.numeric(input$transport)
+    }
+  })
+
+
+
+
+
+
+  ##################
+  ###### TEST ######
+  ##################
+
+  output$test <- renderPrint({
     ## setkey(skadeData, ntrid)
     ## skadeData[duplicated(ntrid) | duplicated(ntrid, fromLast = TRUE)]
-
+    str(TransportType())
   })
 
   output$test2 <- renderPrint({
