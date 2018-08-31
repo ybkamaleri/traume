@@ -10,19 +10,6 @@ library(ggplot2)
 ## source("~/Git-work/traume/ntrApp/data.R")
 
 
-## MISC Objekter
-#########################
-## Liste av variablenavn i ullyke datasett som skal plukkes ut
-valgVar <- c("acc_transport",
-             "acc_fall",
-             "acc_violence",
-             "acc_self_inflict", #selvpåført
-             "acc_work",
-             "acc_sprt_recreat", #sport og fritid
-             "acc_fire_inhal",
-             "acc_other",
-             "acc_trsp_rd_type", #transport typer
-             "ntrid")
 
 
 ## Module UI
@@ -74,31 +61,33 @@ ulykkeModUI <- function(id){
 
 ulykkeMod <- function(input, output, session, data){
 
-  ## Reactive value to return
-  ## valg <- reactiveValues()
+  ## MISC Objekter
+  #########################
+  ## Liste av variablenavn i ullyke datasett som skal plukkes ut
+  valgKolom <- c("acc_transport",
+                 "acc_fall",
+                 "acc_violence",
+                 "acc_self_inflict", #selvpåført
+                 "acc_work",
+                 "acc_sprt_recreat", #sport og fritid
+                 "acc_fire_inhal",
+                 "acc_other",
+                 "acc_trsp_rd_type", #transport typer
+                 "ntrid")
 
-  ## Valg bort urelevante kolonner
-  valgData <- ulykke[, valgVar, with = FALSE, key = ntrid]
 
-  ## Convert code to numeric
-  for (i in valgVar){
-    set(valgData, j = i, value = as.numeric(valgData[[i]]))
-  }
+  ## Reactive Value to return
+  vars <- reactiveValues()
+
+  ## Valg relevante kolonner
+  valgData <- data[, valgKolom, with = FALSE]
+
+  ## Velge ulykke type kolonne eller ikke
+  observe({
+    vars$velge  <- ifelse(req(input$ulykke) == 1, FALSE, TRUE)
+  })
 
 
-  ## ## Velger kolonne ved input$ulykke
-  ## valgCol <-  switch(as.numeric(input$ulykke),
-  ##                    "acc_transport",
-  ##                    "acc_fall",
-  ##                    "acc_violence",
-  ##                    "acc_self_inflict",
-  ##                    "acc_work",
-  ##                    "acc_sprt_recreat",
-  ##                    "acc_fire_inhal",
-  ##                    "acc_other")
-
-  ## Column name for Type transport
-  varTrans <- "acc_trsp_rd_type"
 
   ##################
   ###### TEST ######
@@ -106,6 +95,7 @@ ulykkeMod <- function(input, output, session, data){
 
   output$test <- renderPrint({
 
+    str(valgData)
   })
 
   output$test2 <- renderPrint({
@@ -119,9 +109,11 @@ ulykkeMod <- function(input, output, session, data){
     ##        " master: ", all,
     ##        " unique: ", ba)
 
-
+    vars$velge
   })
 
+  ## velge - for å velge ulykke type kolonne eller ikke
+  return(vars)
 
 }
 
