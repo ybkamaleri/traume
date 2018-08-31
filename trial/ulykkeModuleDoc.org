@@ -1,9 +1,13 @@
-#+Title: Dokument ulykkeMod
+#+Title: Dokument Ulykke og AIS
+* Ulykke
 
-* reactiveValus for 'vars'
+** reactiveValus for 'vars'
 brukes til å samle vardier som skal returneres
-* vars$velge
-Vis /TRUE/ skal kolonne for ulykke type velges else transport type ~acc_trsp_rd_type~
+** vars$velge
+Vis /TRUE/ skal kolonne for ulykke type velges else transport type
 velges. Verdien returneres reactive =velge()=
-* vars$ulykke
+** vars$ulykke
 velge kolonne som skal velges dvs. ulykke type == 1
+** vars$trans
+Koder som velge i kolonne transport type. Derfor må spesifiseres hvilken kolonne
+ie. ~acc_trsp_rd_type~ når utvalges skal gjøres.
