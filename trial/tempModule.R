@@ -9,48 +9,76 @@ library(ggplot2)
 
 ## source("~/Git-work/traume/ntrApp/data.R")
 
+## Module UI
+#################
 ulykkeModUI <- function(id){
 
   ns <- NS(id)
   fluidPage(
     fluidRow(
+      verbatimTextOutput(ns("test"))
+    ),
+    fluidRow(
+      verbatimTextOutput(ns("test2"))
+    ),
+    fluidRow(
       box(width = 4,
-          title = "Type ulykke",
+          title = "Kroppsregion",
           status = "primary",
-          selectInput(inputId = ns("ulykke"),
+          selectInput(inputId = ns("kropp"),
                       label = NULL,
-                      choices = list("Transport" = 1,
-                                     "Fall" = 2,
-                                     "Vold" = 3,
-                                     "Selvpåført" = 4,
-                                     "Arbeid" = 5,
-                                     "Sport og fritid" = 6,
-                                     "Brann og inhalasjon" = 7,
-                                     "Annen" = 8,
-                                     "Alle" = 9),
-                      selected = 9
+                      choices = list("Head" = 1,
+                                     "Face" = 2,
+                                     "Neck" = 3,
+                                     "Thorax" = 4,
+                                     "Abdomen" = 5,
+                                     "Ryggsøyle" = 6,
+                                     "Upper extremity" = 7,
+                                     "Lower extremity" = 8,
+                                     "External and other" = 9,
+                                     "Alle" = 10),
+                      selected = 10
                       ),
-          conditionalPanel(condition = paste0("input['", ns("ulykke"), "'] == 1"),
-                           selectInput(inputId = ns("transport"),
-                                       label = "Valg transport type:",
-                                       choices = list("Bil" = 1,
-                                                      "MC" = 2,
-                                                      "Sykkel" = 3,
-                                                      "Båt" = 4,
-                                                      "Tog" = 5,
-                                                      "Fly" = 6,
-                                                      "Moped" = 7,
-                                                      "Annet" = 99,
-                                                      "Ukjent" = 999,
-                                                      "Alle" = 50),
-                                       selected = 50
-                                       )))
-    ))
+          ## Tillegg abdomen
+          conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 5"),
+                           selectInput(inputId = ns("tillegg_abdomen"),
+                                       label = "Tilleggsuttrekk:",
+                                       choices = exAbdomen)),
+          ## Tillegg Ryggsøyle
+          conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 6"),
+                           selectInput(inputId = ns("tillegg_rygg"),
+                                       label = "Tilleggsuttrekk:",
+                                       choices = exRygg))
 
+          )
+    )
 }
 
-ulykkeMod <- function(input, output, session, mainData, data){
+  ulykkeMod <- function(input, output, session, data){
 
+
+    ## Reactive value to return
+    vars <- reactiveValues()
+
+
+    ##################
+    ###### TEST ######
+    ##################
+
+    output$test <- renderPrint({
+
+    })
+
+    output$test2 <- renderPrint({
+
+
+    })
+
+    ## Return values
+    ## velge - for å velge ulykke type kolonne eller ikke
+    ## ulykke - kolonne for ulykke å velge
+    ## trans - value for transport
+    return(vars)
 
 }
 
@@ -68,7 +96,7 @@ ui <- dashboardPage(
 
 
 server <- function(input, output, session){
-  callModule(ulykkeMod, "ulykke", masterFile, ulykke)
+  callModule(ulykkeMod, "ulykke", ulykke)
 
   session$onSessionEnded(stopApp)
 }
