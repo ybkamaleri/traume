@@ -1,6 +1,6 @@
 #+Title: Dokument Ulykke og AIS
 * Ulykke
-
+Module for ulykke utvalg for kolonne
 ** reactiveValus for 'vars'
 brukes til å samle vardier som skal returneres
 ** vars$velge
@@ -11,3 +11,11 @@ velge kolonne som skal velges dvs. ulykke type == 1
 ** vars$trans
 Koder som velge i kolonne transport type. Derfor må spesifiseres hvilken kolonne
 ie. ~acc_trsp_rd_type~ når utvalges skal gjøres.
+** Relasjoner
+Hvordan data relasjon er lages er slik..
+
+
+* Skade
+Module for skade
+** 'vars' reactiveValues
+For å beholder vardier som skal returneres
