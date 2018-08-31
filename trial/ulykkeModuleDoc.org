@@ -30,11 +30,15 @@ Hvis /TRUE/ valg alle og /FALSE/ valg input kropp
                     H [label="Head"] // node H
                     R [label="Rygg"] // node R
                     B [label="Tillegg rygg"] // node B
+                    V [label="valgte kroppsregion"] // node V
+
 
                     K->A [label="TRUE", fontcolor=darkgreen] // edge K->A
                     K->H [label="FALSE", fontcolor=red] // edge K->H
+                    H->V [label="TRUE", fontcolor=darkgreen] // edge H->V
                     K->R [label="FALSE", fontcolor=red] // edge K->R
-                    R->B [label="TRUE", fontcolor=darkgreen] //edge R->B
+                    R->V [label="TRUE", fontcolor=darkgreen] //edge R->V
+                    R->B [label="FALSE", fontcolor=red] // edge R->V
 
     }
   #+end_src
