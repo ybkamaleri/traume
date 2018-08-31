@@ -9,9 +9,6 @@ library(ggplot2)
 
 ## source("~/Git-work/traume/ntrApp/data.R")
 
-
-
-
 ## Module UI
 #################
 ulykkeModUI <- function(id){
@@ -82,12 +79,14 @@ ulykkeMod <- function(input, output, session, data){
   ## Valg relevante kolonner
   valgData <- data[, valgKolom, with = FALSE]
 
-  ## Velge ulykke type kolonne eller ikke
+  ## Velge ulykke eller transport kolonne
+  #######################################
   observe({
     vars$velge  <- ifelse(req(input$ulykke) == 1, FALSE, TRUE)
   })
 
   ## Ulykke type kolonne
+  ########################
   ulykkeCol <- reactive({
     if(input$ulykke != 9){
       switch(as.numeric(input$ulykke),
@@ -116,6 +115,16 @@ ulykkeMod <- function(input, output, session, data){
   })
 
 
+  ## Transport typer for var acc_trsp_rd_type
+  ############################################
+  alle <- c(1:7, 99, 999)
+  observe({
+    vars$trans <- ifelse(req(input$transport) == 50,
+                         paste(alle, collapse = ","),
+                         input$transport)
+  })
+
+
   ##################
   ###### TEST ######
   ##################
@@ -126,21 +135,14 @@ ulykkeMod <- function(input, output, session, data){
   })
 
   output$test2 <- renderPrint({
-    ## sk <- dim(skadeData)
-    ## ul <- dim(ulykkeData)
-    ## all <- dim(mainData)
-    ## ba <- mainData[!duplicated(ntrid), .N]
 
-    ## paste0("skade: ", sk,
-    ##        " ulykke: ", ul,
-    ##        " master: ", all,
-    ##        " unique: ", ba)
-
-    vars$ulykke
+    vars$trans
   })
 
   ## Return values
   ## velge - for å velge ulykke type kolonne eller ikke
+  ## ulykke - kolonne for ulykke å velge
+  ## trans - value for transport
   return(vars)
 
 }
