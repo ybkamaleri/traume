@@ -1,4 +1,6 @@
 #+Title: Dokument Ulykke og AIS
+#+options: toc:nil
+
 * Ulykke
 Module for ulykke utvalg for kolonne
 ** reactiveValus for 'vars'
@@ -17,5 +19,35 @@ Hvordan data relasjon er lages er slik..
 
 * Skade
 Module for skade
+** Relasjoner
+Hvis /TRUE/ valg alle og /FALSE/ valg input kropp
+
+  #+begin_src dot :file ./img/example1.png :cmdline -Kdot -Tpng
+    digraph graphname{
+
+                    K [label="Kroppsregioner"]      // node K
+                    A [label="Alle kroppsregioner \n 1 to 9"] // node A
+                    H [label="Head"] // node H
+                    R [label="Rygg"] // node R
+                    B [label="Tillegg rygg"] // node B
+
+                    K->A [label="TRUE", fontcolor=darkgreen] // edge K->A
+                    K->H [label="FALSE", fontcolor=red] // edge K->H
+                    K->R [label="FALSE", fontcolor=red] // edge K->R
+                    R->B [label="TRUE", fontcolor=darkgreen] //edge R->B
+
+    }
+  #+end_src
+
+  #+RESULTS:
+  [[file:./img/example1.png]]
+** Kode for beregning
+Forslag til koding
+#+BEGIN_SRC R
+  valgRegion <- if (kroppsregion == 10){1:9} else {input$kropp}
+
+  masterData[, grepl(paste0("'^", valgRegion, "'"), ais)]
+#+END_SRC
+
 ** 'vars' reactiveValues
 For å beholder vardier som skal returneres
