@@ -87,6 +87,33 @@ ulykkeMod <- function(input, output, session, data){
     vars$velge  <- ifelse(req(input$ulykke) == 1, FALSE, TRUE)
   })
 
+  ## Ulykke type kolonne
+  ulykkeCol <- reactive({
+    if(input$ulykke != 9){
+      switch(as.numeric(input$ulykke),
+             "acc_transport",
+             "acc_fall",
+             "acc_violence",
+             "acc_self_inflict",
+             "acc_work",
+             "acc_sprt_recreat",
+             "acc_fire_inhal",
+             "acc_other")
+    }else{
+      c("acc_transport",
+        "acc_fall",
+        "acc_violence",
+        "acc_self_inflict",
+        "acc_work",
+        "acc_sprt_recreat",
+        "acc_fire_inhal",
+        "acc_other")
+    }
+  })
+
+  observe({
+    vars$ulykke <- ulykkeCol()
+  })
 
 
   ##################
@@ -95,7 +122,7 @@ ulykkeMod <- function(input, output, session, data){
 
   output$test <- renderPrint({
 
-    str(valgData)
+    ulykkeCol()
   })
 
   output$test2 <- renderPrint({
@@ -109,9 +136,10 @@ ulykkeMod <- function(input, output, session, data){
     ##        " master: ", all,
     ##        " unique: ", ba)
 
-    vars$velge
+    vars$ulykke
   })
 
+  ## Return values
   ## velge - for å velge ulykke type kolonne eller ikke
   return(vars)
 
