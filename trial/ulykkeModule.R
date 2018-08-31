@@ -21,21 +21,23 @@ ulykkeModUI <- function(id){
           status = "primary",
           selectInput(inputId = ns("ulykke"),
                       label = NULL,
-                      choices = list("Transport" = 1,
+                      choices = list("Alle" = 9,
+                                     "Transport" = 1,
                                      "Fall" = 2,
                                      "Vold" = 3,
                                      "Selvpåført" = 4,
                                      "Arbeid" = 5,
                                      "Sport og fritid" = 6,
                                      "Brann og inhalasjon" = 7,
-                                     "Annen" = 8,
-                                     "Alle" = 9),
+                                     "Annen" = 8
+                                     ),
                       selected = 9
                       ),
           conditionalPanel(condition = paste0("input['", ns("ulykke"), "'] == 1"),
                            selectInput(inputId = ns("transport"),
                                        label = "Valg transport type:",
-                                       choices = list("Bil" = 1,
+                                       choices = list("Alle" = 50,
+                                                      "Bil" = 1,
                                                       "MC" = 2,
                                                       "Sykkel" = 3,
                                                       "Båt" = 4,
@@ -43,8 +45,8 @@ ulykkeModUI <- function(id){
                                                       "Fly" = 6,
                                                       "Moped" = 7,
                                                       "Annet" = 99,
-                                                      "Ukjent" = 999,
-                                                      "Alle" = 50),
+                                                      "Ukjent" = 999
+                                                      ),
                                        selected = 50
                                        )))
     ),
