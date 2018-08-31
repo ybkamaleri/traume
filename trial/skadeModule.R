@@ -9,16 +9,6 @@ library(ggplot2)
 
 ## source("~/Git-work/traume/ntrApp/data.R")
 
-## MISC
-
-## Abdomen Tilleggsuttrekk
-exAbdomen <- factor(c( "Leverskader", "Miltskader"))
-
-## Ryggsøyle tillegguttrekk
-exRygg <- factor(c("cervicalcolumna","lumbalcolumna", "thoracalcolumna"))
-
-
-
 ## Module UI
 #################
 skadeModUI <- function(id){
@@ -30,7 +20,8 @@ skadeModUI <- function(id){
     fluidRow(
       selectInput(inputId = ns("kropp"),
                   label = NULL,
-                  choices = list("Head" = 1,
+                  choices = list("Alle" = 10,
+                                 "Head" = 1,
                                  "Face" = 2,
                                  "Neck" = 3,
                                  "Thorax" = 4,
@@ -38,20 +29,35 @@ skadeModUI <- function(id){
                                  "Ryggsøyle" = 6,
                                  "Upper extremity" = 7,
                                  "Lower extremity" = 8,
-                                 "External and other" = 9,
-                                 "Alle" = 10),
+                                 "External and other" = 9
+                                 ),
                   selected = 10
                   ),
       ## Tillegg abdomen
       conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 5"),
                        selectInput(inputId = ns("til_abdomen"),
                                    label = "Tilleggsuttrekk:",
-                                   choices = exAbdomen)),
+                                   choices = list("Alle" = 1,
+                                                  "Leverskader" = 2,
+                                                  "Miltskader" = 3
+                                                  ),
+                                   selected = 3
+                                   )),
       ## Tillegg Ryggsøyle
       conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 6"),
                        selectInput(inputId = ns("til_rygg"),
                                    label = "Tilleggsuttrekk:",
-                                   choices = exRygg))
+                                   choices = list("Alle" = 1,
+                                                  "cervicalcolumna" = 2,
+                                                  "lumbalcolumna" = 3,
+                                                  "thoracalcolumna" = 4)
+                                   ))
+      ## ## Tillegg Ryggsøyle
+      ## conditionalPanel(condition = paste0("input['", ns("til_rygg"), "'] == 'cervicalcolumna'"),
+      ##                  selectInput(inputId = ns("ext_rygg"),
+      ##                              label = "Tilleggsuttrekk:",
+      ##                              choices = exCerv))
+
     ),
     fluidRow(
       verbatimTextOutput(ns("test"))
@@ -68,6 +74,12 @@ skadeMod <- function(input, output, session, data){
   ## Reactive value
   vars <- reactiveValues()
 
+  alle <- 1:9
+
+  ## Velger alle kroppsregioner eller en region
+  observe({
+    vars$velge <- ifelse(input$kropp == 10, paste(alle, collapse = ","), input$kropp)
+  })
 
 
   ##################
@@ -76,6 +88,7 @@ skadeMod <- function(input, output, session, data){
 
   output$test <- renderPrint({
 
+    vars$velge
   })
 
   output$test2 <- renderPrint({
