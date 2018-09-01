@@ -81,14 +81,15 @@ ulykkeMod <- function(input, output, session, data){
   ## Valg relevante kolonner
   valgData <- data[, valgKolom, with = FALSE]
 
-  ## Velge ulykke eller transport kolonne
-  #######################################
+  ## Velge ulykketype == TRUE eller transport type == FALSE
+  #########################################################
   observe({
     vars$velge  <- ifelse(req(input$ulykke) == 1, FALSE, TRUE)
   })
 
-  ## Ulykke type kolonne
-  ########################
+  ## Ulykke type kolonne ie. velger alle ulykke type kolonner
+  ## eller input$ulykke verdi
+  ############################################################
   ulykkeCol <- reactive({
     if(input$ulykke != 9){
       switch(as.numeric(input$ulykke),
@@ -126,6 +127,20 @@ ulykkeMod <- function(input, output, session, data){
                          input$transport)
   })
 
+
+  ## prob1001
+  ### OBS!!! #### hvordan velges flere kolonner med verdi 1
+  ## Filter data
+  ###############
+  filtertData <- reactive({
+    if(vars$velge == TRUE){
+      valgData[ulykkeCol() == 1]
+    }
+  })
+
+  observe({
+    vars$data
+  })
 
   ##################
   ###### TEST ######

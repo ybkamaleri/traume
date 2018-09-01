@@ -13,6 +13,8 @@ velge kolonne som skal velges dvs. ulykke type == 1
 ** vars$trans
 Koder som velge i kolonne transport type. Derfor må spesifiseres hvilken kolonne
 ie. ~acc_trsp_rd_type~ når utvalges skal gjøres.
+** Filter data
+Finner ut måten å velge alle ulykke typer kolonner med verdi 1. /prob10001/
 ** Relasjoner
 Hvordan data relasjon er lages er slik..
 
