@@ -63,29 +63,39 @@ ulykkeMod <- function(input, output, session, data){
   ## MISC Objekter
   #########################
   ## Liste av variablenavn i ullyke datasett som skal plukkes ut
-  valgKolom <- c("acc_transport",
-                 "acc_fall",
-                 "acc_violence",
-                 "acc_self_inflict", #selvpåført
-                 "acc_work",
-                 "acc_sprt_recreat", #sport og fritid
-                 "acc_fire_inhal",
-                 "acc_other",
-                 "acc_trsp_rd_type", #transport typer
-                 "ntrid")
+  valgCol <- c("acc_transport",
+               "acc_fall",
+               "acc_violence",
+               "acc_self_inflict", #selvpåført
+               "acc_work",
+               "acc_sprt_recreat", #sport og fritid
+               "acc_fire_inhal",
+               "acc_other",
+               "acc_trsp_rd_type", #transport typer
+               "ntrid")
 
 
   ## Reactive Value to return
   vars <- reactiveValues()
 
   ## Valg relevante kolonner
-  valgData <- data[, valgKolom, with = FALSE]
+  valgData <- data[, valgCol, with = FALSE]
 
   ## Velge ulykketype == TRUE eller transport type == FALSE
   #########################################################
   observe({
     vars$velge  <- ifelse(req(input$ulykke) == 1, FALSE, TRUE)
   })
+
+  ## Liste over ulykke typer
+  navnUT <- c("acc_transport",
+              "acc_fall",
+              "acc_violence",
+              "acc_self_inflict",
+              "acc_work",
+              "acc_sprt_recreat",
+              "acc_fire_inhal",
+              "acc_other")
 
   ## Ulykke type kolonne ie. velger alle ulykke type kolonner
   ## eller input$ulykke verdi
@@ -101,16 +111,7 @@ ulykkeMod <- function(input, output, session, data){
              "acc_sprt_recreat",
              "acc_fire_inhal",
              "acc_other")
-    }else{
-      c("acc_transport",
-        "acc_fall",
-        "acc_violence",
-        "acc_self_inflict",
-        "acc_work",
-        "acc_sprt_recreat",
-        "acc_fire_inhal",
-        "acc_other")
-    }
+    } else { navnUT }
   })
 
   observe({
