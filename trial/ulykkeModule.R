@@ -114,33 +114,51 @@ ulykkeMod <- function(input, output, session, data){
     } else { navnUT }
   })
 
-  observe({
-    vars$ulykke <- ulykkeCol()
-  })
+  ## observe({
+  ##   vars$ulykke <- ulykkeCol()
+  ## })
 
 
   ## Transport typer for var acc_trsp_rd_type
   ############################################
-  alle <- c(1:7, 99, 999)
-  observe({
-    vars$trans <- ifelse(req(input$transport) == 50,
-                         paste(alle, collapse = ","),
-                         input$transport)
+  transVar <- "acc_trsp_rd_type"
+  ## alle <- c(1:7, 99, 999)
+  transValg <- reactive({
+    if(input$transport == 50){
+      var <-  c(1:7, 99, 999)
+    } else {
+      var <- as.numeric(input$transport)
+    }
+    var
   })
 
-
   ## prob1001
-  ### OBS!!! #### hvordan velges flere kolonner med verdi 1
-  ## Filter data
+  ### OBS!!! #### hvordan velges flere kolonner med verdi 1? Se Test miscR folder under loopDT.R
+  ## Filter data - hvis alle transport så velge col 1:9
   ###############
   filtertData <- reactive({
     if(vars$velge == TRUE){
-      valgData[ulykkeCol() == 1]
+
+      valgData[, valgVar := {v1 <- unlist(.SD) #ungroup .SDcols
+        indUT <- which(v1 == 1)[1] #plukke index som oppfylle kravet
+        list(v1[indUT], names(.SD)[indUT])}, #legge verdien på .SDcols ift. index indUT
+        .SDcols = ulykkeCol(), by = 1:nrow(valgData)][is.na(valgVar), valgVar := 0]
+
+    } else {
+
+      valgData[(transVar) %in% transValg(), valgVar := 1]
+
+      ## valgData[, valgVar := {v1 <- unlist(.SD)
+      ##   indUT <- which(v1 %in% as.numeric(vars$trans))[1]
+      ##   list(v1[indUT], names(.SD)[indUT])},
+      ##   .SDcols = transVar, by = 1:nrow(valgData)][is.na(valgVar), valgVar := 0]
+
     }
   })
 
+  ## Filtert data
   observe({
-    vars$data
+    vars$data  <- filtertData()[valgVar == 1]
   })
 
   ##################
