@@ -86,8 +86,8 @@ ModuleServer <- function(input, output, session, data){
               "acc_fire_inhal",
               "acc_other")
 
-  ## Valg relevant kolonner
-  regData <- data[, valgCol, with = FALSE]
+  ## Valg relevant kolonner og bort med duplicated id og NA
+  regData <- data[!duplicated(ntrid) & !is.na(ntrid), valgCol, with = FALSE]
 
   ## Legg alle type ulykke - alleUT : alle ulykke typer
   #######################################################
