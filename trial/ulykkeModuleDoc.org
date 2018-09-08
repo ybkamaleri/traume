@@ -14,9 +14,41 @@ velge kolonne som skal velges dvs. ulykke type == 1
 Koder som velge i kolonne transport type. Derfor må spesifiseres hvilken kolonne
 ie. ~acc_trsp_rd_type~ når utvalges skal gjøres.
 ** Filter data
-Finner ut måten å velge alle ulykke typer kolonner med verdi 1. /prob10001/
+Lage ny kolonne med alle ulykke typer dvs. alle kolonne som har verdi "1".
+
+#+BEGIN_SRC R
+  regData[, alleUT := {v1 <- unlist(.SD) #ungroup .SDcols
+    indUT <- which(v1 == 1)[1] #plukke index som oppfylle kravet
+    list(v1[indUT], names(.SD)[indUT])}, #legge verdien på .SDcols ift. index indUT
+    .SDcols = navnUT, by = 1:nrow(regData)]
+#+END_SRC
+
 ** Relasjoner
 Hvordan data relasjon er lages er slik..
+  #+begin_src dot :file ./img/example2.png :cmdline -Kdot -Tpng
+    digraph graphname{
+
+                    K [label="Ulykke typer = transport"]      // node K
+                    A [label="Ullyke typer"] // node A
+                    H [label="Transport typer"] // node H
+                    R [label="Alle ulykke typer"] // node R
+                    B [label="Alle transport typer"] // node B
+                    V [label="valgte ulykke type"] // node V
+                    T [label="valgte transport typer"] //node T
+
+
+                    K->H [label="TRUE", fontcolor=darkgreen] // edge K->H
+                    K->A [label="FALSE", fontcolor=red] // edge K->A
+                    H->B [label="TRUE", fontcolor=darkgreen] // edge H->B
+                    A->R [label="TRUE", fontcolor=darkgreen] // edge A->R
+                    A->V [label="FALSE", fontcolor=red] // edge A->V
+                    H->T [label="FALSE", fontcolor=red] // edge H->T
+    }
+
+  #+end_src
+
+  #+RESULTS:
+  [[file:./img/example2.png]]
 
 
 * Skade
