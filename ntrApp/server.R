@@ -161,6 +161,9 @@ function(input, output, session) {
 
   })
 
+  ## List filtert ntrid
+
+
   ## Antall missing alder
   ########################
   output$alderNA <- renderText({
@@ -270,12 +273,19 @@ function(input, output, session) {
 
 
 
+
   ## TEST TEST TEST TEST TEST
   #################################
+  ## list filtert NTR
+  testData <- reactive({filterDataAge()[, .(ntrid = ntrid)]})
+
+
   output$test2 <- renderPrint({
     ## str(aisGrad$data)
     ## dim(aisGrad$data)
-    paste0("min ntrid ",valg$minAge, " og max ntrid ", valg$maxAge)
+    ## paste0("min ntrid ",valg$minAge, " og max ntrid ", valg$maxAge)
+
+    testData()
   })
 
   output$test1 <- renderPrint({
