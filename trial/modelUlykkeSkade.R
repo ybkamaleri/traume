@@ -7,7 +7,7 @@ library(shinydashboard)
 library(data.table)
 library(ggplot2)
 
-source("~/Git-work/traume/ntrApp/data.R")
+## source("~/Git-work/traume/ntrApp/data.R")
 
 ## Module UI
 #################
@@ -113,7 +113,8 @@ ModuleServer <- function(input, output, session, data){
 
   ## Filtert data for ulykke typer
   filDataUlykke <- eventReactive(input$ulykke, {
-    regData[get(ulykkeCol()) == 1, list(valgCol = get(ulykkeCol())),
+    colValg <- ulykkeCol()
+    regData[get(colValg) == 1, list(valgCol = get(colValg)),
             keyby = ntrid]
   })
 
@@ -122,28 +123,33 @@ ModuleServer <- function(input, output, session, data){
   ## Transport typer for var acc_trsp_rd_type
   ############################################
   ## transport type "IKKE VALGT" kodet 0 ikke brukes
-  transVar <- "acc_trsp_rd_type"
-
-  transValg <- reactive({
-    if(as.numeric(input$transport) == 9){
-      var <-  c(1:7, 99, 999)
-    } else {
-      var <- as.numeric(input$transport)
-    }
-    var
-  })
+  ##   transValg <- reactive({
+  ##     if(as.numeric(input$transport) == 9){
+  ##       var <-  c(1:7, 99, 999)
+  ##     } else {
+  ##       var <- input$transport
+  ##     }
+  ##     var
+  ## })
 
   ## Filtert data for transport typer
   ## problem å bruker !is.na(ntrid)
   filDataTrans <- eventReactive(input$transport, {
-    regData[get(transVar) %in% transValg(), list(valgCol = transValg()),
-            keyby = ntrid]
+    transVar <- "acc_trsp_rd_type"
+    alleTrans <-  c(1:7, 99, 999)
+
+    if (as.numeric(input$transport) == 9){
+      data <- regData[get(transVar) %in% alleTrans, list(valgCol = acc_trsp_rd_type), keyby = ntrid]
+    } else {
+      data <- regData[get(transVar) == as.numeric(input$transport), list(valgCol = acc_trsp_rd_type), keyby = ntrid]
+    }
+    data
   })
 
 
   ## Reactive Value to return
   ############################
-  vars <- reactiveValues()
+  ## vars <- reactiveValues()
 
   ## Velge ulykketype == TRUE eller transport type == FALSE
   #########################################################
@@ -151,17 +157,18 @@ ModuleServer <- function(input, output, session, data){
   ##   vars$velge  <- ifelse(as.numeric(input$ulykke) == 1, 1, 2)
   ## })
 
-  observe({
-    vars$dataUT <- ifelse(input$ulykke != 1, filDataUlykke(), filDataTrans())
-  })
-
-
-  ## ## reactiveVal style
-  ## dataUT <- reactiveVal()
-
   ## observe({
-  ##   dataUT(ifelse(input$ulykke != 1, filDataUlykke(), filDataTrans()))
+  ##   vars$dataUT <- ifelse(input$ulykke != 1, filDataUlykke(), filDataTrans())
   ## })
+
+
+  ## reactiveVal style
+  dataUT <- reactiveVal()
+
+  observe({
+    value <- ifelse(as.numeric(input$ulykke) != 1, filDataUlykke(), filDataTrans())
+    dataUT(value)
+  })
 
 
 
@@ -170,36 +177,38 @@ ModuleServer <- function(input, output, session, data){
   ##################
 
   output$test <- renderPrint({
-    str(vars$dataUT)
+    str(dataUT())
   })
 
   output$test2 <- renderPrint({
-    transValg()
+    head(dataUT())
   })
 
-  }
+  return(dataUT)
+
+}
 
 
   ###################################
-  ########## Shiny App ##############
-  ###################################
+########## Shiny App ##############
+###################################
 
-  ui <- dashboardPage(
-    dashboardHeader(disable = TRUE),
-    dashboardSidebar(disable = TRUE),
-    dashboardBody(
-      fluidPage(
-        fluidRow(
-          ModuleUI("ulykke")
-        ))
-    )
+ui <- dashboardPage(
+  dashboardHeader(disable = TRUE),
+  dashboardSidebar(disable = TRUE),
+  dashboardBody(
+    fluidPage(
+      fluidRow(
+        ModuleUI("ulykke")
+      ))
   )
+)
 
 
-  server <- function(input, output, session){
-    callModule(ModuleServer, "ulykke", ulykke)
+server <- function(input, output, session){
+  callModule(ModuleServer, "ulykke", ulykke)
 
-    session$onSessionEnded(stopApp)
-  }
+  session$onSessionEnded(stopApp)
+}
 
-  shinyApp(ui, server)
+shinyApp(ui, server)
