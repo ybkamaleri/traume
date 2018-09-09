@@ -32,4 +32,5 @@ bNA <- function(DT, na = 0){
 ###########
 source("./modules/virksomhet.R")
 source("./modules/virksomhetPlot.R")
-source("./modules/aisModule.R")
+## source("./modules/aisModule.R")
+source("./modules/ulykkeMod.R")

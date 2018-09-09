@@ -161,8 +161,8 @@ function(input, output, session) {
 
   })
 
-  ## List filtert ntrid
-
+  ## List ntrid filtert for helseenhet, alder og tidsrom
+  listNTR <- reactive({filterDataAge()[, .(ntrid = ntrid)]})
 
   ## Antall missing alder
   ########################
@@ -264,7 +264,9 @@ function(input, output, session) {
   })
 
   ## AIS Skadegradering
-  aisGrad <- callModule(aisMod, "ais", filterDataAge)
+  ## aisGrad <- callModule(aisMod, "ais", filterDataAge)
+  callModule(ulykkeServer, "u_ais", valgDT = filterDataAge, data = ulykke)
+
 
   ## Virksomhetsdata på sykehus
   ###############################
@@ -277,15 +279,16 @@ function(input, output, session) {
   ## TEST TEST TEST TEST TEST
   #################################
   ## list filtert NTR
-  testData <- reactive({filterDataAge()[, .(ntrid = ntrid)]})
+  ## testData <- reactive({filterDataAge()[, .(ntrid = ntrid)]})
 
+  dataUL <- reactive({ulykke[testData(), on = c(ntrid = "ntrid")]}) ## bruk til ulykke module
 
   output$test2 <- renderPrint({
     ## str(aisGrad$data)
     ## dim(aisGrad$data)
     ## paste0("min ntrid ",valg$minAge, " og max ntrid ", valg$maxAge)
+    listNTR()
 
-    testData()
   })
 
   output$test1 <- renderPrint({
