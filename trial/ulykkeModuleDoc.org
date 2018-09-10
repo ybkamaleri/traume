@@ -59,12 +59,11 @@ Hvis /TRUE/ valg alle og /FALSE/ valg input kropp
   digraph graphname{
 
   K [label="Kroppsregioner"]      // node K
-  A [label="Alle kroppsregioner \n 1 to 9"] // node A
+  A [label="Alle kroppsregioner \n 0 to 9"] // node A
   H [label="Head"] // node H
   R [label="Rygg"] // node R
   B [label="Tillegg rygg"] // node B
   V [label="valgte kroppsregion"] // node V
-
 
   K->A [label="TRUE", fontcolor=darkgreen] // edge K->A
   K->H [label="FALSE", fontcolor=red] // edge K->H
