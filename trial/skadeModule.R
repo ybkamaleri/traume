@@ -85,6 +85,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   dataIN <- data
 
+  ## Kroppsregioner
   valgKropp  <- reactive({
 
     valKropp <- as.numeric(input$kropp) #kroppregion
@@ -98,6 +99,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
         sum(grepl(paste0(".[", paste(valSkade, collapse = ""), "]$"),
                   as.numeric(unlist(strsplit(ais, split = ","))))) != 0, 1, 0),
         gender = gender), by = ntrid]
+
     } else {
 
       dataIN[, list(n = ifelse(
@@ -107,9 +109,15 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     }
   })
 
+  ## hvis tillegg !=1 så velge output fra tillegg input
+  ## ellers velger valgKropp
+
+  ###########
+  ## Andel ##
+  ###########
 
   ## Inkluderer Grad 1 eller ikke til å beregne andel
-  andelGrad  <- reactive({
+  andelGradAlle  <- reactive({
     if (input$skadegrad1){
       andelG <- dataIN[, list(n = ifelse(
         sum(grepl(".*[1-6]$", as.numeric(unlist(
@@ -127,7 +135,16 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   ## Velger alle kroppsregioner eller en region
   observe({
-    vars$velge <- andelGrad()
+    vars$velge <- andelGradAlle()
+  })
+
+
+  ############
+  ## Tabell ##
+  ############
+  tabUT <- reactive({
+    data <- valgKropp()[n == 1, .N, by = gender]
+    data
   })
 
 
@@ -137,12 +154,12 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   output$test <- renderPrint({
 
-    andelGrad()
+    andelGradAlle()
   })
 
   output$test2 <- renderPrint({
 
-    valgKropp()[]
+    tabUT()
 
   })
 
