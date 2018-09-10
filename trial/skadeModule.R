@@ -16,9 +16,10 @@ skadeModUI <- function(id){
   ns  <- NS(id)
 
   fluidPage(
-
     fluidRow(
-      selectInput(inputId = ns("kropp"),
+      box(with = 4,
+          title = "Kroppsregioner",
+          selectInput(inputId = ns("kropp"),
                   label = NULL,
                   choices = list("Alle" = 10,
                                  "Head" = 1,
@@ -26,7 +27,7 @@ skadeModUI <- function(id){
                                  "Neck" = 3,
                                  "Thorax" = 4,
                                  "Abdomen" = 5,
-                                 "Ryggsøyle" = 6,
+                                 "Spine" = 6,
                                  "Upper extremity" = 7,
                                  "Lower extremity" = 8,
                                  "External and other" = 9
@@ -48,16 +49,27 @@ skadeModUI <- function(id){
                        selectInput(inputId = ns("til_rygg"),
                                    label = "Tilleggsuttrekk:",
                                    choices = list("Alle" = 1,
-                                                  "cervicalcolumna" = 2,
-                                                  "lumbalcolumna" = 3,
-                                                  "thoracalcolumna" = 4)
-                                   ))
-      ## ## Tillegg Ryggsøyle
-      ## conditionalPanel(condition = paste0("input['", ns("til_rygg"), "'] == 'cervicalcolumna'"),
-      ##                  selectInput(inputId = ns("ext_rygg"),
-      ##                              label = "Tilleggsuttrekk:",
-      ##                              choices = exCerv))
-
+                                                  "Cervicalcolumna" = 2,
+                                                  "Lumbalcolumna" = 3,
+                                                  "Thoracalcolumna" = 4)
+                                   ))),
+      box(with = 4,
+          title = "Skadegradering",
+          status = "primary",
+          checkboxGroupInput(inputId = ns("skadegrad"),
+                             label = NULL,
+                             choices = list("2" = 2,
+                                            "3" = 3,
+                                            "4" = 4,
+                                            "5" = 5,
+                                            "6" = 6),
+                             inline = TRUE,
+                             selected = NULL
+                             ),
+          checkboxInput(inputId = ns("skadegrad1"),
+                        label = "include skadegrad 1 i analysen",
+                        value = TRUE)
+          )
     ),
     fluidRow(
       verbatimTextOutput(ns("test"))
@@ -69,7 +81,9 @@ skadeModUI <- function(id){
 }
 
 
-skadeMod <- function(input, output, session, data){
+skadeMod <- function(input, output, session, dataFiltert, data){
+
+
 
   ## Reactive value
   vars <- reactiveValues()
