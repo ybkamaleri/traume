@@ -1,4 +1,3 @@
-
 ## test ulykke module
 #####################
 
@@ -67,7 +66,7 @@ skadeModUI <- function(id){
                              selected = NULL
                              ),
           checkboxInput(inputId = ns("skadegrad1"),
-                        label = "include skadegrad 1 i analysen",
+                        label = "Inkluderer skadegrad 1",
                         value = TRUE)
           )
     ),
@@ -82,17 +81,28 @@ skadeModUI <- function(id){
 
 
 skadeMod <- function(input, output, session, dataFiltert, data){
+  dataIN <- data
 
+  dataUT <- reactive({
+    ## Alle kroppdeler
+    if (as.numeric(input$kropp) == 10) {
+      dataIN[, list(n = ifelse(
+        sum(grepl(".*[1-6]$", as.numeric(unlist(
+          strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
+    } else {
+      dataIN[, list(n = ifelse(
+        sum(grepl(paste0(".*[", as.numeric(input$kropp), "]$"), as.numeric(unlist(
+          strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
+    }
+  })
 
 
   ## Reactive value
   vars <- reactiveValues()
 
-  alle <- 1:9
-
   ## Velger alle kroppsregioner eller en region
   observe({
-    vars$velge <- ifelse(input$kropp == 10, paste(alle, collapse = ","), input$kropp)
+    vars$velge <- dataUT()
   })
 
 
@@ -106,7 +116,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   })
 
   output$test2 <- renderPrint({
-
+    dataUT()[, .N, by = n]
 
   })
 
@@ -130,7 +140,8 @@ ui <- dashboardPage(
 
 
 server <- function(input, output, session){
-  callModule(skadeMod, "skade", skade)
+
+  callModule(skadeMod, "skade", data = skade)
 
   session$onSessionEnded(stopApp)
 }
