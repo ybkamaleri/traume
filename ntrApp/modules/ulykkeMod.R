@@ -48,14 +48,10 @@ ulykkeUI <- function(id){
 
 ulykkeServer <- function(input, output, session, valgDT, data){
 
-  ## valgID  <- setkey(valgDT, ntrid)
-  ## dataMix <- setkey(data, ntrid)
-  ## dataMod <- data[valgID]
-  ## ntrData <- filterDataAge()
-  ## listNTR <- ntrData[ntrid]
-
+  ## filtert data for å velge ntrid
   listNTR <- reactive({valgDT()[, list(ntrid)]})
 
+  ## data som skal brukes
   dataMod <- reactive({
     data[listNTR(), on = c(ntrid = "ntrid")]
   })
@@ -85,15 +81,14 @@ ulykkeServer <- function(input, output, session, valgDT, data){
   ## Valg relevant kolonner og bort med duplicated id og NA
   regData <- reactive({
 
-    regData = dataMod()[!duplicated(ntrid) & !is.na(ntrid), valgCol, with = FALSE]
+    regDT = dataMod()[!duplicated(ntrid) & !is.na(ntrid), valgCol, with = FALSE]
 
     ## Legg alle type ulykke - alleUT : alle ulykke typer
     #######################################################
-    regData[, alleUT := {v1 <- unlist(.SD) #ungroup .SDcols
+    regDT[, alleUT := {v1 <- unlist(.SD) #ungroup .SDcols
       indUT <- which(v1 == 1)[1] #plukke index som oppfylle kravet
       list(v1[indUT], names(.SD)[indUT])}, #legge verdien på .SDcols ift. index indUT
-      .SDcols = navnUT, by = 1:nrow(regData)]
-
+      .SDcols = navnUT, by = 1:nrow(regDT)]
   })
 
 
@@ -135,13 +130,11 @@ ulykkeServer <- function(input, output, session, valgDT, data){
     data
 })
 
-
-  ## reactiveVal style
-  dataUT <- reactiveVal()
+  ## reactiveValues dataUT
+  dataUT <- reactiveValues()
 
   observe({
-    value <- ifelse(as.numeric(input$ulykke) != 1, filDataUlykke(), filDataTrans())
-    dataUT(value)
+    dataUT$data <- ifelse(as.numeric(input$ulykke) != 1, filDataUlykke(), filDataTrans())
   })
 
 
@@ -150,7 +143,7 @@ ulykkeServer <- function(input, output, session, valgDT, data){
   ##################
 
   output$test <- renderPrint({
-    str(dataUT())
+    str(dataUT$data)
   })
 
   return(dataUT)
