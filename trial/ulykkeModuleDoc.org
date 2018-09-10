@@ -26,9 +26,9 @@ Lage ny kolonne med alle ulykke typer dvs. alle kolonne som har verdi "1".
 ** Relasjoner
 Hvordan data relasjon er lages er slik..
 #+begin_src dot :file ./img/example2.png :cmdline -Kdot -Tpng
-  digraph graphname{
+  digraph ulykke{
 
-  K [label="Ulykke typer = transport"]      // node K
+  K [label="Ulykke typer = transport"] // node K
   A [label="Ullyke typer"] // node A
   H [label="Transport typer"] // node H
   R [label="Alle ulykke typer"] // node R
@@ -56,9 +56,9 @@ Module for skade
 Hvis /TRUE/ valg alle og /FALSE/ valg input kropp
 
 #+begin_src dot :file ./img/example1.png :cmdline -Kdot -Tpng
-  digraph graphname{
+  digraph ais{
 
-  K [label="Kroppsregioner"]      // node K
+  K [label="Kroppsregioner"] // node K
   A [label="Alle kroppsregioner \n 0 to 9"] // node A
   H [label="Head"] // node H
   R [label="Rygg"] // node R
@@ -70,7 +70,7 @@ Hvis /TRUE/ valg alle og /FALSE/ valg input kropp
   H->V [label="TRUE", fontcolor=darkgreen] // edge H->V
   K->R [label="FALSE", fontcolor=red] // edge K->R
   R->V [label="TRUE", fontcolor=darkgreen] //edge R->V
-  R->B [label="FALSE", fontcolor=red] // edge R->V
+  R->B [label="FALSE", fontcolor=red] // edge R->B
 
   }
 #+end_src
