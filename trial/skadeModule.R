@@ -138,7 +138,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   output$test2 <- renderPrint({
 
-    valgKropp()
+    valgKropp()[]
 
   })
 
