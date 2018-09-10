@@ -68,7 +68,7 @@ skadeModUI <- function(id){
                              ),
           checkboxInput(inputId = ns("skadegrad1"),
                         label = "Andel inkluderer skadegrad 1",
-                        value = FALSE)
+                        value = TRUE)
           )
     ),
     fluidRow(
@@ -93,29 +93,33 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     ## Alle kroppdeler
     if (as.numeric(input$kropp) == 10) {
       req(input$skadegrad) #vises ingen hvis NULL
+
       dataIN[, list(n = ifelse(
         sum(grepl(paste0(".[", paste(valSkade, collapse = ""), "]$"),
-                  as.numeric(unlist(strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
+                  as.numeric(unlist(strsplit(ais, split = ","))))) != 0, 1, 0),
+        gender = gender), by = ntrid]
     } else {
 
       dataIN[, list(n = ifelse(
         sum(grepl(paste0("^", valKropp, ".*[", paste(valSkade, collapse = ""), "]$"),
-                  as.numeric(unlist(strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
+                  as.numeric(unlist(strsplit(ais, split = ","))))) != 0, 1, 0),
+        gender = gender), by = ntrid]
     }
   })
 
-  ## Inkluderer Grad 1 eller ikke
-  ## Dette brukes til å lage prosent
-  valgGrad  <- reactive({
+
+  ## Inkluderer Grad 1 eller ikke til å beregne andel
+  andelGrad  <- reactive({
     if (input$skadegrad1){
-      dataIN[, list(n = ifelse(
+      andelG <- dataIN[, list(n = ifelse(
         sum(grepl(".*[1-6]$", as.numeric(unlist(
           strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
     } else {
-      dataIN[, list(n = ifelse(
+      andelG <- dataIN[, list(n = ifelse(
         sum(grepl(".*[2-6]$", as.numeric(unlist(
           strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
     }
+    andelG[, sum(n, na.rm = TRUE)]
   })
 
   ## Reactive value
@@ -123,7 +127,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   ## Velger alle kroppsregioner eller en region
   observe({
-    vars$velge <- valgGrad()
+    vars$velge <- andelGrad()
   })
 
 
@@ -133,7 +137,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   output$test <- renderPrint({
 
-    valgGrad()[,.N, by = n]
+    andelGrad()
   })
 
   output$test2 <- renderPrint({
