@@ -127,6 +127,13 @@ function(input, output, session) {
                                dateAll <= as.Date(datoTil, format = "%Y-%m-%d")]})
   })
 
+  ## Antall missing alder
+  ########################
+  output$alderNA <- renderText({
+    ageNA <- filterData()[!duplicated(ntrid) & is.na(age), .N]
+    paste0("Missing: ", ageNA, " personer mangler data for alder og er eksludert i analysen")
+  })
+
 
   ## tekst for utvalgte enhetNavn og alder
   ########################################
@@ -164,25 +171,6 @@ function(input, output, session) {
   ## List ntrid filtert for helseenhet, alder og tidsrom
   listNTR <- reactive({filterDataAge()[, .(ntrid = ntrid)]})
 
-  ## Antall missing alder
-  ########################
-  output$alderNA <- renderText({
-    ageNA <- masterFile[!duplicated(ntrid) & is.na(age), .N]
-    paste0("Missing: ", ageNA, " personer mangler data for alder og er eksludert i analysen")
-  })
-
-  #################################################
-  ## Filtert data med ntrid for tidsrom og alder ##
-  #################################################
-  valg <- reactiveValues()
-   ## maxNTRID
-  observe(
-    valg$maxAge <- max(filterDataAge()$ntrid)
-  )
-  ## minNTRID
-  observe(
-    valg$minAge <- min(filterDataAge()$ntrid)
-  )
 
   ## Plot Alder og Traume
   #########################
