@@ -9,9 +9,9 @@ setkey(ulykke, ntrid)
 
 regDT <- ulykke[masterFile]
 
-datoFra <- as.Date("01-05-2017", format = "%d-%m-%Y")
+datoFra <- as.Date("15-09-2017", format = "%d-%m-%Y")
 datoTil <- as.Date("10-09-2018", format = "%d-%m-%Y")
-alder <- 1:100
+alder <- 0:110
 enhet <- "Finnmarkssykehuset"
 
 
@@ -43,7 +43,7 @@ regData[, .N, by = HF]
 regData[alleUT == 1 &
           age %in% alder &
           dateAll %in% datoFra:datoTil,
-        .N, by = HF] #Alle
+        .N, by = RHF] #Alle
 
 ## Fall
 regData[acc_fall == 1 &
