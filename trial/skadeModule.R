@@ -57,17 +57,18 @@ skadeModUI <- function(id){
           status = "primary",
           checkboxGroupInput(inputId = ns("skadegrad"),
                              label = NULL,
-                             choices = list("2" = 2,
+                             choices = list("1" = 1,
+                                            "2" = 2,
                                             "3" = 3,
                                             "4" = 4,
                                             "5" = 5,
                                             "6" = 6),
                              inline = TRUE,
-                             selected = NULL
+                             selected = 1
                              ),
           checkboxInput(inputId = ns("skadegrad1"),
-                        label = "Inkluderer skadegrad 1",
-                        value = TRUE)
+                        label = "Andel inkluderer skadegrad 1",
+                        value = FALSE)
           )
     ),
     fluidRow(
@@ -81,28 +82,48 @@ skadeModUI <- function(id){
 
 
 skadeMod <- function(input, output, session, dataFiltert, data){
+
   dataIN <- data
 
-  dataUT <- reactive({
+  valgKropp  <- reactive({
+
+    valKropp <- as.numeric(input$kropp) #kroppregion
+    valSkade <- as.numeric(input$skadegrad) #skadegrad
+
     ## Alle kroppdeler
     if (as.numeric(input$kropp) == 10) {
+      req(input$skadegrad) #vises ingen hvis NULL
+      dataIN[, list(n = ifelse(
+        sum(grepl(paste0(".[", paste(valSkade, collapse = ""), "]$"),
+                  as.numeric(unlist(strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
+    } else {
+
+      dataIN[, list(n = ifelse(
+        sum(grepl(paste0("^", valKropp, ".*[", paste(valSkade, collapse = ""), "]$"),
+                  as.numeric(unlist(strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
+    }
+  })
+
+  ## Inkluderer Grad 1 eller ikke
+  ## Dette brukes til å lage prosent
+  valgGrad  <- reactive({
+    if (input$skadegrad1){
       dataIN[, list(n = ifelse(
         sum(grepl(".*[1-6]$", as.numeric(unlist(
           strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
     } else {
       dataIN[, list(n = ifelse(
-        sum(grepl(paste0(".*[", as.numeric(input$kropp), "]$"), as.numeric(unlist(
+        sum(grepl(".*[2-6]$", as.numeric(unlist(
           strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
     }
   })
-
 
   ## Reactive value
   vars <- reactiveValues()
 
   ## Velger alle kroppsregioner eller en region
   observe({
-    vars$velge <- dataUT()
+    vars$velge <- valgGrad()
   })
 
 
@@ -112,11 +133,12 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   output$test <- renderPrint({
 
-    vars$velge
+    valgGrad()[,.N, by = n]
   })
 
   output$test2 <- renderPrint({
-    dataUT()[, .N, by = n]
+
+    valgKropp()
 
   })
 
