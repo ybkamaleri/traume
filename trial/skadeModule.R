@@ -1,3 +1,4 @@
+
 ## test ulykke module
 #####################
 
@@ -58,27 +59,33 @@ skadeModUI <- function(id){
                                           "'] == 2 && input['", ns("kropp"), "'] == 6"),
                        selectInput(inputId = ns("til_cerv"),
                                    label = "Tilleggsuttrekk (nakke):",
-                                   choices = list("Isolerte skjelettskader" = 1,
+                                   choices = list("..." = 0,
+                                                  "Isolerte skjelettskader" = 1,
                                                   "Ryggmargsskade" = 2
-                                                  )
+                                                  ),
+                                   selected = 0
                                    )),
       ## Tillegg for Lumbalcolumna
       conditionalPanel(condition = paste0("input['", ns("til_rygg"),
                                           "'] == 3 && input['", ns("kropp"), "'] == 6"),
                        selectInput(inputId = ns("til_lumb"),
                                    label = "Tilleggsuttrekk (korsrygg):",
-                                   choices = list("Isolerte skjelettskader" = 1,
+                                   choices = list("..." = 0,
+                                                  "Isolerte skjelettskader" = 1,
                                                   "Ryggmargsskade" = 2
-                                                  )
+                                                  ),
+                                   selected = 0
                                    )),
       ## Tillegg for Thoracalcolumna
       conditionalPanel(condition = paste0("input['", ns("til_rygg"),
                                           "'] == 4 && input['", ns("kropp"), "'] == 6"),
                        selectInput(inputId = ns("til_thor"),
                                    label = "Tilleggsuttrekk (thorax):",
-                                   choices = list("Isolerte skjelettskader" = 1,
+                                   choices = list("..." = 0,
+                                                  "Isolerte skjelettskader" = 1,
                                                   "Ryggmargsskade" = 2
-                                                  )
+                                                  ),
+                                   selected = 0
                                    ))
       ),
 
