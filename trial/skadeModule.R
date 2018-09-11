@@ -44,15 +44,44 @@ skadeModUI <- function(id){
                                                   ),
                                    selected = 3
                                    )),
-      ## Tillegg Ryggsøyle
+      ## Deler for Ryggsøyle
       conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 6"),
                        selectInput(inputId = ns("til_rygg"),
-                                   label = "Tilleggsuttrekk:",
+                                   label = "Spesifisert deler:",
                                    choices = list("Alle" = 1,
                                                   "Cervicalcolumna" = 2,
                                                   "Lumbalcolumna" = 3,
                                                   "Thoracalcolumna" = 4)
-                                   ))),
+                                   )),
+      ## Tillegg for Cervicalcolumna
+      conditionalPanel(condition = paste0("input['", ns("til_rygg"),
+                                          "'] == 2 && input['", ns("kropp"), "'] == 6"),
+                       selectInput(inputId = ns("til_cerv"),
+                                   label = "Tilleggsuttrekk (nakke):",
+                                   choices = list("Isolerte skjelettskader" = 1,
+                                                  "Ryggmargsskade" = 2
+                                                  )
+                                   )),
+      ## Tillegg for Lumbalcolumna
+      conditionalPanel(condition = paste0("input['", ns("til_rygg"),
+                                          "'] == 3 && input['", ns("kropp"), "'] == 6"),
+                       selectInput(inputId = ns("til_lumb"),
+                                   label = "Tilleggsuttrekk (korsrygg):",
+                                   choices = list("Isolerte skjelettskader" = 1,
+                                                  "Ryggmargsskade" = 2
+                                                  )
+                                   )),
+      ## Tillegg for Thoracalcolumna
+      conditionalPanel(condition = paste0("input['", ns("til_rygg"),
+                                          "'] == 4 && input['", ns("kropp"), "'] == 6"),
+                       selectInput(inputId = ns("til_thor"),
+                                   label = "Tilleggsuttrekk (thorax):",
+                                   choices = list("Isolerte skjelettskader" = 1,
+                                                  "Ryggmargsskade" = 2
+                                                  )
+                                   ))
+      ),
+
       box(with = 4,
           title = "Skadegradering",
           status = "primary",
