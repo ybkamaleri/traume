@@ -10,7 +10,7 @@ function(input, output, session) {
     valueBox(
       value = sumTraume,
       subtitle = "Antall traume",
-      icon = icon("male"),
+      icon = icon("pie-chart"),
       color = "blue"
     )
   })
