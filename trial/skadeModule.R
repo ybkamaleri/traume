@@ -162,6 +162,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   ## Tilleggsuttrekk Abdomen
   tilAbdomen <- reactive({
 
+    req(input$skadegrad) #vises ingen hvis NULL
+
     ## Milt og lever først 4 tall
     milt <- 5442
     lever <- 5418
@@ -184,28 +186,45 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     return(data)
   })
 
-  ## ## Spine deler
-  ## tilSpine <- reactive({
+  ## Spine deler
+  tilSpine <- reactive({
 
-  ##   if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 1){
-  ##     data <- valgKropp()
-  ##   } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 2){
+    req(input$skadegrad) #vises ingen hvis NULL
 
-  ##     ## Cervicalcolumna
-  ##     data <-
+    if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 1){
+      data <- valgKropp()
+    } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 2){
 
-  ## } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3){
+      ## Cervicalcolumna - femte tallet er 2
+      data <- valgKropp()[, list(n = ifelse(
+        sum(grepl(paste0("6[0-9][0-9][0-9]2.*[", paste(valSkade(), collapse = ""), "]$"),
+                  as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
+        gender = gender,
+        aisMix = aisMix), by = ntrid]
 
-  ##   ## Lumbalcolumna
+    } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3){
 
-  ## } else {
+      ## Lumbalcolumna - femte tallet er 6
+      data <- valgKropp()[, list(n = ifelse(
+        sum(grepl(paste0("6[0-9][0-9][0-9]6.*[", paste(valSkade(), collapse = ""), "]$"),
+                  as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
+        gender = gender,
+        aisMix = aisMix), by = ntrid]
 
-  ##   ## Thoracalcolumna
+    } else {
 
-  ## }
+      ## Thoracalcolumna - femte tallet er 4
+      data <- valgKropp()[, list(n = ifelse(
+        sum(grepl(paste0("6[0-9][0-9][0-9]4.*[", paste(valSkade(), collapse = ""), "]$"),
+                  as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
+        gender = gender,
+        aisMix = aisMix), by = ntrid]
 
+    }
 
-  ## })
+    return(data)
+
+  })
 
 
   ## hvis tillegg !=1 så velge output fra tillegg input
@@ -235,6 +254,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   ############
   tabUT <- reactive({
 
+    req(input$skadegrad) #vises ingen hvis NULL
+
     ## progress indikator
     progress <- Progress$new(session, min=1, max=5)
     on.exit(progress$close())
@@ -248,7 +269,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     }
 
 
-    data <- tilAbdomen()[n == 1, .N, by = gender]
+    data <- tilSpine()[n == 1, .N, by = gender]
     data
   })
 
