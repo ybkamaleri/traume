@@ -59,33 +59,33 @@ skadeModUI <- function(id){
                                           "'] == 2 && input['", ns("kropp"), "'] == 6"),
                        selectInput(inputId = ns("til_cerv"),
                                    label = "Tilleggsuttrekk (nakke):",
-                                   choices = list("..." = 0,
-                                                  "Isolerte skjelettskader" = 1,
-                                                  "Ryggmargsskade" = 2
+                                   choices = list("Alle" = 1,
+                                                  "Isolerte skjelettskader" = 2,
+                                                  "Ryggmargsskade" = 3
                                                   ),
-                                   selected = 0
+                                   selected = 1
                                    )),
       ## Tillegg for Lumbalcolumna
       conditionalPanel(condition = paste0("input['", ns("til_rygg"),
                                           "'] == 3 && input['", ns("kropp"), "'] == 6"),
                        selectInput(inputId = ns("til_lumb"),
                                    label = "Tilleggsuttrekk (korsrygg):",
-                                   choices = list("..." = 0,
-                                                  "Isolerte skjelettskader" = 1,
-                                                  "Ryggmargsskade" = 2
+                                   choices = list("Alle" = 1,
+                                                  "Isolerte skjelettskader" = 2,
+                                                  "Ryggmargsskade" = 3
                                                   ),
-                                   selected = 0
+                                   selected = 1
                                    )),
       ## Tillegg for Thoracalcolumna
       conditionalPanel(condition = paste0("input['", ns("til_rygg"),
                                           "'] == 4 && input['", ns("kropp"), "'] == 6"),
                        selectInput(inputId = ns("til_thor"),
                                    label = "Tilleggsuttrekk (thorax):",
-                                   choices = list("..." = 0,
-                                                  "Isolerte skjelettskader" = 1,
-                                                  "Ryggmargsskade" = 2
+                                   choices = list("Alle" = 1,
+                                                  "Isolerte skjelettskader" = 2,
+                                                  "Ryggmargsskade" = 3
                                                   ),
-                                   selected = 0
+                                   selected = 1
                                    ))
       ),
 
@@ -128,29 +128,79 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   dataIN <- data
 
+  valKropp <- reactive({as.numeric(input$kropp)}) #kroppregion
+  valSkade <- reactive({as.numeric(input$skadegrad)}) #skadegrad
+
+
   ## Kroppsregioner
   valgKropp  <- reactive({
-
-    valKropp <- as.numeric(input$kropp) #kroppregion
-    valSkade <- as.numeric(input$skadegrad) #skadegrad
 
     ## Alle kroppdeler
     if (as.numeric(input$kropp) == 10) {
       req(input$skadegrad) #vises ingen hvis NULL
 
-      dataIN[, list(n = ifelse(
-        sum(grepl(paste0(".[", paste(valSkade, collapse = ""), "]$"),
-                  as.numeric(unlist(strsplit(ais, split = ","))))) != 0, 1, 0),
+      data <- dataIN[, list(n = ifelse(
+        sum(grepl(paste0(".[", paste(valSkade(), collapse = ""), "]$"),
+                  as.character(unlist(strsplit(ais, split = ","))))) != 0, 1, 0),
         gender = gender), by = ntrid]
 
     } else {
 
-      dataIN[, list(n = ifelse(
-        sum(grepl(paste0("^", valKropp, ".*[", paste(valSkade, collapse = ""), "]$"),
-                  as.numeric(unlist(strsplit(ais, split = ","))))) != 0, 1, 0),
+      data <- dataIN[, list(n = ifelse(
+        sum(grepl(paste0("^", valKropp(), ".*[", paste(valSkade(), collapse = ""), "]$"),
+                  as.character(unlist(strsplit(ais, split = ","))))) != 0, 1, 0),
         gender = gender), by = ntrid]
     }
+    return(data)
   })
+
+  ## Tilleggsuttrekk Abdomen
+  tilAbdomen <- reactive({
+
+    ## Milt og lever først 4 tall
+    milt <- 5442
+    lever <- 5418
+
+    kodeTillegg <- ifelse(as.numeric(input$til_abdomen) == 2, lever, milt)
+
+    if (as.numeric(input$til_abdomen) == 1){
+
+      data <- valgKropp()
+
+    } else {
+
+      data <- dataIN[, list(n = ifelse(
+        sum(grepl(paste0("^", kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
+                  as.character(unlist(strsplit(ais, split = ","))))) != 0, 1, 0),
+        gender = gender), by = ntrid]
+    }
+
+    return(data)
+  })
+
+  ## ## Spine deler
+  ## tilSpine <- reactive({
+
+  ##   if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 1){
+  ##     data <- valgKropp()
+  ##   } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 2){
+
+  ##     ## Cervicalcolumna
+  ##     data <-
+
+  ##       } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3){
+
+  ##     ## Lumbalcolumna
+
+  ##   } else {
+
+  ##     ## Thoracalcolumna
+
+  ##   }
+
+
+  ## })
+
 
   ## hvis tillegg !=1 så velge output fra tillegg input
   ## ellers velger valgKropp
@@ -163,11 +213,11 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   andelGradAlle  <- reactive({
     if (input$skadegrad1){
       andelG <- dataIN[, list(n = ifelse(
-        sum(grepl(".*[1-6]$", as.numeric(unlist(
+        sum(grepl(".*[1-6]$", as.character(unlist(
           strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
     } else {
       andelG <- dataIN[, list(n = ifelse(
-        sum(grepl(".*[2-6]$", as.numeric(unlist(
+        sum(grepl(".*[2-6]$", as.character(unlist(
           strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
     }
     andelG[, sum(n, na.rm = TRUE)]
@@ -186,6 +236,20 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   ## Tabell ##
   ############
   tabUT <- reactive({
+
+    ## progress indikator
+    progress <- Progress$new(session, min=1, max=5)
+    on.exit(progress$close())
+
+    progress$set(message = 'Vent',
+                 detail = 'kalkulering pågår...')
+
+    for (i in 1:5) {
+      progress$set(value = i)
+      Sys.sleep(0.3)
+    }
+
+
     data <- valgKropp()[n == 1, .N, by = gender]
     data
   })
@@ -197,7 +261,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   output$test <- renderPrint({
 
-    andelGradAlle()
+    tilAbdomen()[, .N, by = n]
   })
 
   output$test2 <- renderPrint({
