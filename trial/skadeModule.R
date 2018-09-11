@@ -5,6 +5,7 @@ library(shiny)
 library(shinydashboard)
 library(data.table)
 library(ggplot2)
+library(shinyBS)
 
 ## source("~/Git-work/traume/ntrApp/data.R")
 
@@ -68,7 +69,13 @@ skadeModUI <- function(id){
                              ),
           checkboxInput(inputId = ns("skadegrad1"),
                         label = "Andel inkluderer skadegrad 1",
-                        value = TRUE)
+                        value = TRUE),
+          bsTooltip(id = ns("skadegrad1"),
+                    title = "Hvis skadegrad 1 er valgt må denne også velges",
+                    placement = "bottom",
+                    trigger = "focus",
+                    options = list(container = "body")
+                    )
           )
     ),
     fluidRow(
