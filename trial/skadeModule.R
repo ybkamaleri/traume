@@ -126,7 +126,10 @@ skadeModUI <- function(id){
 
 skadeMod <- function(input, output, session, dataFiltert, data){
 
-  dataIN <- data
+  dataRaw <- data
+  dataRaw[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
+
+  dataIN <- dataRaw[!duplicated(ntrid)]
 
   valKropp <- reactive({as.numeric(input$kropp)}) #kroppregion
   valSkade <- reactive({as.numeric(input$skadegrad)}) #skadegrad
@@ -141,15 +144,17 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
       data <- dataIN[, list(n = ifelse(
         sum(grepl(paste0(".[", paste(valSkade(), collapse = ""), "]$"),
-                  as.character(unlist(strsplit(ais, split = ","))))) != 0, 1, 0),
-        gender = gender), by = ntrid]
+                  as.character(toString(unlist(strsplit(ais, split = ",")))))) != 0, 1, 0),
+        gender = gender,
+        aisMix = aisMix), by = ntrid]
 
     } else {
 
       data <- dataIN[, list(n = ifelse(
         sum(grepl(paste0("^", valKropp(), ".*[", paste(valSkade(), collapse = ""), "]$"),
-                  as.character(unlist(strsplit(ais, split = ","))))) != 0, 1, 0),
-        gender = gender), by = ntrid]
+                  as.character(toString(unlist(strsplit(ais, split = ",")))))) != 0, 1, 0),
+        gender = gender,
+        aisMix = aisMix), by = ntrid]
     }
     return(data)
   })
@@ -169,10 +174,11 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
     } else {
 
-      data <- dataIN[, list(n = ifelse(
+      data <- valgKropp()[, list(n = ifelse(
         sum(grepl(paste0("^", kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
-                  as.character(unlist(strsplit(ais, split = ","))))) != 0, 1, 0),
-        gender = gender), by = ntrid]
+                  as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
+        gender = gender,
+        aisMix = aisMix), by = ntrid]
     }
 
     return(data)
@@ -188,15 +194,15 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   ##     ## Cervicalcolumna
   ##     data <-
 
-  ##       } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3){
+  ## } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3){
 
-  ##     ## Lumbalcolumna
+  ##   ## Lumbalcolumna
 
-  ##   } else {
+  ## } else {
 
-  ##     ## Thoracalcolumna
+  ##   ## Thoracalcolumna
 
-  ##   }
+  ## }
 
 
   ## })
@@ -223,14 +229,6 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     andelG[, sum(n, na.rm = TRUE)]
   })
 
-  ## Reactive value
-  vars <- reactiveValues()
-
-  ## Velger alle kroppsregioner eller en region
-  observe({
-    vars$velge <- andelGradAlle()
-  })
-
 
   ############
   ## Tabell ##
@@ -250,7 +248,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     }
 
 
-    data <- valgKropp()[n == 1, .N, by = gender]
+    data <- tilAbdomen()[n == 1, .N, by = gender]
     data
   })
 
@@ -261,39 +259,40 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   output$test <- renderPrint({
 
-    tilAbdomen()[, .N, by = n]
-  })
-
-  output$test2 <- renderPrint({
-
     tabUT()
 
   })
 
+  output$test2 <- renderPrint({
+
+    data <- valgKropp()[n == 1, .N, by = gender]
+    print(data, topn = 20)
+  })
+
 }
 
 
-###################################
-########## Shiny App ##############
-###################################
+  ###################################
+  ########## Shiny App ##############
+  ###################################
 
-ui <- dashboardPage(
-  dashboardHeader(disable = TRUE),
-  dashboardSidebar(disable = TRUE),
-  dashboardBody(
-    fluidPage(
-      fluidRow(
-        skadeModUI("skade")
-      ))
+  ui <- dashboardPage(
+    dashboardHeader(disable = TRUE),
+    dashboardSidebar(disable = TRUE),
+    dashboardBody(
+      fluidPage(
+        fluidRow(
+          skadeModUI("skade")
+        ))
+    )
   )
-)
 
 
-server <- function(input, output, session){
+  server <- function(input, output, session){
 
-  callModule(skadeMod, "skade", data = skade)
+    callModule(skadeMod, "skade", data = skade)
 
-  session$onSessionEnded(stopApp)
-}
+    session$onSessionEnded(stopApp)
+  }
 
-shinyApp(ui, server)
+  shinyApp(ui, server)
