@@ -3,41 +3,18 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-08-25 lø. 11:35 -->
+<!-- 2018-09-13 to. 00:09 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Analyser for NTR</title>
+<title>Nasjonalt traumeregister</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="Yusman Kamaleri" />
-<style type="text/css">
-<!--/*--><![CDATA[/*><!--*/
-.title {
-    text-align: left;
-    color: blue;
-    font-family: "Palatino", serif;
-    margin-bottom: .3em;
-}
-
-.org-ol {
-    font-family: "Courier New", monospace;
-    font-size: 16px;
-}
-
-.outline-2 {
-    font-family: "Garamound", monospace;
-    font-size: 16px;
-}
-
-a:hover {
-    background-color: lightblue;
-}
-
-body {
-    background-color: Beige;
-    margin-left: 5%;
-}
-/*]]>*/-->
-</style>
+<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/readtheorg/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/readtheorg/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/lib/js/jquery.stickytableheaders.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/readtheorg/js/readtheorg.js"></script>
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -87,218 +64,71 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Analyser for NTR</h1>
+<h1 class="title">Nasjonalt traumeregister
+<br />
+<span class="subtitle">Resultattjenester versjon 0.03</span>
+</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgca172f6">1. Kategorisering</a></li>
-<li><a href="#org1ed043c">2. Liggerdøgn</a></li>
-<li><a href="#orgb05d304">3. Skadekoder</a></li>
-<li><a href="#org5ba5001">4. Tilhørighet</a></li>
-<li><a href="#orgabfefa5">5. Førarbeid <code>[0/3]</code></a></li>
-<li><a href="#org7aeec56">6. AIS <code>[2/8]</code></a></li>
-<li><a href="#org17dbe96">7. Analyse ønsker <code>[2/12]</code></a></li>
-<li><a href="#org748d37d">8. Analyse gjøres slik:</a>
-<ul>
-<li><a href="#orgec477c1">8.1. Kobling av data</a></li>
-<li><a href="#org7e15d3c">8.2. UnitId</a></li>
-<li><a href="#org4ace76e">8.3. hosp<sub>serial</sub><sub>num</sub> fra traumeskjema</a></li>
-</ul>
-</li>
-<li><a href="#org99bc938">9. Outline</a>
-<ul>
-<li><a href="#org1a19721">9.1. Generelle Info</a></li>
-<li><a href="#orgc4f0550">9.2. Valg Enhet</a></li>
-<li><a href="#orgbd91c76">9.3. Periode</a></li>
-<li><a href="#orgde2253c">9.4. Valg kjønn</a></li>
-<li><a href="#org81032de">9.5. Valg Alder</a></li>
-<li><a href="#org2e3882c">9.6. AIS</a></li>
-<li><a href="#orga540bcd">9.7. Ulykke</a></li>
-</ul>
-</li>
+<li><a href="#org729e867">1. Nyhet</a></li>
+<li><a href="#org6e9006c">2. Inledning</a></li>
+<li><a href="#org6419844">3. Filstruktur</a></li>
+<li><a href="#org4fd72df">4. Hva trenger man for å bruke programmet?</a></li>
+<li><a href="#org747222e">5. Hvordan bruker man programmet?</a></li>
+<li><a href="#org3c61671">6. Spørsmål</a></li>
 </ul>
 </div>
 </div>
-
-<div id="outline-container-orgca172f6" class="outline-2">
-<h2 id="orgca172f6"><span class="section-number-2">1</span> Kategorisering</h2>
+<div id="outline-container-org729e867" class="outline-2">
+<h2 id="org729e867"><span class="section-number-2">1</span> Nyhet</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
-<li>Sykehus</li>
-<li>Region</li>
+<li>Resultater kan vises for hele landet, HF, RHF eller sykehusnivå</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org1ed043c" class="outline-2">
-<h2 id="org1ed043c"><span class="section-number-2">2</span> Liggerdøgn</h2>
+<div id="outline-container-org6e9006c" class="outline-2">
+<h2 id="org6e9006c"><span class="section-number-2">2</span> Inledning</h2>
 <div class="outline-text-2" id="text-2">
-<ul class="org-ul">
-<li>Hvordan regner man liggerdøgn?</li>
-<li>Startdato</li>
-<li>Sluttdato</li>
-</ul>
+<p>
+Dette er et forsøk for å lage en resultatpresentasjon ved bruk av <a href="https://www.r-project.org/">R</a> for analyse og
+<a href="https://shiny.rstudio.com/">Shiny</a> for interaktiv presentasjon.
+</p>
 </div>
 </div>
-<div id="outline-container-orgb05d304" class="outline-2">
-<h2 id="orgb05d304"><span class="section-number-2">3</span> Skadekoder</h2>
-<div class="outline-text-2" id="text-3">
-<ul class="org-ul">
-<li>Ullyketype
-<ul class="org-ul">
-<li>Ullyketype med transport ulykke. Bør velge bare når svaret i <i>acc<sub>transport</sub></i> er
-JA når man analysere type transport ulykke)</li>
-</ul></li>
-<li>Skadekoder</li>
-</ul>
+<div id="outline-container-org6419844" class="outline-2">
+<h2 id="org6419844"><span class="section-number-2">3</span> Filstruktur</h2>
 </div>
-</div>
-<div id="outline-container-org5ba5001" class="outline-2">
-<h2 id="org5ba5001"><span class="section-number-2">4</span> Tilhørighet</h2>
+<div id="outline-container-org4fd72df" class="outline-2">
+<h2 id="org4fd72df"><span class="section-number-2">4</span> Hva trenger man for å bruke programmet?</h2>
 <div class="outline-text-2" id="text-4">
-<ul class="org-ul">
-<li>Hvilket sykehus for forskjellige skjemaer eg. Skadegradering og ulykke når skal
-analysere skade pga. sykkelulykke (annet skjema fra annet sykehus) og
-Skadegradering fra annet sykehus. eg. &ldquo;NTR-000285&rdquo;</li>
-</ul>
+<p>
+Det kreves at man har installert <a href="https://www.rstudio.com/">RStudio</a>. Hvis du jobber på OUS, kan man søker om å
+få installert programmet fra Sykehuspartner.
+</p>
 </div>
 </div>
-<div id="outline-container-orgabfefa5" class="outline-2">
-<h2 id="orgabfefa5"><span class="section-number-2">5</span> Førarbeid <code>[0/3]</code></h2>
+<div id="outline-container-org747222e" class="outline-2">
+<h2 id="org747222e"><span class="section-number-2">5</span> Hvordan bruker man programmet?</h2>
 <div class="outline-text-2" id="text-5">
 <p>
-Ting må gjøres for analsyen
+Når RStudio er installert så skal men gjøre følgende:
 </p>
 <ul class="org-ul">
-<li class="off"><code>[&#xa0;]</code> Liste over Reshid mot HF og RHF er oppdatert og samsvær med databasen</li>
-<li class="off"><code>[&#xa0;]</code> Koder doublesjekke med kodebok. Ingen ekstra koder i datautrekk som ikke er i
-kodebook (definisjonskatalogen)</li>
-<li class="off"><code>[&#xa0;]</code> Tid er registret</li>
+<li>Bla bla bla</li>
 </ul>
 </div>
 </div>
-
-<div id="outline-container-org7aeec56" class="outline-2">
-<h2 id="org7aeec56"><span class="section-number-2">6</span> AIS <code>[2/8]</code></h2>
-<div class="outline-text-2" id="text-6">
-<ul class="org-ul">
-<li class="on"><code>[X]</code> Kode 91000.1 vises som 010000.1 i GUI. Check at datadump har 091000.1 (Ingen som har 09**)</li>
-<li class="on"><code>[X]</code> kode <code>******.9</code> betyr skadegrad er ukjent</li>
-<li class="off"><code>[&#xa0;]</code> AIS <code>******.1</code> skal bort i analysen for nevne. Lage bare en knapp hvis man vil
-inkluderer skadegrad 1</li>
-<li class="off"><code>[&#xa0;]</code> Bare høyest skadegradering som teller</li>
-<li class="off"><code>[&#xa0;]</code> ISS &gt; 15 betyr alvorlig skade. For ISS beregning er kvadrat av 3 alvorligste AIS</li>
-<li class="off"><code>[&#xa0;]</code> Beregn eg. vanligste skade ved en vist type ulykke</li>
-<li class="off"><code>[&#xa0;]</code> Lage AIS fane uten ulykketype eller skade mekanismen</li>
-<li class="off"><code>[&#xa0;]</code> Beholder duplikater</li>
-</ul>
+<div id="outline-container-org3c61671" class="outline-2">
+<h2 id="org3c61671"><span class="section-number-2">6</span> Spørsmål</h2>
 </div>
 </div>
-<div id="outline-container-org17dbe96" class="outline-2">
-<h2 id="org17dbe96"><span class="section-number-2">7</span> Analyse ønsker <code>[2/12]</code></h2>
-<div class="outline-text-2" id="text-7">
-<p>
-De er basert på diskusjonen med NTR og bestillingsdokument
-</p>
-<ul class="org-ul">
-<li class="on"><code>[X]</code> Dashboard med ISS &gt; 15</li>
-<li class="on"><code>[X]</code> Død etter 30 dager (som det er nå)</li>
-<li class="off"><code>[&#xa0;]</code> Filter for dato Nasjonal - inj<sub>start</sub><sub>date</sub> (Traume skjema)</li>
-<li class="off"><code>[&#xa0;]</code> Filter for dato Sykehus - ed<sub>arrival</sub><sub>dtg</sub> (Akutt skjema)</li>
-<li class="off"><code>[&#xa0;]</code> Antall fordelt på tid - ukedag (virksomhetsdata)</li>
-<li class="off"><code>[&#xa0;]</code> Ulykke og pre-hospital skjema fra sykehus 1 (hosp<sub>serial</sub><sub>num</sub> fra Traume Skjema)</li>
-<li class="off"><code>[&#xa0;]</code> Filter for Alder (traumeskjema &ldquo;PatientAge&rdquo;)</li>
-<li class="off"><code>[&#xa0;]</code> Filter for kjønn (traumeskjema &ldquo;PatientGender&rdquo; 1=Mann 2=Kvinne)</li>
-<li class="off"><code>[&#xa0;]</code> Filter for penetrerende skade (ulykkeskjema - &ldquo;inj<sub>penetrating</sub>&rdquo; 0:ikke valgt 1:Ja 2:Nei 3:Ukjent)</li>
-<li class="off"><code>[&#xa0;]</code> Sykehus opphold for liggertid (Intensiv skjema) hvis mulig</li>
-<li class="off"><code>[&#xa0;]</code> Transport forskjellige koder</li>
-<li class="off"><code>[&#xa0;]</code> Forklarer alle analysene i shiny</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-org748d37d" class="outline-2">
-<h2 id="org748d37d"><span class="section-number-2">8</span> Analyse gjøres slik:</h2>
-<div class="outline-text-2" id="text-8">
-</div>
-<div id="outline-container-orgec477c1" class="outline-3">
-<h3 id="orgec477c1"><span class="section-number-3">8.1</span> Kobling av data</h3>
-<div class="outline-text-3" id="text-8-1">
-<ul class="org-ul">
-<li>NTR nummer representerer 1 pasient.</li>
-<li>Traumeskjema har <i>SkjemaGUID</i> som er 1 til 1 mot NTR nummer</li>
-<li>Andre skjema har <i>HovedskjemaGUID</i> som er nøkkelen mot Traumeskjema</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-org7e15d3c" class="outline-3">
-<h3 id="org7e15d3c"><span class="section-number-3">8.2</span> UnitId</h3>
-<div class="outline-text-3" id="text-8-2">
-<ul class="org-ul">
-<li>Alle skjemaer har <i>UnitId</i>. Filtering for Sykehus, RHF og HF basert på
-<i>HealthUnitId</i> til hvert skjema</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-org4ace76e" class="outline-3">
-<h3 id="org4ace76e"><span class="section-number-3">8.3</span> hosp<sub>serial</sub><sub>num</sub> fra traumeskjema</h3>
-<div class="outline-text-3" id="text-8-3">
-<ul class="org-ul">
-<li>hva skal det brukers til?</li>
-</ul>
-</div>
-</div>
-</div>
-<div id="outline-container-org99bc938" class="outline-2">
-<h2 id="org99bc938"><span class="section-number-2">9</span> Outline</h2>
-<div class="outline-text-2" id="text-9">
-</div>
-<div id="outline-container-org1a19721" class="outline-3">
-<h3 id="org1a19721"><span class="section-number-3">9.1</span> Generelle Info</h3>
-<div class="outline-text-3" id="text-9-1">
-<p>
-Dashboard som gir informasjon om:
-</p>
-<ul class="org-ul">
-<li>Antall registrerte i databasen</li>
-<li>Antall AIS &gt; 15</li>
-<li>Antall døde etter 30 dager</li>
-<li>Figur Alder og kjønn</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-orgc4f0550" class="outline-3">
-<h3 id="orgc4f0550"><span class="section-number-3">9.2</span> Valg Enhet</h3>
-<div class="outline-text-3" id="text-9-2">
-<ul class="org-ul">
-<li>Hele landet</li>
-<li>RHF</li>
-<li>HF</li>
-<li>Sykehus</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-orgbd91c76" class="outline-3">
-<h3 id="orgbd91c76"><span class="section-number-3">9.3</span> Periode</h3>
-<div class="outline-text-3" id="text-9-3">
-<ul class="org-ul">
-<li>Valg av dato fra og til</li>
-<li>Valg av dato fra og til for sykehus</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-orgde2253c" class="outline-3">
-<h3 id="orgde2253c"><span class="section-number-3">9.4</span> Valg kjønn</h3>
-</div>
-<div id="outline-container-org81032de" class="outline-3">
-<h3 id="org81032de"><span class="section-number-3">9.5</span> Valg Alder</h3>
-</div>
-<div id="outline-container-org2e3882c" class="outline-3">
-<h3 id="org2e3882c"><span class="section-number-3">9.6</span> AIS</h3>
-</div>
-<div id="outline-container-orga540bcd" class="outline-3">
-<h3 id="orga540bcd"><span class="section-number-3">9.7</span> Ulykke</h3>
-</div>
-</div>
+<div id="postamble" class="status">
+<p class="author">Author: Yusman Kamaleri</p>
+<p class="date">Created: 2018-09-13 to. 00:09</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>
