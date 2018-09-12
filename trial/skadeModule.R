@@ -21,73 +21,84 @@ skadeModUI <- function(id){
       box(with = 4,
           title = "Kroppsregioner",
           selectInput(inputId = ns("kropp"),
-                  label = NULL,
-                  choices = list("Alle" = 10,
-                                 "Head" = 1,
-                                 "Face" = 2,
-                                 "Neck" = 3,
-                                 "Thorax" = 4,
-                                 "Abdomen" = 5,
-                                 "Spine" = 6,
-                                 "Upper extremity" = 7,
-                                 "Lower extremity" = 8,
-                                 "External and other" = 9
-                                 ),
-                  selected = 10
-                  ),
-      ## Tillegg abdomen
-      conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 5"),
-                       selectInput(inputId = ns("til_abdomen"),
-                                   label = "Tilleggsuttrekk:",
-                                   choices = list("Alle" = 1,
-                                                  "Leverskader" = 2,
-                                                  "Miltskader" = 3
-                                                  ),
-                                   selected = 3
-                                   )),
-      ## Deler for Ryggsøyle
-      conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 6"),
-                       selectInput(inputId = ns("til_rygg"),
-                                   label = "Spesifisert deler:",
-                                   choices = list("Alle" = 1,
-                                                  "Cervicalcolumna" = 2,
-                                                  "Lumbalcolumna" = 3,
-                                                  "Thoracalcolumna" = 4)
-                                   )),
-      ## Tillegg for Cervicalcolumna
-      conditionalPanel(condition = paste0("input['", ns("til_rygg"),
-                                          "'] == 2 && input['", ns("kropp"), "'] == 6"),
-                       selectInput(inputId = ns("til_cerv"),
-                                   label = "Tilleggsuttrekk (nakke):",
-                                   choices = list("Alle" = 1,
-                                                  "Isolerte skjelettskader" = 2,
-                                                  "Ryggmargsskade" = 3
-                                                  ),
-                                   selected = 1
-                                   )),
-      ## Tillegg for Lumbalcolumna
-      conditionalPanel(condition = paste0("input['", ns("til_rygg"),
-                                          "'] == 3 && input['", ns("kropp"), "'] == 6"),
-                       selectInput(inputId = ns("til_lumb"),
-                                   label = "Tilleggsuttrekk (korsrygg):",
-                                   choices = list("Alle" = 1,
-                                                  "Isolerte skjelettskader" = 2,
-                                                  "Ryggmargsskade" = 3
-                                                  ),
-                                   selected = 1
-                                   )),
-      ## Tillegg for Thoracalcolumna
-      conditionalPanel(condition = paste0("input['", ns("til_rygg"),
-                                          "'] == 4 && input['", ns("kropp"), "'] == 6"),
-                       selectInput(inputId = ns("til_thor"),
-                                   label = "Tilleggsuttrekk (thorax):",
-                                   choices = list("Alle" = 1,
-                                                  "Isolerte skjelettskader" = 2,
-                                                  "Ryggmargsskade" = 3
-                                                  ),
-                                   selected = 1
-                                   ))
-      ),
+                      label = NULL,
+                      choices = list("Alle" = 10,
+                                     "Head" = 1,
+                                     "Face" = 2,
+                                     "Neck" = 3,
+                                     "Thorax" = 4,
+                                     "Abdomen" = 5,
+                                     "Spine" = 6,
+                                     "Upper extremity" = 7,
+                                     "Lower extremity" = 8,
+                                     "External and other" = 9
+                                     ),
+                      selected = 10
+                      ),
+          ## Tillegg abdomen
+          conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 5"),
+                           selectInput(inputId = ns("til_abdomen"),
+                                       label = "Tilleggsuttrekk:",
+                                       choices = list("Alle" = 1,
+                                                      "Leverskader" = 2,
+                                                      "Miltskader" = 3
+                                                      ),
+                                       selected = 3
+                                       )),
+          ## Deler for Ryggsøyle
+          conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 6"),
+                           selectInput(inputId = ns("til_rygg"),
+                                       label = "Spesifisert deler:",
+                                       choices = list("Alle" = 1,
+                                                      "Cervicalcolumna" = 2,
+                                                      "Lumbalcolumna" = 3,
+                                                      "Thoracalcolumna" = 4)
+                                       )),
+          ## Tillegg for Cervicalcolumna
+          conditionalPanel(condition = paste0("input['", ns("til_rygg"),
+                                              "'] == 2 && input['", ns("kropp"), "'] == 6"),
+                           selectInput(inputId = ns("til_cerv"),
+                                       label = "Tilleggsuttrekk (nakke):",
+                                       choices = list("Alle" = 1,
+                                                      "Isolerte skjelettskader" = 2,
+                                                      "Ryggmargsskade" = 3
+                                                      ),
+                                       selected = 1),
+                           bsTooltip(id = ns("til_cerv"),
+                                     title = "Telling for minst en av de allerede spesifiserte AIS koder",
+                                     placement = "right",
+                                     trigger = "hover",
+                                     options = list(container = "body"))),
+          ## Tillegg for Lumbalcolumna
+          conditionalPanel(condition = paste0("input['", ns("til_rygg"),
+                                              "'] == 3 && input['", ns("kropp"), "'] == 6"),
+                           selectInput(inputId = ns("til_lumb"),
+                                       label = "Tilleggsuttrekk (korsrygg):",
+                                       choices = list("Alle" = 1,
+                                                      "Isolerte skjelettskader" = 2,
+                                                      "Ryggmargsskade" = 3
+                                                      ),
+                                       selected = 1),
+                           bsTooltip(id = ns("til_lumb"),
+                                     title = "Telling for minst en av de allerede spesifiserte AIS koder",
+                                     placement = "right",
+                                     trigger = "hover",
+                                     options = list(container = "body"))),
+          ## Tillegg for Thoracalcolumna
+          conditionalPanel(condition = paste0("input['", ns("til_rygg"),
+                                              "'] == 4 && input['", ns("kropp"), "'] == 6"),
+                           selectInput(inputId = ns("til_thor"),
+                                       label = "Tilleggsuttrekk (thorax):",
+                                       choices = list("Alle" = 1,
+                                                      "Isolerte skjelettskader" = 2,
+                                                      "Ryggmargsskade" = 3
+                                                      ),
+                                       selected = 1),
+                           bsTooltip(id = ns("til_thor"),
+                                     title = "Telling for minst en av de allerede spesifiserte AIS koder",
+                                     placement = "right",
+                                     trigger = "hover",
+                                     options = list(container = "body")))),
 
       box(with = 4,
           title = "Skadegradering",
@@ -248,7 +259,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     dataSK <- dataIN[, list(
       kode = ifelse(
         sum(grepl(kode_skjelett,
-                unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
       kode2 = ifelse(
         sum(grepl(kode_rygg,
                   unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
@@ -345,27 +356,27 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 }
 
 
-  ###################################
-  ########## Shiny App ##############
-  ###################################
+###################################
+########## Shiny App ##############
+###################################
 
-  ui <- dashboardPage(
-    dashboardHeader(disable = TRUE),
-    dashboardSidebar(disable = TRUE),
-    dashboardBody(
-      fluidPage(
-        fluidRow(
-          skadeModUI("skade")
-        ))
-    )
+ui <- dashboardPage(
+  dashboardHeader(disable = TRUE),
+  dashboardSidebar(disable = TRUE),
+  dashboardBody(
+    fluidPage(
+      fluidRow(
+        skadeModUI("skade")
+      ))
   )
+)
 
 
-  server <- function(input, output, session){
+server <- function(input, output, session){
 
-    callModule(skadeMod, "skade", data = skade)
+  callModule(skadeMod, "skade", data = skade)
 
-    session$onSessionEnded(stopApp)
-  }
+  session$onSessionEnded(stopApp)
+}
 
-  shinyApp(ui, server)
+shinyApp(ui, server)
