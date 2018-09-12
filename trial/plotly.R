@@ -30,3 +30,59 @@ DT.m1 = melt(DT, id.vars = c("family_id", "age_mother"),
              measure.vars = c("dob_child1", "dob_child2", "dob_child3"))
 DT.m1
 str(DT.m1)
+
+test_data
+
+######################################
+## Simple plot
+set.seed(112)
+dt <- data.table(id = 1:30, n = sample(0:1, 30, replace = T), gender = sample(1:2, 30, replace = T), age = sample(15:60, 30, replace = T))
+dt
+
+## Alder kategorisering
+## Alder kategori
+alder.kat2 <- function(x, lower, upper, by,
+                       sep = "-") {
+  labs <- paste0(c(paste(seq(lower, upper - by, by = by),
+                         seq(lower + by - 1, upper - 1, by = by),
+                         sep = sep),
+                   paste(upper, "+", sep = "")), " år")
+  cut(floor(x), breaks = c(seq(lower, upper, by = by), Inf),
+      include.lowest = TRUE, right = FALSE, labels = labs)
+}
+
+library(ggplot2)
+dtSel <- dt[n == 1]
+dtMan <- dtSel[!is.na(gender) == 1 & !is.na(age) & age != -1, .(mann = .N), key = age]
+ageMax <- max(dtMan, na.rm = TRUE)
+ageMin <- min(dtMan, na.rm = TRUE)
+dtCopy <- copy(dt)
+dtMan2 <- dtCopy[n == 1, ageK := alder.kat2(age, 0, ageMax, 5)][n == 1 & gender == 1, .(mann = .N), key = ageK]
+
+dtKvinne <- dt[!is.na(gender) == 2 && n == 1, .(kvinne = .N), key = age]
+ageKMax <- max(dtKvinne, na.rm = TRUE)
+dtKvinne2 <- dtCopy[n == 1, ageK := alder.kat2(age, 0, ageKMax, 5)][n == 1 && gender == 2, .(kvinne = .N), key = ageK]
+dtMK <- merge(dtMan2, dtKvinne2, all = TRUE)
+
+library(microbenchmark)
+microbenchmark(
+  a <- for (ind in seq_len(ncol(dtMK))) set(dtMK, i = which(is.na(dtMK[[ind]])),j = ind, value = 0),
+  b <- for (ind in seq_along(dtMK)) set(dtMK, i = which(is.na(dtMK[[ind]])),j = ind, value = 0) #start nummer
+)
+
+bNA(dtMK)
+dtMK[is.na(dtMK)] <- 0
+dtMK
+
+dtMK[, alle := mann + kvinne, by = ageK]
+
+dtMK2 <- melt(dtMK, id.vars = "ageK",
+              measure.vars = c("mann", "kvinne", "alle"),
+              variable.name = "sex",
+              value.name = "N")
+dtMK2
+
+library(ggplot2)
+
+(ggplot(dtMK2, aes(ageK, N, color = sex, group = sex)) +
+   geom_line())
