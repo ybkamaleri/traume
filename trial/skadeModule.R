@@ -1,5 +1,4 @@
-
-## test ulykke module
+## test skade module
 #####################
 
 library(shiny)
@@ -163,6 +162,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
         sum(grepl(paste0(".[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
+        age = age,
         aisMix = aisMix), by = ntrid]
 
     } else {
@@ -171,6 +171,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
         sum(grepl(paste0("^", valKropp(), ".*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
+        age = age,
         aisMix = aisMix), by = ntrid]
     }
     return(data)
@@ -200,6 +201,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
         sum(grepl(paste0("^", kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
+        age = age,
         aisMix = aisMix), by = ntrid]
     }
 
@@ -222,6 +224,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
         sum(grepl(paste0("6[0-9][0-9][0-9]2.*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
+        age = age,
         aisMix = aisMix), by = ntrid]
 
     } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3){
@@ -231,6 +234,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
         sum(grepl(paste0("6[0-9][0-9][0-9]6.*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
+        age = age,
         aisMix = aisMix), by = ntrid]
 
     } else {
@@ -240,6 +244,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
         sum(grepl(paste0("6[0-9][0-9][0-9]4.*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
+        age = age,
         aisMix = aisMix), by = ntrid]
 
     }
@@ -264,7 +269,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
         sum(grepl(kode_rygg,
                   unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
       ntrid = ntrid,
-      gender = gender), by = ntrid]
+      gender = gender,
+      age = age), by = ntrid]
 
     #kode1 0 hvis begge skjelettskader og ryggmargsskade
     dataSK[, kode1 := kode, by = ntrid]
@@ -273,9 +279,9 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     if (as.numeric(input$til_cerv) == 1){
       data <- tilSpine()
     } else if (as.numeric(input$til_cerv) == 2){
-      data <- dataSK[kode1 == 1, list(n = 1, gender = gender), by = ntrid]
+      data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     } else {
-      data <- dataSK[kode2 == 1, list(n = 1, gender = gender), by = ntrid]
+      data <- dataSK[kode2 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     }
 
     return(data)
@@ -297,7 +303,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
         sum(grepl(kode_rygg,
                   unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
       ntrid = ntrid,
-      gender = gender), by = ntrid]
+      gender = gender,
+      age = age), by = ntrid]
     
     #kode1 0 hvis begge skjelettskader og ryggmargsskade
     dataSK[, kode1 := kode, by = ntrid]
@@ -306,9 +313,9 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     if (as.numeric(input$til_lumb) == 1){
       data <- tilSpine()
     } else if (as.numeric(input$til_lumb) == 2){
-      data <- dataSK[kode1 == 1, list(n = 1, gender = gender), by = ntrid]
+      data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     } else {
-      data <- dataSK[kode2 == 1, list(n = 1, gender = gender), by = ntrid]
+      data <- dataSK[kode2 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     }
     
     return(data)
@@ -331,7 +338,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
         sum(grepl(kode_rygg,
                   unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
       ntrid = ntrid,
-      gender = gender), by = ntrid]
+      gender = gender,
+      age = age), by = ntrid]
     
     #kode1 0 hvis begge skjelettskader og ryggmargsskade
     dataSK[, kode1 := kode, by = ntrid]
@@ -340,9 +348,9 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     if (as.numeric(input$til_thor) == 1){
       data <- tilSpine()
     } else if (as.numeric(input$til_thor) == 2){
-      data <- dataSK[kode1 == 1, list(n = 1, gender = gender), by = ntrid]
+      data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     } else {
-      data <- dataSK[kode2 == 1, list(n = 1, gender = gender), by = ntrid]
+      data <- dataSK[kode2 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     }
     
     return(data)
@@ -420,13 +428,13 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   output$test <- renderPrint({
 
-    tabUT()
-
+    ## tabUT()
+    valgKropp()[n == 1]
   })
 
   output$test2 <- renderPrint({
 
-    andelGradKropp()
+    tilCerv()
     ## data <- andelGradKropp()[]
     ## print(data, topn = 20)
   })
