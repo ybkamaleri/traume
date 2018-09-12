@@ -248,11 +248,11 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   })
 
+
   ## Spine Tilleggsuttrekk - Cervicalcolumna
   tilCerv <- eventReactive(input$til_cerv, {
 
     kode_skjelett <- "^6502[123][024678].*[23]$"
-
     kode_rygg <- "^6402.*[3456]$"
 
     ## kode er skjelettskader og kode2 ryggmargsskade
@@ -282,12 +282,72 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   })
 
 
-  ## ## Spine tilleggsuttrekk - Thoracalcolumna
-  ## tilThor <- eventReactive(input$til_thor, {
+  ## Spine tilleggsuttrekk - Lumbalcolumna
+  tilLumb <- eventReactive(input$til_lumb, {
+
+    kode_skjelett <- "^6506[123][024678].*[23]$"
+    kode_rygg <- "^6406.*[345]$"
+
+    ## kode er skjelettskader og kode2 ryggmargsskade
+    dataSK <- dataIN[, list(
+      kode = ifelse(
+        sum(grepl(kode_skjelett,
+                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+      kode2 = ifelse(
+        sum(grepl(kode_rygg,
+                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+      ntrid = ntrid,
+      gender = gender), by = ntrid]
+    
+    #kode1 0 hvis begge skjelettskader og ryggmargsskade
+    dataSK[, kode1 := kode, by = ntrid]
+    dataSK[, kode1 := ifelse(kode == 1 && kode2 == 1, 0, kode), by = ntrid]
+    
+    if (as.numeric(input$til_lumb) == 1){
+      data <- tilSpine()
+    } else if (as.numeric(input$til_lumb) == 2){
+      data <- dataSK[kode1 == 1, list(n = 1, gender = gender), by = ntrid]
+    } else {
+      data <- dataSK[kode2 == 1, list(n = 1, gender = gender), by = ntrid]
+    }
+    
+    return(data)
+
+  })
 
 
-  ## })
+  ## Spine tilleggsuttrekk - Thoracalcolumna
+  tilThor <- eventReactive(input$til_thor, {
 
+    kode_skjelett <- "^6504[123][024678].*[23]$"
+    kode_rygg <- "^6404.*[345]$"
+    
+    ## kode er skjelettskader og kode2 ryggmargsskade
+    dataSK <- dataIN[, list(
+      kode = ifelse(
+        sum(grepl(kode_skjelett,
+                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+      kode2 = ifelse(
+        sum(grepl(kode_rygg,
+                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+      ntrid = ntrid,
+      gender = gender), by = ntrid]
+    
+    #kode1 0 hvis begge skjelettskader og ryggmargsskade
+    dataSK[, kode1 := kode, by = ntrid]
+    dataSK[, kode1 := ifelse(kode == 1 && kode2 == 1, 0, kode), by = ntrid]
+    
+    if (as.numeric(input$til_thor) == 1){
+      data <- tilSpine()
+    } else if (as.numeric(input$til_thor) == 2){
+      data <- dataSK[kode1 == 1, list(n = 1, gender = gender), by = ntrid]
+    } else {
+      data <- dataSK[kode2 == 1, list(n = 1, gender = gender), by = ntrid]
+    }
+    
+    return(data)
+
+  })
 
 
   ## hvis tillegg !=1 så velge output fra tillegg input
@@ -332,7 +392,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     }
 
 
-    data <- tilCerv()
+    data <- tilThor()
     data
   })
 
@@ -348,9 +408,9 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   })
 
   output$test2 <- renderPrint({
-
-    data <- valgKropp()[n == 1, .N, by = gender]
-    print(data, topn = 20)
+    tilLumb()
+    ## data <- valgKropp()[n == 1, .N, by = gender]
+    ## print(data, topn = 20)
   })
 
 }
