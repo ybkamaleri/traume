@@ -60,6 +60,8 @@ De er basert på diskusjonen med NTR og bestillingsdokument
   /UnitId/ til hvert skjema
 ** hosp_serial_num fra traumeskjema
 - hva skal det brukers til?
+** Alder
+- Alder med -1. Er det riktig tall dvs. spebarn
 ** Tillegg ais
 - Ryggsøyle (spine) tillegguttrekk under Cervicalcolumna, Thoracalcolumna og
   Lumbalcolumna. Er det bare å telle minst en til begge isolerte skjelettskader og
