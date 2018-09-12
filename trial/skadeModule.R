@@ -371,6 +371,23 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     andelG[, sum(n, na.rm = TRUE)]
   })
 
+  ## Andell med grad 1 eller ikke for spesifiserte kroppsregion
+  andelGradKropp <- reactive({
+    if (input$skadegrad1){
+      andelG <- dataIN[, list(n = ifelse(
+        sum(grepl(paste0("^", valKropp(), ".*[1-6]$"),
+                  as.character(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
+        gender = gender, aisMix = aisMix), by = ntrid]
+    } else {
+      andelG <- dataIN[, list(n = ifelse(
+        sum(grepl(paste0("^", valKropp(), ".*[2-6]$"),
+                  as.character(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
+        gender = gender, aisMix = aisMix), by = ntrid]
+    }
+
+    data <- andelG[, sum(n, na.rm = TRUE)]
+    return(data)
+  })
 
   ############
   ## Tabell ##
@@ -392,7 +409,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     }
 
 
-    data <- tilThor()
+    data <- andelGradKropp()
     data
   })
 
@@ -408,8 +425,9 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   })
 
   output$test2 <- renderPrint({
-    tilLumb()
-    ## data <- valgKropp()[n == 1, .N, by = gender]
+
+    andelGradKropp()
+    ## data <- andelGradKropp()[]
     ## print(data, topn = 20)
   })
 
