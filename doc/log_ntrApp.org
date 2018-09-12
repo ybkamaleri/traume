@@ -27,7 +27,9 @@
 ** AIS kode for hud ikke vises
 Koden ble konvertert til numeric. Derfor forsvinner første tallet i koden som er
 ~0~. Beholder koden som character evt. bruker ~as.character~ for sikrehet skyld.
-
+** Plot
+- ref d554912 - TODO-20180912.23.11 : kategorisering av alder og plot. Telling ved
+  alder er ikke riktig.
 * Kommentar/observasjoner
 Tilbakemelding til IKT og kommentarer til data uttrekk som kan forbedres eller endres:
 1. Variablenavn ~Valgte ais-koder~ fra /skade/ datasett bør har variablenavn med bare
