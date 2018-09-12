@@ -85,3 +85,4 @@ Dashboard som gir informasjon om:
 * Påminnelse [1/2]
 - [X] Tar bort NA i dataset i data.R
 - [ ] Text for hver tab hva dataene gjelder
+- [ ] For å bruke Shinyjs for Debian, = libv8-3.14-dev (formerly: libv8-dev)= må installeres
