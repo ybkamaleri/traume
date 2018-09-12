@@ -126,16 +126,22 @@ skadeModUI <- function(id){
 
 skadeMod <- function(input, output, session, dataFiltert, data){
 
+  ## OBS!! bruk 'aisMis' for å velge skade gradering
   dataRaw <- data
   dataRaw[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
 
+
   dataIN <- dataRaw[!duplicated(ntrid)]
+  dataIN[, ais := NULL] #slett ais siden aisMix inneholder alle ais koder
 
   valKropp <- reactive({as.numeric(input$kropp)}) #kroppregion
   valSkade <- reactive({as.numeric(input$skadegrad)}) #skadegrad
 
 
   ## Kroppsregioner
+  #########################
+  ## Minst en av valgte deler + skadegradering
+
   valgKropp  <- reactive({
 
     ## Alle kroppdeler
@@ -144,7 +150,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
       data <- dataIN[, list(n = ifelse(
         sum(grepl(paste0(".[", paste(valSkade(), collapse = ""), "]$"),
-                  as.character(toString(unlist(strsplit(ais, split = ",")))))) != 0, 1, 0),
+                  as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
         aisMix = aisMix), by = ntrid]
 
@@ -152,7 +158,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
       data <- dataIN[, list(n = ifelse(
         sum(grepl(paste0("^", valKropp(), ".*[", paste(valSkade(), collapse = ""), "]$"),
-                  as.character(toString(unlist(strsplit(ais, split = ",")))))) != 0, 1, 0),
+                  as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
         aisMix = aisMix), by = ntrid]
     }
@@ -160,6 +166,9 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   })
 
   ## Tilleggsuttrekk Abdomen
+  ##########################
+  ## Minst en av valgte deler + skadegradering
+
   tilAbdomen <- reactive({
 
     req(input$skadegrad) #vises ingen hvis NULL
@@ -187,6 +196,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   })
 
   ## Spine deler
+  #########################
+  ## Minst en av valgte deler + skadegradering
   tilSpine <- reactive({
 
     req(input$skadegrad) #vises ingen hvis NULL
@@ -226,6 +237,25 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   })
 
+  ## ## Spine Tilleggsuttrekk
+  ## tilCerv <- eventReactive(input$til_cerv, {
+
+  ##   ## kodes <- c(650216.2, 650217.2, 650218.2, 650220.2, 650222.2, 650224.2,
+  ##   ##            650226.2, 650228.3, 650230.2, 650232.2, 650234.3)
+
+  ##   kode_skjelett <- "^6502[123][024678].*[23]$"
+
+  ##   kode_rygg <- "^6402.*[3456]$"
+
+  ##   if (as.numeric(input$til_cerv) == 1){
+  ##     data <- tilSpine()
+  ##   } else if (as.numeric(input$til_cerv) == 2){
+  ##     data <- dataIN[, list(n = ifelse(
+  ##       sum(grepl(kode_skjelett, unlist(strsplit(aisMix))))))]
+  ##   }
+
+  ## })
+
 
   ## hvis tillegg !=1 så velge output fra tillegg input
   ## ellers velger valgKropp
@@ -239,11 +269,11 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     if (input$skadegrad1){
       andelG <- dataIN[, list(n = ifelse(
         sum(grepl(".*[1-6]$", as.character(unlist(
-          strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
+          strsplit(aisMix, split = ","))))) != 0, 1, 0)), by = ntrid]
     } else {
       andelG <- dataIN[, list(n = ifelse(
         sum(grepl(".*[2-6]$", as.character(unlist(
-          strsplit(ais, split = ","))))) != 0, 1, 0)), by = ntrid]
+          strsplit(aisMix, split = ","))))) != 0, 1, 0)), by = ntrid]
     }
     andelG[, sum(n, na.rm = TRUE)]
   })
