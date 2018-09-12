@@ -50,7 +50,7 @@ De er basert på diskusjonen med NTR og bestillingsdokument
 - [ ] Sykehus opphold for liggertid (Intensiv skjema) hvis mulig
 - [ ] Transport forskjellige koder
 - [ ] Forklarer alle analysene i shiny
-* Analyse og spørsmål
+* Spørsmål
 ** Kobling av data
 - NTR nummer representerer 1 pasient.
 - Traumeskjema har /SkjemaGUID/ som er 1 til 1 mot NTR nummer
@@ -61,8 +61,9 @@ De er basert på diskusjonen med NTR og bestillingsdokument
 ** hosp_serial_num fra traumeskjema
 - hva skal det brukers til?
 ** Tillegg ais
-- Ryggsøyle (spine) tillegguttrekk under Cervicalcolumna. Skal det bare telles som
-  det kodene eller må det også være mulig å sorterer etter alvorlighetsgrad?
+- Ryggsøyle (spine) tillegguttrekk under Cervicalcolumna, Thoracalcolumna og
+  Lumbalcolumna. Er det bare å telle minst en til begge isolerte skjelettskader og
+  ryggmargsskade? Eller bør skadegradering brukes?
 * Outline
 ** Generelle Info
 Dashboard som gir informasjon om:
