@@ -237,33 +237,46 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   })
 
-  ## Spine Tilleggsuttrekk
+  ## Spine Tilleggsuttrekk - Cervicalcolumna
   tilCerv <- eventReactive(input$til_cerv, {
-
-    ## kodes <- c(650216.2, 650217.2, 650218.2, 650220.2, 650222.2, 650224.2,
-    ##            650226.2, 650228.3, 650230.2, 650232.2, 650234.3)
 
     kode_skjelett <- "^6502[123][024678].*[23]$"
 
     kode_rygg <- "^6402.*[3456]$"
 
+    ## kode er skjelettskader og kode2 ryggmargsskade
+    dataSK <- dataIN[, list(
+      kode = ifelse(
+        sum(grepl(kode_skjelett,
+                unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+      kode2 = ifelse(
+        sum(grepl(kode_rygg,
+                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+      ntrid = ntrid,
+      gender = gender), by = ntrid]
+
+    #kode1 0 hvis begge skjelettskader og ryggmargsskade
+    dataSK[, kode1 := kode, by = ntrid]
+    dataSK[, kode1 := ifelse(kode == 1 && kode2 == 1, 0, kode), by = ntrid]
+
     if (as.numeric(input$til_cerv) == 1){
       data <- tilSpine()
     } else if (as.numeric(input$til_cerv) == 2){
-      data <- dataIN[, list(n = ifelse(
-        sum(grepl(kode_skjelett,
-                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
-        ntrid = ntrid,
-        gender = gender), by = ntrid]
+      data <- dataSK[kode1 == 1, list(n = 1, gender = gender), by = ntrid]
     } else {
-      data <- dataIN[, list(n = ifelse(
-        sum(grepl(kode_rygg,
-                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
-        ntrid = ntrid,
-        gender = gender), by = ntrid]
+      data <- dataSK[kode2 == 1, list(n = 1, gender = gender), by = ntrid]
     }
+
     return(data)
   })
+
+
+  ## ## Spine tilleggsuttrekk - Thoracalcolumna
+  ## tilThor <- eventReactive(input$til_thor, {
+
+
+  ## })
+
 
 
   ## hvis tillegg !=1 så velge output fra tillegg input
@@ -308,7 +321,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     }
 
 
-    data <- tilCerv()[n == 1, .N, by = gender]
+    data <- tilCerv()
     data
   })
 
