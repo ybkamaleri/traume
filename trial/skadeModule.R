@@ -237,24 +237,33 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   })
 
-  ## ## Spine Tilleggsuttrekk
-  ## tilCerv <- eventReactive(input$til_cerv, {
+  ## Spine Tilleggsuttrekk
+  tilCerv <- eventReactive(input$til_cerv, {
 
-  ##   ## kodes <- c(650216.2, 650217.2, 650218.2, 650220.2, 650222.2, 650224.2,
-  ##   ##            650226.2, 650228.3, 650230.2, 650232.2, 650234.3)
+    ## kodes <- c(650216.2, 650217.2, 650218.2, 650220.2, 650222.2, 650224.2,
+    ##            650226.2, 650228.3, 650230.2, 650232.2, 650234.3)
 
-  ##   kode_skjelett <- "^6502[123][024678].*[23]$"
+    kode_skjelett <- "^6502[123][024678].*[23]$"
 
-  ##   kode_rygg <- "^6402.*[3456]$"
+    kode_rygg <- "^6402.*[3456]$"
 
-  ##   if (as.numeric(input$til_cerv) == 1){
-  ##     data <- tilSpine()
-  ##   } else if (as.numeric(input$til_cerv) == 2){
-  ##     data <- dataIN[, list(n = ifelse(
-  ##       sum(grepl(kode_skjelett, unlist(strsplit(aisMix))))))]
-  ##   }
-
-  ## })
+    if (as.numeric(input$til_cerv) == 1){
+      data <- tilSpine()
+    } else if (as.numeric(input$til_cerv) == 2){
+      data <- dataIN[, list(n = ifelse(
+        sum(grepl(kode_skjelett,
+                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+        ntrid = ntrid,
+        gender = gender), by = ntrid]
+    } else {
+      data <- dataIN[, list(n = ifelse(
+        sum(grepl(kode_rygg,
+                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+        ntrid = ntrid,
+        gender = gender), by = ntrid]
+    }
+    return(data)
+  })
 
 
   ## hvis tillegg !=1 så velge output fra tillegg input
@@ -299,7 +308,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     }
 
 
-    data <- tilSpine()[n == 1, .N, by = gender]
+    data <- tilCerv()[n == 1, .N, by = gender]
     data
   })
 
