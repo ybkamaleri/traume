@@ -8,6 +8,8 @@
 #+HTML_HEAD: <script type="text/javascript" src="http://www.pirilampo.org/styles/lib/js/jquery.stickytableheaders.js"></script>
 #+HTML_HEAD: <script type="text/javascript" src="http://www.pirilampo.org/styles/readtheorg/js/readtheorg.js"></script>
 
+#+SETUPFILE: theme-bigblow.setup
+
 #+TITLE: Nasjonalt traumeregister
 #+SUBTITLE: Resultattjenester versjon 0.03
 * Nyhet
