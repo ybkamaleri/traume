@@ -64,6 +64,8 @@ De er basert på diskusjonen med NTR og bestillingsdokument
 - Ryggsøyle (spine) tillegguttrekk under Cervicalcolumna, Thoracalcolumna og
   Lumbalcolumna. Er det bare å telle minst en til begge isolerte skjelettskader og
   ryggmargsskade? Eller bør skadegradering brukes?
+- Tillegg til Lumbalcolumna og Thoracalcolumna for Ryggmargsskade inneholder bare
+  skadegrad 3 til 5 mens Cervicalcolumna har 3 til 6?
 * Outline
 ** Generelle Info
 Dashboard som gir informasjon om:
