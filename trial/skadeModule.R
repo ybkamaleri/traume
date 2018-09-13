@@ -257,8 +257,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   ## Spine Tilleggsuttrekk - Cervicalcolumna
   tilCerv <- eventReactive(input$til_cerv, {
 
-    kode_skjelett <- "^6502[123][024678].*[23]$"
-    kode_rygg <- "^6402.*[3456]$"
+    kode_skjelett <- "^6502[1-3][024678].*[23]$"
+    kode_rygg <- "^6402.*[3-6]$"
 
     ## kode er skjelettskader og kode2 ryggmargsskade
     dataSK <- dataIN[, list(
@@ -291,8 +291,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   ## Spine tilleggsuttrekk - Lumbalcolumna
   tilLumb <- eventReactive(input$til_lumb, {
 
-    kode_skjelett <- "^6506[123][024678].*[23]$"
-    kode_rygg <- "^6406.*[345]$"
+    kode_skjelett <- "^6506[1-3][024678].*[23]$"
+    kode_rygg <- "^6406.*[3-5]$"
 
     ## kode er skjelettskader og kode2 ryggmargsskade
     dataSK <- dataIN[, list(
@@ -326,8 +326,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   ## Spine tilleggsuttrekk - Thoracalcolumna
   tilThor <- eventReactive(input$til_thor, {
 
-    kode_skjelett <- "^6504[123][024678].*[23]$"
-    kode_rygg <- "^6404.*[345]$"
+    kode_skjelett <- "^6504[1-3][024678].*[23]$"
+    kode_rygg <- "^6404.*[3-5]$"
     
     ## kode er skjelettskader og kode2 ryggmargsskade
     dataSK <- dataIN[, list(
