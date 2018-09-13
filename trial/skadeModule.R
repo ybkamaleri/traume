@@ -202,15 +202,17 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
     } else {
       ## tar bort kolonn "n"
-      dataRaw <- valgKropp()[, n := NULL]
-
-      data <- dataRaw[, list(n = ifelse(
+      data <- valgKropp()[, list(valg = ifelse(
         sum(grepl(paste0("^", kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
+
+      data[, n := valg]
+
     }
+
 
     dataUT <- data[n == 1]
     return(dataUT)
@@ -230,43 +232,39 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
     } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 2){
 
-      ## tar bort kolonn "n"
-      dataRaw <- valgKropp()[, n := NULL]
-
       ## Cervicalcolumna - femte tallet er 2
-      data <- dataRaw[, list(n = ifelse(
+      data <- valgKropp()[, list(valg = ifelse(
         sum(grepl(paste0("6[0-9][0-9][0-9]2.*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
 
+      data[, n := valg]
+
     } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3){
 
-      ## tar bort kolonn "n"
-      dataRaw <- valgKropp()[, n := NULL]
-
       ## Lumbalcolumna - femte tallet er 6
-      data <- dataRaw[, list(n = ifelse(
+      data <- valgKropp()[, list(valg = ifelse(
         sum(grepl(paste0("6[0-9][0-9][0-9]6.*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
 
+      data[, n := valg]
+
     } else {
 
-      ## tar bort kolonn "n"
-      dataRaw <- valgKropp()[, n := NULL]
-
       ## Thoracalcolumna - femte tallet er 4
-      data <- dataRaw[, list(n = ifelse(
+      data <- valgKropp()[, list(valg = ifelse(
         sum(grepl(paste0("6[0-9][0-9][0-9]4.*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
 
+      data[, n := valg]
     }
 
     dataUT <- data[n == 1]
