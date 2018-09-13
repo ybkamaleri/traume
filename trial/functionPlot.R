@@ -1,10 +1,10 @@
 ## for å lage plot
 
-plotreg <- function(data, kat = FALSE, bykat = 5){
+plotreg <- function(x, kat = FALSE, bykat = 5){
 
 
   ## Rense alder
-  dataClean <- data[!is.na(age) & age != -1, .N, keyby = list(age, gender)]
+  data <- x[!is.na(age) & age != -1, .N, keyby = list(age, gender)]
 
   ## Interval for alder kategorien
   by5 = bykat
@@ -28,16 +28,40 @@ plotreg <- function(data, kat = FALSE, bykat = 5){
     ageMax <- max(as.numeric(dataClean$age), na.rm = TRUE)
     ageMin <- min(as.numeric(dataClean$age), na.rm = TRUE)
 
-    data <- dataClean[, ageValg := alder.kat(age, ageMin, ageMax, by5)]
+    data[, ageValg := alder.kat(age, ageMin, ageMax, by5)]
 
   } else {
-        data <- dataClean[, ageValg := age]
+
+    data[, ageValg := age]
   }
 
 
-  ageMan <- dataClean[gender == 1, list(mann = N), by = ageValg]
-  ageKvinne <- dataClean[gender == 2, list(kvinne = N), by = ageValg]
+  ageMan <- data[gender == 1, list(mann = .N), by = ageValg]
+  ageKvinne <- data[gender == 2, list(kvinne = .N), by = ageValg]
   ageMK <- merge(ageMan, ageKvinne, all = TRUE)
 
+  ## bytt NA med 0
+  bNA(ageMK)
+
+  ## Lager total
+  ageMK[, alle := mann + kvinne, by = ageValg]
+
+  ## Gir nytt navn
+  newNavn <- c("Alder", "Menn", "Kvinner", "Alle")
+  data.table::setnames(ageMK, 1:4, newNavn)
+  ageMK
+
+  ## konverterer data til long
+  dataLongAK <-melt(ageMK, id.vars="Alder",
+                    measure.vars=c("Menn","Kvinner","Alle"),
+                    variable.name="gender", value.name="n")
+
+  ## plot with long data
+  plotAT <- ggplot(dataLongAK, aes(Alder, n, group = gender, color = gender)) +
+    geom_line() +
+    xlab("Alder") +
+    ylab("Antall")
+
+  return(list(data = ageMK, plot = plotAT))
 
 }
