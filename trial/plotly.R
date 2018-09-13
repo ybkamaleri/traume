@@ -36,8 +36,15 @@ test_data
 ######################################
 ## Simple plot
 set.seed(112)
-dt <- data.table(id = 1:30, n = sample(0:1, 30, replace = T), gender = sample(1:2, 30, replace = T), age = sample(15:60, 30, replace = T))
+dt <- data.table(id = 1:30, gender = sample(1:2, 30, replace = T), age = sample(15:60, 30, replace = T))
 dt
+
+#### sequence and cut
+a <- 1:10
+#include 1 og exclude 6 i kategorien
+cut(a, breaks = c(seq(1,60,5), Inf), include.lowest = TRUE, right = F)
+# Standard måte - her vises at 1 er ikke inkludert i kategorien
+cut(a, breaks = c(seq(1,60,5), Inf))
 
 ## Alder kategorisering
 ## Alder kategori
@@ -52,12 +59,16 @@ alder.kat2 <- function(x, lower, upper, by,
 }
 
 library(ggplot2)
-dtSel <- dt[n == 1]
+dtSel <- dt
 dtMan <- dtSel[!is.na(gender) == 1 & !is.na(age) & age != -1, .(mann = .N), key = age]
-ageMax <- max(dtMan, na.rm = TRUE)
-ageMin <- min(dtMan, na.rm = TRUE)
-dtCopy <- copy(dt)
-dtMan2 <- dtCopy[n == 1, ageK := alder.kat2(age, 0, ageMax, 5)][n == 1 & gender == 1, .(mann = .N), key = ageK]
+dtMan
+(ageMax <- max(dtMan$age, na.rm = TRUE))
+(ageMin <- min(dtMan$age, na.rm = TRUE))
+dtCopy <- copy(dtSel)
+(dtCopy[gender == 1, ageK := alder.kat2(age, ageMin, ageMax, 5)])
+dtCopy
+[gender == 1, .(mann = .N), key = ageK]
+dtMan2
 
 dtKvinne <- dt[!is.na(gender) == 2 && n == 1, .(kvinne = .N), key = age]
 ageKMax <- max(dtKvinne, na.rm = TRUE)
