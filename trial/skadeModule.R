@@ -484,23 +484,23 @@ skadeMod <- function(input, output, session, dataFiltert, data){
       dataUT <- valgKropp()
     }
 
-    if (as.numeric(input$kropp) == 5 & as.numeric(input$til_abdomen) %in% 1:3){
+    if (as.numeric(input$kropp) == 5 && as.numeric(input$til_abdomen) %in% 1:3){
       dataUT <- tilAbdomen()
     }
 
-    if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) %in% 1:4) {
+    if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) %in% 1:4) {
       dataUT <- tilSpine()
     }
 
-    if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 2 & as.numeric(input$til_cerv) %in% 1:3){
+    if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 2 && as.numeric(input$til_cerv) %in% 1:3){
       dataUT <- tilCerv()
     }
 
-    if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 3 & as.numeric(input$til_lumb) %in% 1:3){
+    if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3 && as.numeric(input$til_lumb) %in% 1:3){
       dataUT <- tilLumb()
     }
 
-    if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 4 & as.numeric(input$til_thor) %in% 1:3){
+    if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 4 && as.numeric(input$til_thor) %in% 1:3){
       dataUT <- tilThor()
     }
 
@@ -515,16 +515,16 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   output$test <- renderPrint({
 
-    valgKropp()
+    tilCerv()
 
   })
 
-    output$test2 <- renderPrint({
+  output$test2 <- renderPrint({
 
-      tabUT()
-      ## data <- andelGradKropp()[]
-      ## print(data, topn = 20)
-    })
+    tabUT()
+    ## data <- andelGradKropp()[]
+    ## print(data, topn = 20)
+  })
 
 }
 
