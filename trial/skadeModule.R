@@ -466,17 +466,43 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     }
 
     ## Valg data
+    ## if (as.numeric(input$kropp) %in% c(1:4, 10)){
+    ##   dataUT <- valgKropp()
+    ## } else if (as.numeric(input$kropp) == 5 & as.numeric(input$til_abdomen) %in% 1:3){
+    ##   dataUT <- tilAbdomen()
+    ## } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) %in% 1:4) {
+    ##   dataUT <- tilSpine()
+    ## } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 2 & as.numeric(input$til_cerv) %in% 1:3){
+    ##   dataUT <- tilCerv()
+    ## } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 3 & as.numeric(input$til_lumb) %in% 1:3){
+    ##   dataUT <- tilLumb()
+    ## } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 4 & as.numeric(input$til_thor) %in% 1:3){
+    ##   dataUT <- tilThor()
+    ## }
+
+
+    ## Valg data
     if (as.numeric(input$kropp) %in% c(1:4, 10)){
       dataUT <- valgKropp()
-    } else if (as.numeric(input$kropp) == 5 & as.numeric(input$til_abdomen) %in% 1:3){
+    }
+
+    if (as.numeric(input$kropp) == 5 & as.numeric(input$til_abdomen) %in% 1:3){
       dataUT <- tilAbdomen()
-    } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) %in% 1:4) {
+    }
+
+    if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) %in% 1:4) {
       dataUT <- tilSpine()
-    } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 2 & as.numeric(input$til_cerv) %in% 1:3){
+    }
+
+    if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 2 & as.numeric(input$til_cerv) %in% 1:3){
       dataUT <- tilCerv()
-    } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 3 & as.numeric(input$til_lumb) %in% 1:3){
+    }
+
+    if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 3 & as.numeric(input$til_lumb) %in% 1:3){
       dataUT <- tilLumb()
-    } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 4 & as.numeric(input$til_thor) %in% 1:3){
+    }
+
+    if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 4 & as.numeric(input$til_thor) %in% 1:3){
       dataUT <- tilThor()
     }
 
