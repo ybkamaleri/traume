@@ -64,7 +64,7 @@ skadeModUI <- function(id){
                                                       ),
                                        selected = 1),
                            bsTooltip(id = ns("til_cerv"),
-                                     title = "Telling for minst en av de allerede spesifiserte AIS koder",
+                                     title = "Telling for minst en av de allerede spesifiserte AIS koder. Filter for Skadegradering blir ikke benyttes",
                                      placement = "right",
                                      trigger = "hover",
                                      options = list(container = "body"))),
@@ -79,7 +79,7 @@ skadeModUI <- function(id){
                                                       ),
                                        selected = 1),
                            bsTooltip(id = ns("til_lumb"),
-                                     title = "Telling for minst en av de allerede spesifiserte AIS koder",
+                                     title = "Telling for minst en av de allerede spesifiserte AIS koder. Filter for Skadegradering blir ikke benyttes",
                                      placement = "right",
                                      trigger = "hover",
                                      options = list(container = "body"))),
@@ -94,7 +94,7 @@ skadeModUI <- function(id){
                                                       ),
                                        selected = 1),
                            bsTooltip(id = ns("til_thor"),
-                                     title = "Telling for minst en av de allerede spesifiserte AIS koder",
+                                     title = "Telling for minst en av de allerede spesifiserte AIS koder. Filter for Skadegradering blir ikke benyttes",
                                      placement = "right",
                                      trigger = "hover",
                                      options = list(container = "body")))),
@@ -111,11 +111,11 @@ skadeModUI <- function(id){
                                             "5" = 5,
                                             "6" = 6),
                              inline = TRUE,
-                             selected = 1
+                             selected = list(2,3,4,5,6)
                              ),
           checkboxInput(inputId = ns("skadegrad1"),
                         label = "Andel inkluderer skadegrad 1",
-                        value = TRUE),
+                        value = FALSE),
           bsTooltip(id = ns("skadegrad1"),
                     title = "Hvis skadegrad 1 er valgt må denne også velges",
                     placement = "bottom",
@@ -394,11 +394,13 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   andelGradAlle  <- reactive({
     if (input$skadegrad1){
       andelG <- dataIN[, list(n = ifelse(
-        sum(grepl(".*[1-6]$", as.character(unlist(
-          strsplit(aisMix, split = ","))))) != 0, 1, 0)), by = ntrid]
-    } else {
-      andelG <- dataIN[, list(n = ifelse(
         sum(grepl(".*[2-6]$", as.character(unlist(
+          strsplit(aisMix, split = ","))))) != 0, 1, 0)), by = ntrid]
+
+    } else {
+
+      andelG <- dataIN[, list(n = ifelse(
+        sum(grepl(".*[1-6]$", as.character(unlist(
           strsplit(aisMix, split = ","))))) != 0, 1, 0)), by = ntrid]
     }
     andelG[, sum(n, na.rm = TRUE)]
@@ -406,16 +408,21 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   ## Andell med grad 1 eller ikke for spesifiserte kroppsregion
   andelGradKropp <- reactive({
+
     if (input$skadegrad1){
-      andelG <- dataIN[, list(n = ifelse(
-        sum(grepl(paste0("^", valKropp(), ".*[1-6]$"),
-                  as.character(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
-        gender = gender, aisMix = aisMix), by = ntrid]
-    } else {
+
       andelG <- dataIN[, list(n = ifelse(
         sum(grepl(paste0("^", valKropp(), ".*[2-6]$"),
                   as.character(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
         gender = gender, aisMix = aisMix), by = ntrid]
+
+    } else {
+
+      andelG <- dataIN[, list(n = ifelse(
+        sum(grepl(paste0("^", valKropp(), ".*[1-6]$"),
+                  as.character(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
+        gender = gender, aisMix = aisMix), by = ntrid]
+
     }
 
     data <- andelG[, sum(n, na.rm = TRUE)]
