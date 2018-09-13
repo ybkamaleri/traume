@@ -172,41 +172,26 @@ function(input, output, session) {
   listNTR <- reactive({filterDataAge()[, .(ntrid = ntrid)]})
 
 
+  ## Alder og Traume data for plot
+  ################################
+  ntrData <- reactive({
+
+    data <- filterDataAge()
+    if (input$alder_kat){
+      dataUT <- plotreg(data, TRUE)
+    } else {
+      dataUT <- plotreg(data)
+    }
+    return(dataUT)
+  })
+  
+
   ## Plot Alder og Traume
   #########################
   output$plotAT <- renderPlot({
-    ## Reactive data
-    data <- filterDataAge()
 
-    ## ## Renser data - bort med NA og -1
-    ## cleanAgeTraume <- data[!is.na(age) & age != -1, .N, keyby = list(age, gender)]
-
-    ## ## Teller antall kvinner og menn for hver aldersgruppe
-    ## ageMan <- cleanAgeTraume[gender == 1, list(mann = N), key = age]
-    ## ageKvinne <- cleanAgeTraume[gender == 2, list(kvinne = N), key = age]
-    ## ageMK <- merge(ageMan, ageKvinne, all = TRUE)
-
-    ## ## Erstater NA med 0
-    ## bNA(ageMK)
-
-    ## ## lage summen for begge kjønn
-    ## ageMK[, alle := mann + kvinne, by = age]
-
-    ## ## konverterer data til long
-    ## dataLongAK <-melt(ageMK, id.vars="age",
-    ##                   measure.vars=c("mann","kvinne","alle"),
-    ##                   variable.name="gender", value.name="n")
-
-    ## ## plot with long data
-    ## plotAT <- ggplot(dataLongAK, aes(age, n, group = gender, color = gender)) +
-    ##   geom_line() +
-    ##   xlab("Alder") +
-    ##   ylab("Antall")
-
-    ## print(plotAT)
-
-    dataUT <- plotreg(data)
-    print(dataUT$plot)
+    dataUT <- ntrData()$plot
+    print(dataUT)
 
   })
 
@@ -214,29 +199,8 @@ function(input, output, session) {
   ############################
   output$tabAT <- DT::renderDataTable({
 
-    data <- filterDataAge()
-
-    ## ## Renser data - bort med NA og -1
-    ## cleanAgeTraume <- data[!is.na(age) & age != -1, .N, keyby = list(age, gender)]
-
-    ## ## Teller antall kvinner og menn for hver aldersgruppe
-    ## ageMan <- cleanAgeTraume[gender == 1, list(mann = N), key = age]
-    ## ageKvinne <- cleanAgeTraume[gender == 2, list(kvinne = N), key = age]
-    ## ageMK <- merge(ageMan, ageKvinne, all = TRUE)
-
-    ## ## Erstater NA med 0
-    ## bNA(ageMK)
-
-    ## ## lage summen for begge kjønn
-    ## ageMK[, alle := mann + kvinne, by = age]
-
-    ## ## Gir nytt navn
-    ## newNavn <- c("Alder", "Menn", "Kvinner", "Alle")
-    ## data.table::setnames(ageMK, 1:4, newNavn)
-    ## ageMK
-
-    dataUT <- plotreg(data)
-    dataUT$data
+    dataUT <- ntrData()$data
+    dataUT
 
   })
 
