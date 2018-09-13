@@ -1,10 +1,10 @@
-## for å lage plot
-####################
+## Function for plot alder og kjønn
+## Pass på at duplikate ID allerede tatt bort
+
 plotreg <- function(x, kat = FALSE, bykat = 5){
 
-
   ## Rense alder
-  data <- x[!is.na(age) & age != -1, .N, keyby = list(age, gender)]
+  data <- x[!is.na(age) & age != -1, list(age, gender)]
 
   ## Interval for alder kategorien
   by5 = bykat
@@ -25,8 +25,8 @@ plotreg <- function(x, kat = FALSE, bykat = 5){
       cut(floor(x), breaks = c(seq(lower, upper, by = by), Inf),
           include.lowest = TRUE, right = FALSE, labels = labs)}
 
-    ageMax <- max(as.numeric(dataClean$age), na.rm = TRUE)
-    ageMin <- min(as.numeric(dataClean$age), na.rm = TRUE)
+    ageMax <- max(as.numeric(data$age), na.rm = TRUE)
+    ageMin <- min(as.numeric(data$age), na.rm = TRUE)
 
     data[, ageValg := alder.kat(age, ageMin, ageMax, by5)]
 
