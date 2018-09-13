@@ -139,7 +139,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   ## Data må filtreres med 'dataFiltert' når modulen skal implemeteres
 
   ## OBS!! bruk 'aisMix' for å velge skade gradering
-  dataRaw <- data
+  dataRaw <- data #her skal det merge med dataFiltert
   dataRaw[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
 
 
@@ -156,7 +156,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   valgKropp  <- reactive({
 
-    ## Alle kroppdeler
+    ## Alle kroppsregioner
     if (as.numeric(input$kropp) == 10) {
       req(input$skadegrad) #vises ingen hvis NULL
 
@@ -169,6 +169,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
     } else {
 
+      ## Valgte kroppsregion
       data <- dataIN[, list(n = ifelse(
         sum(grepl(paste0("^", valKropp(), ".*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
@@ -176,8 +177,10 @@ skadeMod <- function(input, output, session, dataFiltert, data){
         age = age,
         aisMix = aisMix), by = ntrid]
     }
-    return(data)
-  })
+
+    dataUT <- data[n == 1]
+    return(dataUT)
+    })
 
   ## Tilleggsuttrekk Abdomen
   ##########################
@@ -198,8 +201,10 @@ skadeMod <- function(input, output, session, dataFiltert, data){
       data <- valgKropp()
 
     } else {
+      ## tar bort kolonn "n"
+      dataRaw <- valgKropp()[, n := NULL]
 
-      data <- valgKropp()[, list(n = ifelse(
+      data <- dataRaw[, list(n = ifelse(
         sum(grepl(paste0("^", kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
@@ -207,8 +212,10 @@ skadeMod <- function(input, output, session, dataFiltert, data){
         aisMix = aisMix), by = ntrid]
     }
 
-    return(data)
+    dataUT <- data[n == 1]
+    return(dataUT)
   })
+
 
   ## Spine deler
   #########################
@@ -218,11 +225,16 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     req(input$skadegrad) #vises ingen hvis NULL
 
     if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 1){
+
       data <- valgKropp()
+
     } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 2){
 
+      ## tar bort kolonn "n"
+      dataRaw <- valgKropp()[, n := NULL]
+
       ## Cervicalcolumna - femte tallet er 2
-      data <- valgKropp()[, list(n = ifelse(
+      data <- dataRaw[, list(n = ifelse(
         sum(grepl(paste0("6[0-9][0-9][0-9]2.*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
@@ -231,8 +243,11 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
     } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3){
 
+      ## tar bort kolonn "n"
+      dataRaw <- valgKropp()[, n := NULL]
+
       ## Lumbalcolumna - femte tallet er 6
-      data <- valgKropp()[, list(n = ifelse(
+      data <- dataRaw[, list(n = ifelse(
         sum(grepl(paste0("6[0-9][0-9][0-9]6.*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
@@ -241,8 +256,11 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
     } else {
 
+      ## tar bort kolonn "n"
+      dataRaw <- valgKropp()[, n := NULL]
+
       ## Thoracalcolumna - femte tallet er 4
-      data <- valgKropp()[, list(n = ifelse(
+      data <- dataRaw[, list(n = ifelse(
         sum(grepl(paste0("6[0-9][0-9][0-9]4.*[", paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
@@ -251,10 +269,15 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
     }
 
-    return(data)
-
+    dataUT <- data[n == 1]
+    return(dataUT)
   })
 
+
+
+  #####################################################
+  ## VIKTIG - Data kilder må endres med filtret data ##
+  #####################################################
 
   ## Spine Tilleggsuttrekk - Cervicalcolumna
   tilCerv <- eventReactive(input$til_cerv, {
@@ -281,12 +304,14 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     if (as.numeric(input$til_cerv) == 1){
       data <- tilSpine()
     } else if (as.numeric(input$til_cerv) == 2){
-      data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
+        data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     } else {
       data <- dataSK[kode2 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     }
 
-    return(data)
+    dataUT <- data[n == 1]
+    return(dataUT)
+
   })
 
 
@@ -315,13 +340,13 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     if (as.numeric(input$til_lumb) == 1){
       data <- tilSpine()
     } else if (as.numeric(input$til_lumb) == 2){
-      data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
+        data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     } else {
       data <- dataSK[kode2 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     }
-    
-    return(data)
 
+    dataUT <- data[n == 1]
+    return(dataUT)
   })
 
 
@@ -354,9 +379,9 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     } else {
       data <- dataSK[kode2 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     }
-    
-    return(data)
 
+    dataUT <- data[n == 1]
+    return(dataUT)
   })
 
 
@@ -399,6 +424,28 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     return(data)
   })
 
+  ## Data Ut observe
+  ###################
+
+  ## dataUT <- reactiveValues()
+
+  ## observe({
+  ##    if (as.numeric(input$kropp) %in% c(1:4, 10)){
+  ##      dataUT$data <- valgKropp()
+  ##    } else if (as.numeric(input$kropp) == 5 & as.numeric(input$til_abdomen) %in% 1:3){
+  ##      dataUT$data <- tilAbdomen()
+  ##    } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) %in% 1:4) {
+  ##      dataUT$data <- tilSpine()
+  ##    } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 2 & as.numeric(input$til_cerv) %in% 1:3){
+  ##      dataUT$data <- tilCerv()
+  ##    } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 3 & as.numeric(input$til_lumb) %in% 1:3){
+  ##      dataUT$data <- tilLumb()
+  ##    } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 4 & as.numeric(input$til_thor) %in% 1:3){
+  ##      dataUT$data <- tilThor()
+  ##    }
+
+  ## })
+
   ############
   ## Tabell ##
   ############
@@ -418,9 +465,23 @@ skadeMod <- function(input, output, session, dataFiltert, data){
       Sys.sleep(0.3)
     }
 
+    ## Valg data
+    if (as.numeric(input$kropp) %in% c(1:4, 10)){
+      dataUT <- valgKropp()
+    } else if (as.numeric(input$kropp) == 5 & as.numeric(input$til_abdomen) %in% 1:3){
+      dataUT <- tilAbdomen()
+    } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) %in% 1:4) {
+      dataUT <- tilSpine()
+    } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 2 & as.numeric(input$til_cerv) %in% 1:3){
+      dataUT <- tilCerv()
+    } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 3 & as.numeric(input$til_lumb) %in% 1:3){
+      dataUT <- tilLumb()
+    } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 4 & as.numeric(input$til_thor) %in% 1:3){
+      dataUT <- tilThor()
+    }
 
-    data <- andelGradKropp()
-    data
+    return(dataUT)
+
   })
 
 
@@ -430,16 +491,16 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   output$test <- renderPrint({
 
-    ## tabUT()
-    valgKropp()[n == 1]
+    valgKropp()
+
   })
 
-  output$test2 <- renderPrint({
+    output$test2 <- renderPrint({
 
-    tilCerv()
-    ## data <- andelGradKropp()[]
-    ## print(data, topn = 20)
-  })
+      tabUT()
+      ## data <- andelGradKropp()[]
+      ## print(data, topn = 20)
+    })
 
 }
 
