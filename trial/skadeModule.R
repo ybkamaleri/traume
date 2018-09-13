@@ -226,46 +226,70 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
     req(input$skadegrad) #vises ingen hvis NULL
 
+    spineValg <- switch(as.character(input$til_rygg),
+                        '2' = "^6\\d{3}2.*[",
+                        "3" = "^6\\d{3}6.*[",
+                        "4" = "^6\\d{3}4.*["
+                        )
+
+
     if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 1){
 
       data <- valgKropp()
 
-    } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 2){
-
-      ## Cervicalcolumna - femte tallet er 2
-      data <- valgKropp()[, list(valg = ifelse(
-        sum(grepl(paste0("6[0-9][0-9][0-9]2.*[", paste(valSkade(), collapse = ""), "]$"),
-                  as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
-        gender = gender,
-        age = age,
-        aisMix = aisMix), by = ntrid]
-
-      data[, n := valg]
-
-    } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3){
-
-      ## Lumbalcolumna - femte tallet er 6
-      data <- valgKropp()[, list(valg = ifelse(
-        sum(grepl(paste0("6[0-9][0-9][0-9]6.*[", paste(valSkade(), collapse = ""), "]$"),
-                  as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
-        gender = gender,
-        age = age,
-        aisMix = aisMix), by = ntrid]
-
-      data[, n := valg]
-
     } else {
 
-      ## Thoracalcolumna - femte tallet er 4
       data <- valgKropp()[, list(valg = ifelse(
-        sum(grepl(paste0("6[0-9][0-9][0-9]4.*[", paste(valSkade(), collapse = ""), "]$"),
+        sum(grepl(paste0(spineValg, paste(valSkade(), collapse = ""), "]$"),
                   as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
 
       data[, n := valg]
+
     }
+
+    ## if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 1){
+
+    ##   data <- valgKropp()
+
+    ## } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 2){
+
+    ##   ## Cervicalcolumna - femte tallet er 2
+    ##   data <- valgKropp()[, list(valg = ifelse(
+    ##     sum(grepl(paste0("6[0-9][0-9][0-9]2.*[", paste(valSkade(), collapse = ""), "]$"),
+    ##               as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
+    ##     gender = gender,
+    ##     age = age,
+    ##     aisMix = aisMix), by = ntrid]
+
+    ##   data[, n := valg]
+
+    ## } else if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3){
+
+    ##   ## Lumbalcolumna - femte tallet er 6
+    ##   data <- valgKropp()[, list(valg = ifelse(
+    ##     sum(grepl(paste0("6[0-9][0-9][0-9]6.*[", paste(valSkade(), collapse = ""), "]$"),
+    ##               as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
+    ##     gender = gender,
+    ##     age = age,
+    ##     aisMix = aisMix), by = ntrid]
+
+    ##   data[, n := valg]
+
+    ## } else {
+
+    ##   ## Thoracalcolumna - femte tallet er 4
+    ##   data <- valgKropp()[, list(valg = ifelse(
+    ##     sum(grepl(paste0("6[0-9][0-9][0-9]4.*[", paste(valSkade(), collapse = ""), "]$"),
+    ##               as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
+    ##     gender = gender,
+    ##     age = age,
+    ##     aisMix = aisMix), by = ntrid]
+
+    ##   data[, n := valg]
+    ## }
 
     dataUT <- data[n == 1]
     return(dataUT)
@@ -278,7 +302,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   #####################################################
 
   ## Spine Tilleggsuttrekk - Cervicalcolumna
-  tilCerv <- eventReactive(input$til_cerv, {
+  tilCerv <- reactive({
 
     kode_skjelett <- "^6502[1-3][024678].*[23]$"
     kode_rygg <- "^6402.*[3-6]$"
@@ -314,7 +338,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
 
   ## Spine tilleggsuttrekk - Lumbalcolumna
-  tilLumb <- eventReactive(input$til_lumb, {
+  tilLumb <- reactive({
 
     kode_skjelett <- "^6506[1-3][024678].*[23]$"
     kode_rygg <- "^6406.*[3-5]$"
@@ -334,14 +358,20 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     #kode1 0 hvis begge skjelettskader og ryggmargsskade
     dataSK[, kode1 := kode, by = ntrid]
     dataSK[, kode1 := ifelse(kode == 1 && kode2 == 1, 0, kode), by = ntrid]
+
+    data <- switch(as.character(input$til_lumb),
+                   "1" = tilSpine(),
+                   "2" = dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid],
+                   "3" = dataSK[kode2 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
+                   )
     
-    if (as.numeric(input$til_lumb) == 1){
-      data <- tilSpine()
-    } else if (as.numeric(input$til_lumb) == 2){
-        data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
-    } else {
-      data <- dataSK[kode2 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
-    }
+    ## if (as.numeric(input$til_lumb) == 1){
+    ##   data <- tilSpine()
+    ## } else if (as.numeric(input$til_lumb) == 2){
+    ##   data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
+    ## } else {
+    ##   data <- dataSK[kode2 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
+    ## }
 
     dataUT <- data[n == 1]
     return(dataUT)
@@ -349,7 +379,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
 
   ## Spine tilleggsuttrekk - Thoracalcolumna
-  tilThor <- eventReactive(input$til_thor, {
+  tilThor <- reactive({
 
     kode_skjelett <- "^6504[1-3][024678].*[23]$"
     kode_rygg <- "^6404.*[3-5]$"
@@ -522,7 +552,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   output$test <- renderPrint({
 
-    tilCerv()
+    tilLumb()
 
   })
 
