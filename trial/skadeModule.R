@@ -136,7 +136,9 @@ skadeModUI <- function(id){
 
 skadeMod <- function(input, output, session, dataFiltert, data){
 
-  ## OBS!! bruk 'aisMis' for å velge skade gradering
+  ## Data må filtreres med 'dataFiltert' når modulen skal implemeteres
+
+  ## OBS!! bruk 'aisMix' for å velge skade gradering
   dataRaw <- data
   dataRaw[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
 
