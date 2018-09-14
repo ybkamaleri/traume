@@ -48,7 +48,8 @@ body <- dashboardBody(
             ),
     ## AIS Skadegradering
     tabItem(tabName = "tab_skade",
-            ulykkeUI("u_ais")
+            ulykkeUI("ulykkemod"),
+            skadeModUI("skademod")
             ),
     tabItem(tabName = "tab_virk_rap",
             fluidPage(

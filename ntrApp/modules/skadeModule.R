@@ -136,17 +136,21 @@ skadeModUI <- function(id){
 
 ###################### SERVER ###############################
 
-skadeMod <- function(input, output, session, dataFiltert, data){
+skadeMod <- function(input, output, session, valg, data){
 
   ## Data må filtreres med 'dataFiltert' når modulen skal implemeteres
 
   ## OBS!! bruk 'aisMix' for å velge skade gradering
-  dataRaw <- data #her skal det merge med dataFiltert
-  dataRaw[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
+  regData <- reactive({
+    #her skal det merge med valg ie. filtertdata
+    listNTR <- as.data.table(valg$data)
+    dataRaw <- data[listNTR, on = c(ntrid = "V1")]
+    dataRaw[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
 
+    dataMix <- dataRaw[!duplicated(ntrid)]
+    dataMix[, ais := NULL] #slett ais siden aisMix inneholder alle ais koder
+  })
 
-  dataIN <- dataRaw[!duplicated(ntrid)]
-  dataIN[, ais := NULL] #slett ais siden aisMix inneholder alle ais koder
 
   valKropp <- reactive({as.numeric(input$kropp)}) #kroppregion
   valSkade <- reactive({as.numeric(input$skadegrad)}) #skadegrad
@@ -157,6 +161,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   ## Minst en av valgte deler + skadegradering
 
   valgKropp  <- reactive({
+
+    dataIN <- regData()
 
     ## Alle kroppsregioner
     if (as.numeric(input$kropp) == 10) {
@@ -265,6 +271,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
   ## Spine Tilleggsuttrekk - Cervicalcolumna
   tilCerv <- eventReactive(input$til_cerv, {
 
+    dataIN <- regData()
+
     kode_skjelett <- "^6502[1-3][024678].*[23]$"
     kode_rygg <- "^6402.*[3-6]$"
 
@@ -300,6 +308,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   ## Spine tilleggsuttrekk - Lumbalcolumna
   tilLumb <- eventReactive(input$til_lumb, {
+
+    dataIN <- regData()
 
     kode_skjelett <- "^6506[1-3][024678].*[23]$"
     kode_rygg <- "^6406.*[3-5]$"
@@ -338,6 +348,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   ## Spine tilleggsuttrekk - Thoracalcolumna
   tilThor <- eventReactive(input$til_thor, {
+
+    dataIN <- regData()
 
     kode_skjelett <- "^6504[1-3][024678].*[23]$"
     kode_rygg <- "^6404.*[3-5]$"
@@ -380,6 +392,9 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   ## Inkluderer Grad 1 eller ikke til å beregne andel
   andelGradAlle  <- reactive({
+
+    dataIN <- regData()
+
     if (input$skadegrad1){
       andelG <- dataIN[, list(n = ifelse(
         sum(grepl(".*[2-6]$", as.character(unlist(
@@ -396,6 +411,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   ## Andell med grad 1 eller ikke for spesifiserte kroppsregion
   andelGradKropp <- reactive({
+
+    dataIN <- regData()
 
     if (input$skadegrad1){
 
@@ -497,7 +514,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
   output$test2 <- renderPrint({
 
-    tilLumb()
+    valgKropp()
 
   })
 

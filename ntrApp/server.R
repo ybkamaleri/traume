@@ -223,8 +223,8 @@ function(input, output, session) {
 
   ## AIS Skadegradering
   ## aisGrad <- callModule(aisMod, "ais", filterDataAge)
-  callModule(ulykkeServer, "u_ais", valgDT = filterDataAge, data = ulykke)
-
+  aisDataUT <- callModule(ulykkeServer, "ulykkemod", valgDT = filterDataAge, data = ulykke)
+  callModule(skadeMod, "skademod", aisDataUT, skade)
 
   ## Virksomhetsdata på sykehus
   ###############################
@@ -245,8 +245,8 @@ function(input, output, session) {
     ## str(aisGrad$data)
     ## dim(aisGrad$data)
     ## paste0("min ntrid ",valg$minAge, " og max ntrid ", valg$maxAge)
-    listNTR()
-
+    ab <- as.data.table(aisDataUT$data)
+    ab
   })
 
   output$test1 <- renderPrint({

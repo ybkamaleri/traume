@@ -38,9 +38,6 @@ ulykkeUI <- function(id){
                                                       ),
                                        selected = 50
                                        )))
-    ),
-    fluidRow(
-      verbatimTextOutput(ns("test"))
     )
   )
 }
@@ -142,9 +139,9 @@ ulykkeServer <- function(input, output, session, valgDT, data){
   ###### TEST ######
   ##################
 
-  output$test <- renderPrint({
-    str(dataUT$data)
-  })
+  ## output$test <- renderPrint({
+  ##   str(dataUT$data)
+  ## })
 
   return(dataUT)
 

@@ -29,5 +29,5 @@ source("./misc/functionPlot.R") #plotreg
 ###########
 source("./modules/virksomhet.R")
 source("./modules/virksomhetPlot.R")
-## source("./modules/aisModule.R")
 source("./modules/ulykkeMod.R")
+source("./modules/skadeModule.R")
