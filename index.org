@@ -60,7 +60,69 @@ Tilbakemelding til IKT og kommentarer til data uttrekk som kan forbedres eller e
 - Andre skjema har /HovedskjemaGUID/ som er nøkkelen mot Traumeskjema
 ** UnitId
 - Alle skjemaer har /UnitId/. Filtering for Sykehus, RHF og HF basert på
-  /HealthUnitId/ til hvert skjema
+  /UnitId/ til hvert skjema
 ** hosp_serial_num fra traumeskjema
 - hva skal det brukers til?
+** Alder
+- Alder med -1. Er det riktig tall dvs. spebarn
+** Tillegg ais
+- Ryggsøyle (spine) tillegguttrekk under Cervicalcolumna, Thoracalcolumna og
+  Lumbalcolumna. Er det bare å telle minst en til begge isolerte skjelettskader og
+  ryggmargsskade? Eller bør skadegradering brukes?
+- Tillegg til Lumbalcolumna og Thoracalcolumna for Ryggmargsskade inneholder bare
+  skadegrad 3 til 5 mens Cervicalcolumna har 3 til 6?
 ** AIS kode for Spine tilleggsuttrekk
+* Hvordan relasjoner gjøres
+** Ulykke typer
+Hvordan data relasjon er lages..
+#+begin_src dot :file ./img/example2.png :cmdline -Kdot -Tpng
+  digraph ulykke{
+
+  K [label="Ulykke typer = transport"] // node K
+  A [label="Ullyke typer"] // node A
+  H [label="Transport typer"] // node H
+  R [label="Alle ulykke typer"] // node R
+  B [label="Alle transport typer"] // node B
+  V [label="valgte ulykke type"] // node V
+  T [label="valgte transport typer"] //node T
+
+
+  K->H [label="TRUE", fontcolor=darkgreen] // edge K->H
+  K->A [label="FALSE", fontcolor=red] // edge K->A
+  H->B [label="TRUE", fontcolor=darkgreen] // edge H->B
+  A->R [label="TRUE", fontcolor=darkgreen] // edge A->R
+  A->V [label="FALSE", fontcolor=red] // edge A->V
+  H->T [label="FALSE", fontcolor=red] // edge H->T
+  }
+
+#+end_src
+
+#+RESULTS:
+[[file:./img/example2.png]]
+
+** Skade
+
+Hvis /TRUE/ valg alle og /FALSE/ valg input kropp
+
+#+begin_src dot :file ./img/example1.png :cmdline -Kdot -Tpng
+  digraph ais{
+
+  K [label="Kroppsregioner"] // node K
+  A [label="Alle kroppsregioner \n 0 to 9"] // node A
+  H [label="Head"] // node H
+  R [label="Rygg"] // node R
+  B [label="Tillegg rygg"] // node B
+  V [label="valgte kroppsregion"] // node V
+
+  K->A [label="TRUE", fontcolor=darkgreen] // edge K->A
+  K->H [label="FALSE", fontcolor=red] // edge K->H
+  H->V [label="TRUE", fontcolor=darkgreen] // edge H->V
+  K->R [label="FALSE", fontcolor=red] // edge K->R
+  R->V [label="TRUE", fontcolor=darkgreen] //edge R->V
+  R->B [label="FALSE", fontcolor=red] // edge R->B
+
+  }
+#+end_src
+
+#+RESULTS:
+[[file:./img/example1.png]]
