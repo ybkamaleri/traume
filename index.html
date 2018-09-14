@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-09-13 to. 00:17 -->
+<!-- 2018-09-14 fr. 10:48 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Nasjonalt traumeregister</title>
@@ -72,25 +72,35 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgb00984a">1. Nyhet</a></li>
-<li><a href="#orgc4110e4">2. Inledning</a></li>
-<li><a href="#orgfda5720">3. Filstruktur</a></li>
-<li><a href="#org0ce50bc">4. Hva trenger man for å bruke programmet?</a></li>
-<li><a href="#orgbec4e46">5. Hvordan bruker man programmet?</a></li>
-<li><a href="#org3cbe870">6. Spørsmål</a></li>
+<li><a href="#orge8f2ab2">1. Nyhet</a></li>
+<li><a href="#orgaa4f6f6">2. Inledning</a></li>
+<li><a href="#org43fb32e">3. Filstruktur</a></li>
+<li><a href="#org1cd627a">4. Hva trenger man for å bruke programmet?</a></li>
+<li><a href="#orgb676faa">5. Hvordan bruker man programmet?</a></li>
+<li><a href="#orgab2cc20">6. AIS <code>[2/8]</code></a></li>
+<li><a href="#org3ba40d7">7. Analyse ønsker <code>[7/12]</code></a></li>
+<li><a href="#orge413605">8. Kommentar/observasjoner</a></li>
+<li><a href="#orgac7d228">9. Spørsmål</a>
+<ul>
+<li><a href="#org1a2b94e">9.1. Kobling av data</a></li>
+<li><a href="#org76bf07b">9.2. UnitId</a></li>
+<li><a href="#orgb1f2fc5">9.3. hosp<sub>serial</sub><sub>num</sub> fra traumeskjema</a></li>
+<li><a href="#org1f8aeb7">9.4. AIS kode for Spine tilleggsuttrekk</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgb00984a" class="outline-2">
-<h2 id="orgb00984a"><span class="section-number-2">1</span> Nyhet</h2>
+<div id="outline-container-orge8f2ab2" class="outline-2">
+<h2 id="orge8f2ab2"><span class="section-number-2">1</span> Nyhet</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li>Resultater kan vises for hele landet, HF, RHF eller sykehusnivå</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc4110e4" class="outline-2">
-<h2 id="orgc4110e4"><span class="section-number-2">2</span> Inledning</h2>
+<div id="outline-container-orgaa4f6f6" class="outline-2">
+<h2 id="orgaa4f6f6"><span class="section-number-2">2</span> Inledning</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Dette er et forsøk for å lage en resultatpresentasjon ved bruk av <a href="https://www.r-project.org/">R</a> for analyse og
@@ -98,11 +108,11 @@ Dette er et forsøk for å lage en resultatpresentasjon ved bruk av <a href="htt
 </p>
 </div>
 </div>
-<div id="outline-container-orgfda5720" class="outline-2">
-<h2 id="orgfda5720"><span class="section-number-2">3</span> Filstruktur</h2>
+<div id="outline-container-org43fb32e" class="outline-2">
+<h2 id="org43fb32e"><span class="section-number-2">3</span> Filstruktur</h2>
 </div>
-<div id="outline-container-org0ce50bc" class="outline-2">
-<h2 id="org0ce50bc"><span class="section-number-2">4</span> Hva trenger man for å bruke programmet?</h2>
+<div id="outline-container-org1cd627a" class="outline-2">
+<h2 id="org1cd627a"><span class="section-number-2">4</span> Hva trenger man for å bruke programmet?</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Det kreves at man har installert <a href="https://www.rstudio.com/">RStudio</a>. Hvis du jobber på OUS, kan man søker om å
@@ -110,8 +120,8 @@ få installert programmet fra Sykehuspartner.
 </p>
 </div>
 </div>
-<div id="outline-container-orgbec4e46" class="outline-2">
-<h2 id="orgbec4e46"><span class="section-number-2">5</span> Hvordan bruker man programmet?</h2>
+<div id="outline-container-orgb676faa" class="outline-2">
+<h2 id="orgb676faa"><span class="section-number-2">5</span> Hvordan bruker man programmet?</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Når RStudio er installert så skal men gjøre følgende:
@@ -121,13 +131,98 @@ Når RStudio er installert så skal men gjøre følgende:
 </ul>
 </div>
 </div>
-<div id="outline-container-org3cbe870" class="outline-2">
-<h2 id="org3cbe870"><span class="section-number-2">6</span> Spørsmål</h2>
+<div id="outline-container-orgab2cc20" class="outline-2">
+<h2 id="orgab2cc20"><span class="section-number-2">6</span> AIS <code>[2/8]</code></h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li class="on"><code>[X]</code> Kode 91000.1 vises som 010000.1 i GUI. Check at datadump har 091000.1 (Ingen som har 09**)</li>
+<li class="on"><code>[X]</code> kode <code>******.9</code> betyr skadegrad er ukjent</li>
+<li class="off"><code>[&#xa0;]</code> AIS <code>******.1</code> skal bort i analysen for nevne. Lage bare en knapp hvis man vil
+inkluderer skadegrad 1</li>
+<li class="off"><code>[&#xa0;]</code> Bare høyest skadegradering som teller</li>
+<li class="off"><code>[&#xa0;]</code> ISS &gt; 15 betyr alvorlig skade. For ISS beregning er kvadrat av 3 alvorligste AIS</li>
+<li class="off"><code>[&#xa0;]</code> Beregn eg. vanligste skade ved en vist type ulykke</li>
+<li class="off"><code>[&#xa0;]</code> Lage AIS fane uten ulykketype eller skade mekanismen</li>
+<li class="off"><code>[&#xa0;]</code> Beholder duplikater</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org3ba40d7" class="outline-2">
+<h2 id="org3ba40d7"><span class="section-number-2">7</span> Analyse ønsker <code>[7/12]</code></h2>
+<div class="outline-text-2" id="text-7">
+<p>
+De er basert på diskusjonen med NTR og bestillingsdokument
+</p>
+<ul class="org-ul">
+<li class="on"><code>[X]</code> Dashboard med ISS &gt; 15</li>
+<li class="on"><code>[X]</code> Død etter 30 dager (som det er nå)</li>
+<li class="on"><code>[X]</code> Filter for dato Nasjonal - inj<sub>start</sub><sub>date</sub> (Traume skjema)</li>
+<li class="on"><code>[X]</code> Filter for dato Sykehus - ed<sub>arrival</sub><sub>dtg</sub> (Akutt skjema)</li>
+<li class="off"><code>[&#xa0;]</code> Antall fordelt på tid - ukedag (virksomhetsdata)</li>
+<li class="off"><code>[&#xa0;]</code> Ulykke og pre-hospital skjema fra sykehus 1 (hosp<sub>serial</sub><sub>num</sub> fra Traume Skjema)</li>
+<li class="on"><code>[X]</code> Filter for Alder (traumeskjema &ldquo;PatientAge&rdquo;)</li>
+<li class="on"><code>[X]</code> Filter for kjønn (traumeskjema &ldquo;PatientGender&rdquo; 1=Mann 2=Kvinne)</li>
+<li class="off"><code>[&#xa0;]</code> Filter for penetrerende skade (ulykkeskjema - &ldquo;inj<sub>penetrating</sub>&rdquo; 0:ikke valgt 1:Ja 2:Nei 3:Ukjent)</li>
+<li class="off"><code>[&#xa0;]</code> Sykehus opphold for liggertid (Intensiv skjema) hvis mulig</li>
+<li class="off"><code>[&#xa0;]</code> Transport forskjellige koder</li>
+<li class="off"><code>[&#xa0;]</code> Forklarer alle analysene i shiny</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orge413605" class="outline-2">
+<h2 id="orge413605"><span class="section-number-2">8</span> Kommentar/observasjoner</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Tilbakemelding til IKT og kommentarer til data uttrekk som kan forbedres eller endres:
+</p>
+<ol class="org-ol">
+<li>Variablenavn <code>Valgte ais-koder</code> fra <i>skade</i> datasett bør har variablenavn med bare
+<b>et ord</b> dvs. uten mellomrom.</li>
+<li>Navn for HF og RHF trekkes ikke ut i datadump. Den må gjøres for å ha riktig
+navn. Akkurat nå lages liste for HF og RHF manuelt.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgac7d228" class="outline-2">
+<h2 id="orgac7d228"><span class="section-number-2">9</span> Spørsmål</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-org1a2b94e" class="outline-3">
+<h3 id="org1a2b94e"><span class="section-number-3">9.1</span> Kobling av data</h3>
+<div class="outline-text-3" id="text-9-1">
+<ul class="org-ul">
+<li>NTR nummer representerer 1 pasient.</li>
+<li>Traumeskjema har <i>SkjemaGUID</i> som er 1 til 1 mot NTR nummer</li>
+<li>Andre skjema har <i>HovedskjemaGUID</i> som er nøkkelen mot Traumeskjema</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org76bf07b" class="outline-3">
+<h3 id="org76bf07b"><span class="section-number-3">9.2</span> UnitId</h3>
+<div class="outline-text-3" id="text-9-2">
+<ul class="org-ul">
+<li>Alle skjemaer har <i>UnitId</i>. Filtering for Sykehus, RHF og HF basert på
+<i>HealthUnitId</i> til hvert skjema</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgb1f2fc5" class="outline-3">
+<h3 id="orgb1f2fc5"><span class="section-number-3">9.3</span> hosp<sub>serial</sub><sub>num</sub> fra traumeskjema</h3>
+<div class="outline-text-3" id="text-9-3">
+<ul class="org-ul">
+<li>hva skal det brukers til?</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org1f8aeb7" class="outline-3">
+<h3 id="org1f8aeb7"><span class="section-number-3">9.4</span> AIS kode for Spine tilleggsuttrekk</h3>
+</div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Yusman Kamaleri</p>
-<p class="date">Created: 2018-09-13 to. 00:17</p>
+<p class="date">Created: 2018-09-14 fr. 10:48</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
