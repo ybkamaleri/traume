@@ -162,7 +162,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
 
       data <- dataIN[, list(n = ifelse(
         sum(grepl(paste0(".[", paste(valSkade(), collapse = ""), "]$"),
-                  as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
+                  as.character(toString(trimws(unlist(strsplit(aisMix, split = ","))))))) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
@@ -172,7 +172,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
       ## Valgte kroppsregion
       data <- dataIN[, list(n = ifelse(
         sum(grepl(paste0("^", valKropp(), ".*[", paste(valSkade(), collapse = ""), "]$"),
-                  as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
+                  as.character(toString(trimws(unlist(strsplit(aisMix, split = ","))))))) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
@@ -204,7 +204,7 @@ skadeMod <- function(input, output, session, dataFiltert, data){
       ## tar bort kolonn "n"
       data <- valgKropp()[, list(valg = ifelse(
         sum(grepl(paste0("^", kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
-                  as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
+                  as.character(toString(trimws(unlist(strsplit(aisMix, split = ","))))))) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
@@ -227,9 +227,9 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     req(input$skadegrad) #vises ingen hvis NULL
 
     spineValg <- switch(as.character(input$til_rygg),
-                        '2' = "^6\\d{3}2.*[",
-                        "3" = "^6\\d{3}6.*[",
-                        "4" = "^6\\d{3}4.*["
+                        '2' = "^6\\d{3}2.*",
+                        "3" = "^6\\d{3}6.*",
+                        "4" = "^6\\d{3}4.*"
                         )
 
 
@@ -240,8 +240,8 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     } else {
 
       data <- valgKropp()[, list(valg = ifelse(
-        sum(grepl(paste0(spineValg, paste(valSkade(), collapse = ""), "]$"),
-                  as.character(toString(unlist(strsplit(aisMix, split = ",")))))) != 0, 1, 0),
+        sum(grepl(paste0(spineValg, "[", paste(valSkade(), collapse = ""), "]$"),
+                  as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
@@ -311,10 +311,10 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     dataSK <- dataIN[, list(
       kode = ifelse(
         sum(grepl(kode_skjelett,
-                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+                  trimws(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
       kode2 = ifelse(
         sum(grepl(kode_rygg,
-                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+                  trimws(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
       ntrid = ntrid,
       gender = gender,
       age = age), by = ntrid]
@@ -344,13 +344,13 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     kode_rygg <- "^6406.*[3-5]$"
 
     ## kode er skjelettskader og kode2 ryggmargsskade
-    dataSK <- dataIN[, list(
+    dataSK <- dataIN[!is.na(ntrid), list(
       kode = ifelse(
         sum(grepl(kode_skjelett,
-                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+                  trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
       kode2 = ifelse(
         sum(grepl(kode_rygg,
-                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+                  trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
       ntrid = ntrid,
       gender = gender,
       age = age), by = ntrid]
@@ -388,10 +388,10 @@ skadeMod <- function(input, output, session, dataFiltert, data){
     dataSK <- dataIN[, list(
       kode = ifelse(
         sum(grepl(kode_skjelett,
-                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+                  trimws(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
       kode2 = ifelse(
         sum(grepl(kode_rygg,
-                  unlist(strsplit(aisMix, split = ",")))) != 0, 1, 0),
+                  trimws(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
       ntrid = ntrid,
       gender = gender,
       age = age), by = ntrid]
