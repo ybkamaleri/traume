@@ -9,7 +9,7 @@
 #+HTML_HEAD: <script type="text/javascript" src="https://www.pirilampo.org/styles/readtheorg/js/readtheorg.js"></script>
 
 #+TITLE: Nasjonalt traumeregister
-#+SUBTITLE: Resultattjenester versjon 0.03
+#+HTML: <h3> Resultattjenester versjon 0.03 </h3>
 * Nyhet
 - Resultater kan vises for hele landet, HF, RHF eller sykehusnivå
 * Inledning
