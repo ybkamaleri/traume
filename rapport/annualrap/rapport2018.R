@@ -14,10 +14,10 @@ bNA <- function(DT, na = 0){
 
 
 ## hent data
-source("/home/yuskam/Git-work/traume/ntrApp/data.R")
+source("~/Git-work/traume/ntrApp/data.R")
 
 ## hent ekstert funksjoner
-source("/home/yuskam/Git-work/traume/ntrApp/misc/byttna.R")
+source("~/Git-work/traume/ntrApp/misc/byttna.R")
 
 
 ## Valg muligheter
