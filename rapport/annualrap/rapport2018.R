@@ -52,9 +52,9 @@ dataRaw16 <- masterFile[dateAll >= as.Date(datoFra01, format = "%Y-%m-%d") &
 ## bort med NA og duplicated - ntrid, alder og kjønn
 data16 <- dataRaw16[!is.na(ntrid) &
                       !duplicated(ntrid) &
-                   !is.na(age) &
-                   age != -1 &
-                   !is.na(gender)]
+                       !is.na(age) &
+                       age != -1 &
+                       !is.na(gender)]
 
 ##################
 ## Antall traume
@@ -82,6 +82,7 @@ dataLong <-melt(ageMK, id.vars=c("RHF", "Alder"),
                 variable.name="gender", value.name="n")
 
 cols <- c("#4292c6", "#c6dbef", "#084594")
+cols2 <- c("#FF7260", "#2171b5")
 
 pthemes <- theme(axis.text.y = element_text(size = 10, color = "black"),
                  axis.text.x = element_text(size = 10, color = "black"),
@@ -99,6 +100,7 @@ pthemes <- theme(axis.text.y = element_text(size = 10, color = "black"),
                  legend.key = element_rect(fill = "white")
                  )
 
+maxRN <- max(dataLong$n)
 (antallTraume <- ggplot(dataLong) +
    geom_line(aes(x = Alder, y = n, group = gender, color = gender), size = 0.7) +
    ## scale_linetype_manual(values = c(1,1,4)) +
@@ -107,7 +109,7 @@ pthemes <- theme(axis.text.y = element_text(size = 10, color = "black"),
    #kontrol for box for RHF navn
    theme(strip.background = element_rect(colour = "white", fill = "white"),
          strip.text.x = element_text(colour = "black", face = "bold", size =14)) +
-   scale_y_continuous(expand = c(0, 0)) +
+   scale_y_continuous(expand = c(0, 0), breaks = seq(0, maxRN, 20)) +
    scale_x_continuous(breaks = seq(0,110,10)) +
    geom_hline(yintercept = 0, size = 1, color = "black", linetype = "solid") +
    labs(x = "Alder", y = "Antall traume") +
@@ -127,5 +129,11 @@ ageLong <- melt(ageMix, id.vars = "age",
                 variable.name = "year",
                 value.name = "n")
 
+maxN <- max(ageLong$n, na.rm = TRUE)
 (antall1617 <- ggplot(ageLong, aes(age, n)) +
-   geom_line(aes(group = year, color = year), stat = "identity"))
+   geom_line(aes(group = year, color = year), stat = "identity", size = 0.7) +
+   scale_color_manual(breaks = c("age16", "age17"), labels = c("2016","2017"), values = cols2) +
+   scale_y_continuous(breaks = seq(0,maxN, 20), expand = c(0, 0)) +
+   scale_x_continuous(breaks = seq(0,110,10)) +
+   labs(x = "Alder", y = "Antall traume") +
+   pthemes)
