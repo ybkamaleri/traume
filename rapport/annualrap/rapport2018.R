@@ -118,6 +118,7 @@ maxRN <- max(dataLong$n)
 
 
 ## 2017 vs 2016
+###############
 age17 <- data[, list(age17 = .N), by = age]
 age16 <- data16[, list(age16 = .N), by = age]
 
@@ -132,7 +133,8 @@ ageLong <- melt(ageMix, id.vars = "age",
 maxN <- max(ageLong$n, na.rm = TRUE)
 (antall1617 <- ggplot(ageLong, aes(age, n)) +
    geom_line(aes(group = year, color = year), stat = "identity", size = 0.7) +
-   scale_color_manual(breaks = c("age16", "age17"), labels = c("2016","2017"), values = cols2) +
+   scale_color_manual(breaks = c("age16", "age17"),
+                      labels = c("2016","2017"), values = cols2) +
    scale_y_continuous(breaks = seq(0,maxN, 20), expand = c(0, 0)) +
    scale_x_continuous(breaks = seq(0,110,10)) +
    labs(x = "Alder", y = "Antall traume") +
