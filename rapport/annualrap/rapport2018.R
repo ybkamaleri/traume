@@ -242,4 +242,16 @@ navnUT <- c("acc_transport",
             "acc_fire_inhal",
             "acc_other")
 
-sumUT <- dataUL[get(navnUT) == 1, lapply(.SD, sum, na.rm = TRUE), .SDcol = navnUT]
+## ## antall svarte JA
+## sumUT <- dataUL[get(navnUT) == 1, list(name = colnames(.SD),
+##                                        n = sapply(.SD, sum, na.rm = TRUE)), .SDcol = navnUT]
+
+## ## antall svarte untennom NA
+## allUT <- dataUL[!is.na(get(navnUT)), list(name = colnames(.SD),
+##                                           N = sapply(.SD, sum, na.rm = TRUE)), .SDcol = navnUT]
+
+## totalUT <- sumUT[allUT, on = c(name = "name")]
+## totalUT[, pros := round((n / N) * 100), by = name]
+## totalUT
+
+other <- dataUL[acc_other == 1, .N]
