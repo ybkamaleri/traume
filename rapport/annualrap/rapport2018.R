@@ -1,5 +1,4 @@
 ## Årsrapport 2018
-
 rm(list = ls())
 
 pkg <- c("data.table", "rreg", "ggplot2", "directlabels")
@@ -81,7 +80,7 @@ dataLong <-melt(ageMK, id.vars=c("RHF", "Alder"),
                 measure.vars=c("Menn","Kvinner","Begge"),
                 variable.name="gender", value.name="n")
 
-cols <- c("#4292c6", "#c6dbef", "#084594")
+cols <- c("#4292c6", "#c6dbef", "#FF7260", "#084594")
 cols2 <- c("#FF7260", "#2171b5")
 cols1 <- "#4292c6"
 
