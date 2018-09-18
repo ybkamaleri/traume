@@ -141,8 +141,8 @@ maxN <- max(ageLong$n, na.rm = TRUE)
    pthemes)
 
 
-## Antall og ukedag
-###################
+## 3. Antall og ukedag
+########################
 ## OBS!!! Oppklar hvilken dato skal brukes ie. inj_start_date eller ed_arrival_dtg
 
 valgDato <- dataRaw[!duplicated(ntrid) & !is.na(dateAll)] #inj_start_date
@@ -152,24 +152,31 @@ ukeDag <- valgDag[, .(pros = round((.N / ntot) * 100),
                       n = .N), by = dag]
 
 ## pass på riktig rekkefølge
-ukeDag$dag <- factor(ukeDag$dag, levels = c("mandag", "tirsdag", "onsdag", "torsdag",
-                                            "fredag", "lørdag", "søndag"))
+ukeDag$dagnr <- factor(ukeDag$dag, levels = c("mandag", "tirsdag", "onsdag", "torsdag",
+                                              "fredag", "lørdag", "søndag"),
+                     labels = 1:7)
+
+ukeDag$name <- sprintf("%s \n (N=%s)", ukeDag$dag, ukeDag$n)
+ukeDag$name <- with(ukeDag, factor(name, levels = name[order(dagnr)]))
 
 barTheme <- theme(axis.text = element_text(size = 9, color = "black"), #text for x og y axis
                   axis.ticks.y = element_blank(),
+                  axis.ticks.x = element_blank(),
                   axis.line.x = element_line(size = 0.5),
                   axis.title.y = element_text(size = 11),
-                  axis.title.x = element_text(size = 11),
+                  axis.title.x = element_blank(),
                   panel.background = element_rect(fill = "white"),
                   panel.border = element_rect(linetype = 1, fill = NA, color = "white"),
                   panel.grid.minor.x = element_blank(),
-                  panel.grid.major.y = element_line(linetype = 2, color = "grey")
+                  panel.grid.major.y = element_line(linetype = 2, color = "grey"),
+                  legend.position = "none"
                   )
 
-traumeUke <- ggplot(ukeDag) +
-  geom_bar(aes(dag, pros), stat = "identity", fill = cols1) +
+traumeUke <- ggplot(ukeDag, aes(name, pros)) +
+  geom_bar(stat = "identity", fill = cols1, width = .80) +
   scale_y_continuous(expand = expand_scale(mult = c(0, .05))) + #5% space on top
+  geom_text(aes(label = pros), vjust = -0.5, position = position_dodge(width = .80)) +
+  ## geom_text(aes(y = 0.5, label = paste0("N=", n))) +
   barTheme
-
 
 traumeUke
