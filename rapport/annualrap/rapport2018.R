@@ -27,7 +27,7 @@ datoFra01 <- "2016-01-01"
 datoTil01 <- "2016-12-31"
 
 
-## Prepare data
+## Prepare data TRAUME Skjema
 ################################
 
 ## Antall traume 2017
@@ -140,19 +140,35 @@ maxN <- max(ageLong$n, na.rm = TRUE)
    pthemes)
 
 
+###############
+## AKUTT DATA
+###############
 ## 3. Antall og ukedag
 ########################
-## OBS!!! Oppklar hvilken dato skal brukes ie. inj_start_date eller ed_arrival_dtg
 
-valgDato <- dataRaw[!duplicated(ntrid) & !is.na(dateAll)] #inj_start_date
-valgDag <- valgDato[, dag := weekdays(dateAll)]
+## 2017 data
+dataRawAK <- akutt2[dateSykehus >= as.Date(datoFra, format = "%Y-%m-%d") &
+                      dateSykehus <= as.Date(datoTil, format = "%Y-%m-%d")]
+
+
+## bort med NA og duplicated - ntrid, alder og kjønn
+dataAK <- dataRawAK[!is.na(ntrid) &
+                      !duplicated(ntrid) &
+                   !is.na(age) &
+                   age != -1 &
+                   !is.na(gender)]
+
+
+valgDato <- dataAK[!duplicated(ntrid) & !is.na(dateSykehus)] #ed_arrival_dtg
+valgDag <- valgDato[, dag := weekdays(dateSykehus)]
 ntot <- dim(valgDag)[1] #total
 ukeDag <- valgDag[, .(pros = round((.N / ntot) * 100),
                       n = .N), by = dag]
 
 ## pass på riktig rekkefølge
-ukeDag$dagnr <- factor(ukeDag$dag, levels = c("mandag", "tirsdag", "onsdag", "torsdag",
-                                              "fredag", "lørdag", "søndag"),
+ukeDag$dagnr <- factor(ukeDag$dag,
+                       levels = c("mandag", "tirsdag", "onsdag", "torsdag",
+                                  "fredag", "lørdag", "søndag"),
                      labels = 1:7)
 
 ukeDag$name <- sprintf("%s \n (N=%s)", ukeDag$dag, ukeDag$n)
@@ -180,3 +196,50 @@ traumeUke <- ggplot(ukeDag, aes(name, pros)) +
   barTheme
 
 traumeUke
+
+
+
+###################
+## ULYKKE SKJEMA ##
+###################
+## 4. Ulykketyper
+#################
+## Prepare data TRAUME Skjema
+################################
+
+## 2017 Data
+dataRawUl <- ulykke[dateAll >= as.Date(datoFra, format = "%Y-%m-%d") &
+                      dateAll <= as.Date(datoTil, format = "%Y-%m-%d")]
+
+
+## bort med NA og duplicated - ntrid, alder og kjønn
+dataUL <- dataRawUl[!is.na(ntrid) &
+                      !duplicated(ntrid) &
+                   !is.na(age) &
+                   age != -1 &
+                   !is.na(gender)]
+
+
+## 2016 Data
+dataRawUL16 <- ulykke[dateAll >= as.Date(datoFra01, format = "%Y-%m-%d") &
+                        dateAll <= as.Date(datoTil01, format = "%Y-%m-%d")]
+
+
+## bort med NA og duplicated - ntrid, alder og kjønn
+dataUL16 <- dataRawUL16[!is.na(ntrid) &
+                          !duplicated(ntrid) &
+                       !is.na(age) &
+                       age != -1 &
+                       !is.na(gender)]
+
+## Liste over ulykke typer
+navnUT <- c("acc_transport",
+            "acc_fall",
+            "acc_violence",
+            "acc_self_inflict",
+            "acc_work",
+            "acc_sprt_recreat",
+            "acc_fire_inhal",
+            "acc_other")
+
+sumUT <- dataUL[get(navnUT) == 1, lapply(.SD, sum, na.rm = TRUE), .SDcol = navnUT]
