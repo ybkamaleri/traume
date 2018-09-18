@@ -83,9 +83,9 @@ dataLong <-melt(ageMK, id.vars=c("RHF", "Alder"),
 
 cols <- c("#4292c6", "#c6dbef", "#084594")
 cols2 <- c("#FF7260", "#2171b5")
+cols1 <- "#4292c6"
 
-pthemes <- theme(axis.text.y = element_text(size = 10, color = "black"),
-                 axis.text.x = element_text(size = 10, color = "black"),
+pthemes <- theme(axis.text = element_text(size = 9, color = "black"), #text for x og y axis
                  axis.ticks.y = element_blank(),
                  axis.line.x = element_line(size = 0.5),
                  axis.title.y = element_text(size = 11),
@@ -117,8 +117,8 @@ maxRN <- max(dataLong$n)
 
 
 
-## 2017 vs 2016
-###############
+## Antall traume 2017 vs 2016
+#############################
 age17 <- data[, list(age17 = .N), by = age]
 age16 <- data16[, list(age16 = .N), by = age]
 
@@ -139,3 +139,37 @@ maxN <- max(ageLong$n, na.rm = TRUE)
    scale_x_continuous(breaks = seq(0,110,10)) +
    labs(x = "Alder", y = "Antall traume") +
    pthemes)
+
+
+## Antall og ukedag
+###################
+## OBS!!! Oppklar hvilken dato skal brukes ie. inj_start_date eller ed_arrival_dtg
+
+valgDato <- dataRaw[!duplicated(ntrid) & !is.na(dateAll)] #inj_start_date
+valgDag <- valgDato[, dag := weekdays(dateAll)]
+ntot <- dim(valgDag)[1] #total
+ukeDag <- valgDag[, .(pros = round((.N / ntot) * 100),
+                      n = .N), by = dag]
+
+## pass på riktig rekkefølge
+ukeDag$dag <- factor(ukeDag$dag, levels = c("mandag", "tirsdag", "onsdag", "torsdag",
+                                            "fredag", "lørdag", "søndag"))
+
+barTheme <- theme(axis.text = element_text(size = 9, color = "black"), #text for x og y axis
+                  axis.ticks.y = element_blank(),
+                  axis.line.x = element_line(size = 0.5),
+                  axis.title.y = element_text(size = 11),
+                  axis.title.x = element_text(size = 11),
+                  panel.background = element_rect(fill = "white"),
+                  panel.border = element_rect(linetype = 1, fill = NA, color = "white"),
+                  panel.grid.minor.x = element_blank(),
+                  panel.grid.major.y = element_line(linetype = 2, color = "grey")
+                  )
+
+traumeUke <- ggplot(ukeDag) +
+  geom_bar(aes(dag, pros), stat = "identity", fill = cols1) +
+  scale_y_continuous(expand = expand_scale(mult = c(0, .05))) + #5% space on top
+  barTheme
+
+
+traumeUke
