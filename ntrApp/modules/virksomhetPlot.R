@@ -27,7 +27,27 @@ virkPlot <- function(input, output, session, valg, data){
     ukeDag$dag <- factor(ukeDag$dag, levels = c("mandag", "tirsdag", "onsdag", "torsdag",
                                                 "fredag", "lørdag", "søndag"))
 
+
+    barTheme <- theme(axis.text = element_text(size = 12, color = "black"), #text for x og y axis
+                      axis.ticks.y = element_blank(),
+                      axis.line.x = element_line(size = 0.5),
+                      axis.title.y = element_text(size = 13),
+                      axis.title.x = element_blank(),
+                      panel.background = element_rect(fill = "white"),
+                      panel.border = element_rect(linetype = 1, fill = NA, color = "white"),
+                      panel.grid.minor.x = element_blank(),
+                      panel.grid.major.y = element_line(linetype = 2, color = "grey"),
+                      legend.position = "none"
+                      )
+
+
     ggplot(ukeDag, aes(dag, pros)) + geom_bar(stat = "identity")
+
+    ggplot(ukeDag) +
+      geom_bar(aes(dag, pros), stat = "identity", fill = "#2171b5") +
+      scale_y_continuous(expand = expand_scale(mult = c(0, .05))) + #5% space on top
+      labs(y = "prosent") +
+      barTheme
   })
 
 }
