@@ -235,9 +235,9 @@ skadeMod <- function(input, output, session, valg, data){
     req(input$skadegrad) #vises ingen hvis NULL
 
     spineValg <- switch(as.character(input$til_rygg),
-                        '2' = "^6\\d{3}2.*",
-                        "3" = "^6\\d{3}6.*",
-                        "4" = "^6\\d{3}4.*"
+                        '2' = "^6\\d{2}2.*",
+                        "3" = "^6\\d{2}6.*",
+                        "4" = "^6\\d{2}4.*"
                         )
 
 
