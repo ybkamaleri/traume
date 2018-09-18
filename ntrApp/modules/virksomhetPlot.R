@@ -23,7 +23,7 @@ virkPlot <- function(input, output, session, valg, data){
     ukeDag <- valgDag[, .(pros = round((.N / ntot) * 100),
                           n = .N), by = dag]
 
-
+    ## Passer på riktig rekkefølge
     ukeDag$dag <- factor(ukeDag$dag, levels = c("mandag", "tirsdag", "onsdag", "torsdag",
                                                 "fredag", "lørdag", "søndag"))
 
