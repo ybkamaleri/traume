@@ -242,16 +242,75 @@ navnUT <- c("acc_transport",
             "acc_fire_inhal",
             "acc_other")
 
-## ## antall svarte JA
-## sumUT <- dataUL[get(navnUT) == 1, list(name = colnames(.SD),
-##                                        n = sapply(.SD, sum, na.rm = TRUE)), .SDcol = navnUT]
+## Funksjon for telling kolonne
+tellCol <- function(x = dataUL, col, value = 1){
+  require(data.table)
+  setDT(x)
+  valg1 = x[get(col) == value, .N]
+  valg2 = x[, .(N = ifelse(!is.na(get(col)), 1, 0))][, sum(N, na.rm = TRUE)]
+  data <- data.table(var = col, n = valg1, N = valg2)
+  data[, prosent := round((n / N) * 100)]
+  ## return(data)
+}
 
-## ## antall svarte untennom NA
-## allUT <- dataUL[!is.na(get(navnUT)), list(name = colnames(.SD),
-##                                           N = sapply(.SD, sum, na.rm = TRUE)), .SDcol = navnUT]
+trans <- tellCol(col = "acc_transport")
+fall <- tellCol(col = "acc_fall")
+violence <- tellCol(col = "acc_violence")
+self <- tellCol(col = "acc_self_inflict")
+work <- tellCol(col = "acc_work")
+sport <- tellCol(col = "acc_sprt_recreat")
+fire <- tellCol(col = "acc_fire_inhal")
+other <- tellCol(col = "acc_other")
 
-## totalUT <- sumUT[allUT, on = c(name = "name")]
-## totalUT[, pros := round((n / N) * 100), by = name]
-## totalUT
+accData <- rbindlist(list(trans, fall, violence, self, work, sport, fire, other))
 
-other <- dataUL[acc_other == 1, .N]
+## 2016 ulykke typer
+
+trans16 <- tellCol(x = dataUL16, col = "acc_transport")
+fall16 <- tellCol(x = dataUL16, col = "acc_fall")
+violence16 <- tellCol(x = dataUL16, col = "acc_violence")
+self16 <- tellCol(x = dataUL16, col = "acc_self_inflict")
+work16 <- tellCol(x = dataUL16, col = "acc_work")
+sport16 <- tellCol(x = dataUL16, col = "acc_sprt_recreat")
+fire16 <- tellCol(x = dataUL16, col = "acc_fire_inhal")
+other16 <- tellCol(x = dataUL16, col = "acc_other")
+
+accData16 <- rbindlist(list(trans16, fall16, violence16, self16, work16, sport16, fire16, other16))
+
+## Merge
+accMix <- accData[accData16, on = c(var = "var")] #i.n, i.N og i.prosent er for 2016 dvs i = inne i mergeing
+
+
+
+
+
+
+
+
+
+##############
+## TEST DATA
+###############
+DT <- data.table(col1 = c(rep(1:4, 2), NA, NA), col2 = rep(1:2, 5), col3 = rep(1,10))
+DT
+
+cc <- "col1"
+val <- 1
+valg1 <- DT[get(cc) == val, .N]
+valg1
+valg2 <- DT[, list(N = ifelse(!is.na(get(cc)), 1, 0))][, sum(N)]
+data <- data.table(name = cc, n = valg1, N = valg2)
+data[, pros := round((n / N) * 100)]
+data
+
+tellColtest <- function(x, col, value = 1){
+  require(data.table)
+  setDT(x)
+  valg1 = x[get(col) == value, .N]
+  valg2 = x[, .(N = ifelse(!is.na(get(col)), 1, 0))][, sum(N, na.rm = TRUE)]
+  data <- data.table(var = col, n = valg1, N = valg2)
+  data[, prosent := round((n / N) * 100)]
+  return(data)
+}
+
+testUT <- tellColtest(DT, "col1")
