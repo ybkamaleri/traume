@@ -250,7 +250,7 @@ tellCol <- function(x = dataUL, col, value = 1){
   valg2 = x[, .(N = ifelse(!is.na(get(col)), 1, 0))][, sum(N, na.rm = TRUE)]
   data <- data.table(var = col, n = valg1, N = valg2)
   data[, prosent := round((n / N) * 100)]
-  ## return(data)
+  return(data)
 }
 
 trans <- tellCol(col = "acc_transport")
@@ -281,7 +281,8 @@ accData16 <- rbindlist(list(trans16, fall16, violence16, self16, work16, sport16
 accMix <- accData[accData16, on = c(var = "var")] #i.n, i.N og i.prosent er for 2016 dvs i = inne i mergeing
 
 
-
+library(rreg)
+regbar(accData, var, prosent, num = "n")
 
 
 
