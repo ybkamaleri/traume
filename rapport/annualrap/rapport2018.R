@@ -176,6 +176,7 @@ traumeUke <- ggplot(ukeDag, aes(name, pros)) +
   geom_bar(stat = "identity", fill = cols1, width = .80) +
   scale_y_continuous(expand = expand_scale(mult = c(0, .05))) + #5% space on top
   geom_text(aes(label = pros), vjust = -0.5, position = position_dodge(width = .80)) +
+  ylab("prosent") +
   ## geom_text(aes(y = 0.5, label = paste0("N=", n))) +
   barTheme
 
