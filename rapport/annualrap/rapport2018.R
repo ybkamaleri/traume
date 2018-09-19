@@ -281,6 +281,47 @@ accData16 <- rbindlist(list(trans16, fall16, violence16, self16, work16, sport16
 accMix <- accData[accData16, on = c(var = "var")] #i.n, i.N og i.prosent er for 2016 dvs i = inne i mergeing
 
 
+#### Plot
+data <- accMix[order(accMix$prosent, decreasing = TRUE),]
+data[, ref := seq.int(nrow(accMix))]
+
+## New column for reference og dummy
+dfrow <- nrow(data)
+data$ref <- seq.int(dfrow)
+
+## create dummy row for text - ref highest row and "" for var to avoid showing NA in
+## x-axis
+data <- rbindlist(list(data, data[NA]))
+data[is.na(ref), `:=` (var = "", ref = dfrow + 1)]
+
+ymax <- max(data$prosent, na.rm = TRUE)
+ylocal <- "prosent"
+ycomp = "i.prosent"
+ref = "ref"
+leg1 = "2017"
+leg2 = "2016"
+col1 = "blue"
+col2 = "orange"
+
+p <- ggplot(data) +
+  geom_segment(aes(x = ref, y = ymax, xend = ref, yend = 0),
+               size = 0.3, linetype = 2, color = "grey70") +
+  ## 'fill' is used to get legend for geom_bar
+  geom_bar(aes_string(ref, ylocal, fill = leg1), stat = "identity") +
+  ## 'color' is used to get legend
+  geom_point(aes_string(ref, ycomp, color = leg2), stat = "identity",
+             shape = 18, size = 6) +
+  coord_flip() +
+  scale_x_discrete(breaks = factor(data$ref), labels = data$var) +
+  scale_fill_manual(values = col1) + #for bar
+  scale_color_manual(values = col2) + #for point
+  ## order in guides to specify order of the legend and not alphabetically
+  guides(fill = guide_legend(override.aes = list(shape = NA), order = 1))
+
+
+
+
+
 library(rreg)
 regbar(accData, var, prosent, num = "n")
 
