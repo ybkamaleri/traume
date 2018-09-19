@@ -285,6 +285,10 @@ accMix <- accData[accData16, on = c(var = "var")] #i.n, i.N og i.prosent er for 
 data <- accMix[order(accMix$prosent, decreasing = TRUE),]
 data[, ref := seq.int(nrow(accMix))]
 
+## text til tabell
+data[, text1:= paste0(n, " (", prosent, "%)"), by=var]
+data[, text2:= paste0(i.n, " (", i.prosent, "%)"), by=var]
+
 ## New column for reference og dummy
 dfrow <- nrow(data)
 data$ref <- seq.int(dfrow)
