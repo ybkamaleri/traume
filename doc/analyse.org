@@ -26,11 +26,12 @@ Ting må gjøres for analsyen
   kodebook (definisjonskatalogen)
 - [ ] Tid er registret
 
-* AIS [2/8]
+* AIS [3/9]
 - [X] Kode 91000.1 vises som 010000.1 i GUI. Check at datadump har 091000.1 (Ingen som har 09**)
 - [X] kode ~******.9~ betyr skadegrad er ukjent
 - [ ] AIS ~******.1~ skal bort i analysen for nevne. Lage bare en knapp hvis man vil
   inkluderer skadegrad 1
+- [X] AIS kode for spine regionsdeler flytter til 3 digits
 - [ ] Bare høyest skadegradering som teller
 - [ ] ISS > 15 betyr alvorlig skade. For ISS beregning er kvadrat av 3 alvorligste AIS
 - [ ] Beregn eg. vanligste skade ved en vist type ulykke
