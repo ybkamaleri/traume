@@ -1,4 +1,4 @@
-## Function for rapport barplot
+## Function for rapport barplot. bruke "grid.draw(plotOutPut)"
 
 rapbar <- function(data, x, n1, n2, pros1, pros2, ascending = TRUE){
 
@@ -20,7 +20,7 @@ rapbar <- function(data, x, n1, n2, pros1, pros2, ascending = TRUE){
          call. = FALSE)
   }
 
-  ## data <- data.table::setDT(data)
+  data.table::setDT(data)
 
   ## choose x-axis. "x" argument
   data.table::setnames(data, as.character(substitute(x)), "xvar")
@@ -73,6 +73,11 @@ rapbar <- function(data, x, n1, n2, pros1, pros2, ascending = TRUE){
 
   ## Other paramenters
   fsize <- 3 #fontsize
+
+  ## Farger
+  col1 <- "#6baed6"
+  col2 <- "#2171b5" #hvis bare en søyle
+  col3 <- "#084594" #Den andre søyle
 
   ## Theme
   Theme001 <- theme(
@@ -127,6 +132,10 @@ rapbar <- function(data, x, n1, n2, pros1, pros2, ascending = TRUE){
              label = "2017 \n N (%)", fontface = "bold", size = fsize)
 
 
+  ## Save figure ================================
+  fig1a <- ggplot_gtable(ggplot_build(plotgg))
+  fig1a$layout$clip[fig1a$layout$name == 'panel'] <- 'off'
+  ## grid.draw(fig1a)
 
-  return(plotgg)
+  return(fig1a)
 }
