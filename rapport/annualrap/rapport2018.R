@@ -28,6 +28,13 @@ datoTil <- "2017-12-31"
 datoFra01 <- "2016-01-01"
 datoTil01 <- "2016-12-31"
 
+## Felles paramenters
+cols <- c("#4292c6", "#c6dbef", "#FF7260", "#084594")
+cols2 <- c("#FF7260", "#2171b5")
+cols1 <- "#4292c6"
+col1 <- "#6baed6"
+col2 <- "#2171b5" #hvis bare en søyle
+col3 <- "#084594" #Den andre søyle
 
 ## Prepare data TRAUME Skjema
 ################################
@@ -82,16 +89,11 @@ dataLong <-melt(ageMK, id.vars=c("RHF", "Alder"),
                 measure.vars=c("Menn","Kvinner","Begge"),
                 variable.name="gender", value.name="n")
 
-cols <- c("#4292c6", "#c6dbef", "#FF7260", "#084594")
-cols2 <- c("#FF7260", "#2171b5")
-cols1 <- "#4292c6"
-col1 <- "#6baed6"
-col2 <- "#2171b5"
-col3 <- "#084594"
 
 pthemes <- theme(axis.text = element_text(size = 9, color = "black"), #text for x og y axis
                  axis.ticks.y = element_blank(),
                  axis.line.x = element_line(size = 0.5),
+                 axis.line.y = element_blank(),
                  axis.title.y = element_text(size = 11),
                  axis.title.x = element_text(size = 11),
                  panel.background = element_rect(fill = "white"),
@@ -99,25 +101,46 @@ pthemes <- theme(axis.text = element_text(size = 9, color = "black"), #text for 
                  panel.grid.minor.x = element_blank(),
                  panel.grid.major.y = element_line(linetype = 2, color = "grey"),
                  legend.position = "bottom",
+                 legend.justification = c(0,1), #legend bottom left
                  legend.title = element_blank(),
-                 legend.text = element_text(size = 11),
+                 legend.text = element_text(size = 9),
                  legend.key = element_rect(fill = "white")
                  )
 
 maxRN <- max(dataLong$n)
-(antallTraume <- ggplot(dataLong) +
-   geom_line(aes(x = Alder, y = n, group = gender, color = gender), size = 0.7) +
-   ## scale_linetype_manual(values = c(1,1,4)) +
-   scale_color_manual(values = cols) +
-   pthemes +
-   #kontrol for box for RHF navn
-   theme(strip.background = element_rect(colour = "white", fill = "white"),
-         strip.text.x = element_text(colour = "black", face = "bold", size =14)) +
-   scale_y_continuous(expand = c(0, 0), breaks = seq(0, maxRN, 20)) +
-   scale_x_continuous(breaks = seq(0,110,10)) +
-   geom_hline(yintercept = 0, size = 1, color = "black", linetype = "solid") +
-   labs(x = "Alder", y = "Antall traume") +
-   facet_wrap( ~ RHF))
+antallTraume <- ggplot(dataLong) +
+  geom_line(aes(x = Alder, y = n, group = gender, color = gender), size = 0.7) +
+  ## scale_linetype_manual(values = c(1,1,4)) +
+  scale_color_manual(values = cols) +
+  pthemes +
+  #kontrol for box for RHF navn
+  theme(strip.background = element_rect(colour = "white", fill = "white"),
+        strip.text.x = element_text(colour = "black", face = "bold", size =14)) +
+  scale_y_continuous(expand = c(0, 0), breaks = seq(0, maxRN, 20)) +
+  scale_x_continuous(breaks = seq(0,110,10)) +
+  geom_hline(yintercept = 0, size = 1, color = "black", linetype = "solid") +
+  labs(x = "Alder", y = "Antall traume") +
+  facet_wrap( ~ RHF)
+
+
+
+## save file generic
+fig1 <- antallTraume
+title <- "fig1_antall_regionvis"
+
+## Save figure ================================
+fig1a <- ggplot_gtable(ggplot_build(fig1))
+fig1a$layout$clip[fig1a$layout$name == 'panel'] <- 'off'
+grid.draw(fig1a)
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+## ggsave("~/Git-work/HSR/arsrapport/fig1a.jpg")
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
 
 
 
@@ -135,14 +158,37 @@ ageLong <- melt(ageMix, id.vars = "age",
                 value.name = "n")
 
 maxN <- max(ageLong$n, na.rm = TRUE)
-(antall1617 <- ggplot(ageLong, aes(age, n)) +
-   geom_line(aes(group = year, color = year), stat = "identity", size = 0.7) +
-   scale_color_manual(breaks = c("age16", "age17"),
-                      labels = c("2016","2017"), values = cols2) +
-   scale_y_continuous(breaks = seq(0,maxN, 20), expand = c(0, 0)) +
-   scale_x_continuous(breaks = seq(0,110,10)) +
-   labs(x = "Alder", y = "Antall traume") +
-   pthemes)
+antall1617 <- ggplot(ageLong, aes(age, n)) +
+  geom_line(aes(group = year, color = year), stat = "identity", size = 0.7) +
+  scale_color_manual(breaks = c("age16", "age17"),
+                     labels = c("2016","2017"), values = cols2) +
+  scale_y_continuous(breaks = seq(0,maxN, 20), expand = c(0, 0)) +
+  scale_x_continuous(breaks = seq(0,110,10)) +
+  labs(x = "Alder", y = "Antall traume") +
+  pthemes
+
+
+
+## save file generic
+fig1 <- antall1617
+title <- "fig2_antall_traume"
+
+## Save figure ================================
+fig1a <- ggplot_gtable(ggplot_build(fig1))
+fig1a$layout$clip[fig1a$layout$name == 'panel'] <- 'off'
+grid.draw(fig1a)
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+## ggsave("~/Git-work/HSR/arsrapport/fig1a.jpg")
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+
+
 
 
 ###############
@@ -183,6 +229,7 @@ barTheme <- theme(axis.text = element_text(size = 9, color = "black"), #text for
                   axis.ticks.y = element_blank(),
                   axis.ticks.x = element_blank(),
                   axis.line.x = element_line(size = 0.5),
+                  axis.line.y = element_blank(),
                   axis.title.y = element_text(size = 11),
                   axis.title.x = element_blank(),
                   panel.background = element_rect(fill = "white"),
@@ -193,14 +240,32 @@ barTheme <- theme(axis.text = element_text(size = 9, color = "black"), #text for
                   )
 
 traumeUke <- ggplot(ukeDag, aes(name, pros)) +
-  geom_bar(stat = "identity", fill = cols1, width = .80) +
+  geom_bar(stat = "identity", fill = col2, width = .80) +
   scale_y_continuous(expand = expand_scale(mult = c(0, .05))) + #5% space on top
   geom_text(aes(label = pros), vjust = -0.5, position = position_dodge(width = .80)) +
   ylab("prosent") +
   ## geom_text(aes(y = 0.5, label = paste0("N=", n))) +
   barTheme
 
-traumeUke
+
+## save file generic
+fig1 <- traumeUke
+title <- "fig3_ukerdager"
+
+## Save figure ================================
+fig1a <- ggplot_gtable(ggplot_build(fig1))
+fig1a$layout$clip[fig1a$layout$name == 'panel'] <- 'off'
+grid.draw(fig1a)
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+## ggsave("~/Git-work/HSR/arsrapport/fig1a.jpg")
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
 
 
 
@@ -324,7 +389,7 @@ ymax <- ifelse(with(yvar, v1 > v2), yvar$v1, yvar$v2)
 
 ## Top text position
 yText1 <- ymax + ymax * 0.1
-yText2 <- ylocation + 8
+yText2 <- yText1 + 8
 
 ## Other paramenters
 fsize <- 3 #fontsize
@@ -341,12 +406,14 @@ Theme001 <- theme(
   panel.border = element_blank(),
   panel.grid.minor.x = element_blank(),
   legend.position = "bottom",
+  legend.justification = c(0,1), #legend bottom left
   ## legend.box = "horizontal",
-  ## legend.direction = "horizontal",
+  legend.direction = "horizontal",
   legend.title = element_blank(),
-  legend.key = element_rect(size = 0),
+  ## legend.key = element_rect(fill = "white"),
   legend.key.width = unit(1, 'lines'), #width key
-  legend.spacing.x = unit(0.4, 'cm'),
+  legend.spacing.x = unit(0.3, 'cm'), #avstand mellom keys
+  legend.text = element_text(size = 9),
   plot.title = element_text(size = 14),
   plot.margin = unit(c(0, 1, 1, 1), 'cm')
 )
@@ -389,12 +456,22 @@ fig1a <- ggplot_gtable(ggplot_build(fig1))
 fig1a$layout$clip[fig1a$layout$name == 'panel'] <- 'off'
 grid.draw(fig1a)
 cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
 cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
 ## ggsave("~/Git-work/HSR/arsrapport/fig1a.jpg")
 dev.off()
 
 ## reset fig1 - to avoid wrong figure
 fig1 <- NULL
+
+
+
+#########################
+## Transport
+########################
+
+
+
 
 
 
@@ -419,18 +496,18 @@ val <- 1
 valg1 <- DT[get(cc) == val, .N]
 valg1
 valg2 <- DT[, list(N = ifelse(!is.na(get(cc)), 1, 0))][, sum(N)]
-data <- data.table(name = cc, n = valg1, N = valg2)
-data[, pros := round((n / N) * 100)]
-data
+dd <- data.table(name = cc, n = valg1, N = valg2)
+dd[, pros := round((n / N) * 100)]
+dd
 
 tellColtest <- function(x, col, value = 1){
   require(data.table)
   setDT(x)
   valg1 = x[get(col) == value, .N]
   valg2 = x[, .(N = ifelse(!is.na(get(col)), 1, 0))][, sum(N, na.rm = TRUE)]
-  data <- data.table(var = col, n = valg1, N = valg2)
-  data[, prosent := round((n / N) * 100)]
-  return(data)
+  dd <- data.table(var = col, n = valg1, N = valg2)
+  dd[, prosent := round((n / N) * 100)]
+  return(dd)
 }
 
 testUT <- tellColtest(DT, "col1")
