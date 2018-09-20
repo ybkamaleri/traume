@@ -1,6 +1,7 @@
+
 ## Function for rapport barplot. bruke "grid.draw(plotOutPut)"
 
-rapbar <- function(data, x, n1, n2, pros1, pros2, ascending = TRUE){
+rapbar <- function(DT, x, n1, n2, pros1, pros2, ascending = TRUE){
 
 
   pkg <- c("data.table", "ggplot2", "directlabels", "cowplot", "gridExtra", "grid")
@@ -15,11 +16,12 @@ rapbar <- function(data, x, n1, n2, pros1, pros2, ascending = TRUE){
  
 
   ## error message if at least 1 args ie. data, x, yl or yc is missing
-  if (missing(data) || missing(x) || missing(n1) || missing(n2)) {
+  if (missing(DT) || missing(x) || missing(n1) || missing(n2)) {
     stop("At least one of four compulsory arguments is missing. Run args(rapbar)",
          call. = FALSE)
   }
 
+  data <- copy(DT)
   data.table::setDT(data)
 
   ## choose x-axis. "x" argument
@@ -50,8 +52,8 @@ rapbar <- function(data, x, n1, n2, pros1, pros2, ascending = TRUE){
   data[is.na(ref), ref := refrow] #reference to dummy row
 
   ## Tekst til å bruke for tabell
-  data[, text1 := paste0(n1, ";(", pros1, "%)"), by = ref]
-  data[, text2 := paste0(n2, ";(", pros2, "%)"), by = ref]
+  data[, text1 := paste0(n1, ";(", pros1, ")"), by = ref]
+  data[, text2 := paste0(n2, ";(", pros2, ")"), by = ref]
 
   ## Bytt NA til "" i dummy row så det ikke skal vises som NA i figuren
   data[ref == refrow, `:=` (xvar = "",
@@ -69,7 +71,7 @@ rapbar <- function(data, x, n1, n2, pros1, pros2, ascending = TRUE){
 
   ## Top text position
   yText1 <- ymax + ymax * 0.1
-  yText2 <- yText1 + 8
+  yText2 <- yText1 + 7
 
   ## Other paramenters
   fsize <- 3 #fontsize
@@ -112,7 +114,7 @@ rapbar <- function(data, x, n1, n2, pros1, pros2, ascending = TRUE){
                  aes(x = ref, y = 0, xend = ref, yend = ymax), size = 1, color = "white") +
     ## for prosent 2
     geom_segment(aes(x = ref, y = 0, xend = ref, yend = pros1, color = "2017"),
-                 lineend = "butt", size = 8) +
+                 lineend = "butt", size = 10) +
     scale_fill_manual(values = c("2016" = col1), guide = FALSE) + #for bar
     scale_color_manual(values = c("2016" = col1, "2017" = col3)) + #for segment
     scale_x_discrete(breaks = factor(data$ref), labels = data$xvar) +
