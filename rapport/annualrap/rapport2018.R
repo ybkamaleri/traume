@@ -213,7 +213,7 @@ dataAK <- dataRawAK[!is.na(ntrid) &
 valgDato <- dataAK[!duplicated(ntrid) & !is.na(dateSykehus)] #ed_arrival_dtg
 valgDag <- valgDato[, dag := weekdays(dateSykehus)]
 ntot <- dim(valgDag)[1] #total
-ukeDag <- valgDag[, .(pros = round((.N / ntot) * 100),
+ukeDag <- valgDag[, .(pros = round((.N / ntot) * 100, digits = 1),
                       n = .N), by = dag]
 
 ## pass på riktig rekkefølge
@@ -329,7 +329,7 @@ tellCol <- function(x = dataUL, col, value = 1){
   valg1 = x[get(col) == value, .N]
   valg2 = x[, .(N = ifelse(!is.na(get(col)), 1, 0))][, sum(N, na.rm = TRUE)]
   data <- data.table(var = col, n = valg1, N = valg2)
-  data[, prosent := round((n / N) * 100)]
+  data[, prosent := round((n / N) * 100, digits = 1)]
   return(data)
 }
 
@@ -369,12 +369,12 @@ data[, ref := as.factor(seq.int(nrow(accMix)))]
 data <- rbindlist(list(data, data[NA])) #create dummy row for header table
 data[is.na(ref), ref := as.character(dfrow)]
 
-## Gir riktig til ulykke typer
+## Gir riktig navn til ulykke typer
 data[, navn:= factor(var, levels=navnUT, labels = navnIN)]
 
 ## text til tabell
-data[, text1:= paste0(n, " (", prosent, "%)"), by=var]
-data[, text2:= paste0(i.n, " (", i.prosent, "%)"), by=var]
+data[, text1:= paste0(n, ";(", prosent, "%)"), by=var]
+data[, text2:= paste0(i.n, ";(", i.prosent, "%)"), by=var]
 
 ## Bytt NA til "" for navn, text1 og text2
 byttVar <- c("navn", "text1", "text2")
@@ -438,8 +438,8 @@ figUlykke <- ggplot(data) +
   geom_segment(aes(y = 0, yend = ymax, x = -Inf, xend = -Inf)) +
   guides(color = guide_legend(override.aes = list(fill = "black"))) +
   ## tabell
-  geom_text(aes(ref, yText1, label = gsub(" ", "\n", text2)), hjust = 0.5, size = fsize) +
-  geom_text(aes(ref, yText2, label = gsub(" ", "\n", text1)), hjust = 0.5, size = fsize) +
+  geom_text(aes(ref, yText1, label = gsub(";", "\n", text2)), hjust = 0.5, size = fsize) +
+  geom_text(aes(ref, yText2, label = gsub(";", "\n", text1)), hjust = 0.5, size = fsize) +
   annotate("text", x = as.character(dfrow), y = yText1,
            label = "2016 \n N (%)", fontface = "bold", size = fsize) +
   annotate("text", x = as.character(dfrow), y = yText2,
@@ -470,16 +470,134 @@ fig1 <- NULL
 ## Transport
 ########################
 
+## Omkode Annet/ukjent og MC/Moped
+dataUL[, transkode := acc_trsp_rd_type]
+dataUL[acc_trsp_rd_type == 99 | acc_trsp_rd_type == 999, transkode := 9] #annen/ukjent
+dataUL[acc_trsp_rd_type == 2 | acc_trsp_rd_type == 7, transkode := 2] #moped og mc
+
+dataUL16[, transkode := acc_trsp_rd_type]
+dataUL16[acc_trsp_rd_type == 99 | acc_trsp_rd_type == 999, transkode := 9] #annen/ukjent
+dataUL16[acc_trsp_rd_type == 2 | acc_trsp_rd_type == 7, transkode := 2] #moped og mc
+
+## trans2017
+trans <- dataUL[transkode != 0, .N, by = transkode] #ikke valgt er ut
+trans[, pros := round(N / sum(trans$N) * 100, digits = 1), by = transkode]
+
+## trans2016
+trans16 <- dataUL16[transkode != 0, .N, by = transkode] #ikke valgt er ut
+trans16[, pros := round(N / sum(trans16$N) * 100, digits = 1), by = transkode]
+
+## merge got get masterfil (MF)
+transMF <- trans[trans16, on = c(transkode = "transkode")]
+
+## Gir navn
+transNavn <- c("Bil", "MC/Moped", "Sykkel", "Båt", "Tog", "Annet/Ukjent")
+transInd <- c(1:5,9)
+
+transMF[, navn := factor(transkode,
+                         levels = transInd,
+                           labels = transNavn)]
+
+
+## plotting
+transPlot <- transMF[order(transMF$pros, decreasing = FALSE),]
+dfrow <- nrow(transPlot) + 1
+transPlot[, ref := as.factor(seq.int(nrow(transPlot)))]
+transPlot <- rbindlist(list(transPlot, transPlot[NA]))
+transPlot[is.na(ref), ref := as.character(dfrow)]
+
+## text til å bruke til plot label
+transPlot[, text1 := paste0(N, ";(", pros, "%)"), by = ref]
+transPlot[, text2 := paste0(i.N, ";(", i.pros, "%)"), by = ref]
+
+## Bytt NA til "" for navn, text1 og text2
+byttVar <- c("navn", "text1", "text2")
+transPlot[ref == as.character(dfrow), `:=` (navn = "",
+                                            text1 = "",
+                                            text2 = "")]
+## hvis <5 tar bort !!OBSS!!!
+transPlot[N == 1, `:=` (text1 = "n<6")]
+
+
+## finne høyste y for plassering av tabell
+yvar <- transPlot[, list(v1 = max(pros, na.rm = TRUE), v2 = max(i.pros, na.rm = TRUE))]
+ymax <- ifelse(with(yvar, v1 > v2), yvar$v1, yvar$v2)
+
+## Top text position
+yText1 <- ymax + ymax * 0.1
+yText2 <- yText1 + 8
+
+## Other paramenters
+fsize <- 3 #fontsize
+
+
+Theme001 <- theme(
+  axis.text = element_text(size = 10), #text for y and x axis
+  axis.ticks.y = element_blank(),
+  axis.line = element_blank(),
+  axis.title.y = element_blank(), #no title in y axis of plot
+  axis.title.x = element_text(margin = margin(t = 10), size = 10),
+  panel.background = element_blank(),
+  panel.border = element_blank(),
+  panel.grid.minor.x = element_blank(),
+  legend.position = "bottom",
+  legend.justification = c(0,1), #legend bottom left
+  ## legend.box = "horizontal",
+  legend.direction = "horizontal",
+  legend.title = element_blank(),
+  ## legend.key = element_rect(fill = "white"),
+  legend.key.width = unit(1, 'lines'), #width key
+  legend.spacing.x = unit(0.3, 'cm'), #avstand mellom keys
+  legend.text = element_text(size = 9),
+  plot.title = element_text(size = 14),
+  plot.margin = unit(c(0, 1, 1, 1), 'cm')
+)
+
+figTrans <- ggplot(transPlot) +
+  geom_bar(aes(ref, i.pros, fill =  "2016", color = "2016"), stat = "identity") +
+  ## linje mot tallene på tabell
+  geom_segment(aes(x = ref, y = 0, xend = ref, yend = ymax), linetype = 2, color = "grey70") +
+  ## Dekker top linje
+  geom_segment(data = transPlot[ref == as.character(dfrow),],
+               aes(x = ref, y = 0, xend = ref, yend = ymax), size = 1, color = "white") +
+  geom_segment(aes(x = ref, y = 0, xend = ref, yend = pros, color = "2017"),
+               lineend = "butt", size = 8) +
+  scale_fill_manual(values = c("2016" = col1), guide = FALSE) + #for bar
+  scale_color_manual(values = c("2016" = col1, "2017" = col3)) + #for segment
+  scale_x_discrete(breaks = factor(transPlot$ref), labels = transPlot$navn) +
+  labs(y = "prosent") +
+  coord_flip() +
+  Theme001 +
+  ## limit y - axis scale
+  scale_y_continuous(expand = c(0,0), breaks = seq(0, ymax, 10)) +
+  geom_segment(aes(y = 0, yend = ymax, x = -Inf, xend = -Inf)) +
+  guides(color = guide_legend(override.aes = list(fill = "black"))) +
+  ## tabell
+  geom_text(aes(ref, yText1, label = gsub(";", "\n", text2)), hjust = 0.5, size = fsize) +
+  geom_text(aes(ref, yText2, label = gsub(";", "\n", text1)), hjust = 0.5, size = fsize) +
+  annotate("text", x = as.character(dfrow), y = yText1,
+           label = "2016 \n N (%)", fontface = "bold", size = fsize) +
+  annotate("text", x = as.character(dfrow), y = yText2,
+           label = "2017 \n N (%)", fontface = "bold", size = fsize)
 
 
 
+## save file generic
+fig1 <- figTrans
+title <- "transport_type"
 
+## Save figure ================================
+fig1a <- ggplot_gtable(ggplot_build(fig1))
+fig1a$layout$clip[fig1a$layout$name == 'panel'] <- 'off'
+grid.draw(fig1a)
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+## ggsave("~/Git-work/HSR/arsrapport/fig1a.jpg")
+dev.off()
 
-
-
-
-
-
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
 
 
 
