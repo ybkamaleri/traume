@@ -29,7 +29,8 @@ datoFra01 <- "2016-01-01"
 datoTil01 <- "2016-12-31"
 
 ## Felles paramenters
-cols <- c("#4292c6", "#c6dbef", "#FF7260", "#084594")
+cols4 <- c("#4292c6", "#c6dbef", "#FF7260", "#084594")
+cols <- c("#084594","#6baed6", "#FF7260")
 cols2 <- c("#FF7260", "#2171b5")
 cols1 <- "#4292c6"
 col1 <- "#6baed6"
