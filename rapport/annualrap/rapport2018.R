@@ -1,7 +1,7 @@
 ## Årsrapport 2018
 rm(list = ls())
 
-pkg <- c("data.table", "rreg", "ggplot2", "directlabels")
+pkg <- c("data.table", "rreg", "ggplot2", "directlabels", "cowplot", "gridExtra", "grid")
 
 sapply(pkg, require, character.only = TRUE)
 
@@ -18,6 +18,8 @@ source("~/Git-work/traume/ntrApp/data.R")
 ## hent ekstert funksjoner
 source("~/Git-work/traume/ntrApp/misc/byttna.R")
 
+## sted å lage figurer
+savefig <- "~/Temp/plot"
 
 ## Valg muligheter
 datoFra <- "2017-01-01"
@@ -309,10 +311,23 @@ data[, navn:= factor(var, levels=navnUT, labels = navnIN)]
 data[, text1:= paste0(n, " (", prosent, "%)"), by=var]
 data[, text2:= paste0(i.n, " (", i.prosent, "%)"), by=var]
 
+## Bytt NA til "" for navn, text1 og text2
+byttVar <- c("navn", "text1", "text2")
+data[ref == "9", `:=` (navn = "",
+                       text1 = "",
+                       text2 = "")]
+
+
 ## finne høyste y for plassering av tabell
 yvar <- data[, list(v1 = max(prosent, na.rm = TRUE), v2 = max(i.prosent, na.rm = TRUE))]
 ymax <- ifelse(with(yvar, v1 > v2), yvar$v1, yvar$v2)
-ylocation <- ymax + ymax * 0.1
+
+## Top text position
+yText1 <- ymax + ymax * 0.1
+yText2 <- ylocation + 8
+
+## Other paramenters
+fsize <- 3 #fontsize
 
 ## barplot
 
@@ -322,42 +337,71 @@ Theme001 <- theme(
   axis.line = element_blank(),
   axis.title.y = element_blank(), #no title in y axis of plot
   axis.title.x = element_text(margin = margin(t = 10), size = 10),
-  panel.background = element_rect(fill = "white"),
-  panel.border = element_rect(linetype = 1, fill = NA, color = "white"),
+  panel.background = element_blank(),
+  panel.border = element_blank(),
   panel.grid.minor.x = element_blank(),
   legend.position = "bottom",
-  legend.box = "horizontal",
-  legend.direction = "horizontal",
+  ## legend.box = "horizontal",
+  ## legend.direction = "horizontal",
   legend.title = element_blank(),
   legend.key = element_rect(size = 0),
   legend.key.width = unit(1, 'lines'), #width key
   legend.spacing.x = unit(0.4, 'cm'),
   plot.title = element_text(size = 14),
   plot.margin = unit(c(0, 1, 1, 1), 'cm')
-  )
+)
 
-ggplot(data) +
+figUlykke <- ggplot(data) +
   geom_bar(aes(ref, i.prosent, fill =  "2016", color = "2016"), stat = "identity") +
+  ## linje mot tallene på tabell
   geom_segment(aes(x = ref, y = 0, xend = ref, yend = ymax), linetype = 2, color = "grey70") +
+  ## Dekker top linje
+  geom_segment(data = data[ref == as.character(dfrow),],
+               aes(x = ref, y = 0, xend = ref, yend = ymax), size = 1, color = "white") +
   geom_segment(aes(x = ref, y = 0, xend = ref, yend = prosent, color = "2017"),
                lineend = "butt", size = 8) +
   scale_fill_manual(values = c("2016" = col1), guide = FALSE) + #for bar
   scale_color_manual(values = c("2016" = col1, "2017" = col3)) + #for segment
   scale_x_discrete(breaks = factor(data$ref), labels = data$navn) +
+  labs(y = "prosent") +
   coord_flip() +
   Theme001 +
   ## limit y - axis scale
-  scale_y_continuous(expand = c(0,0), breaks = seq(0, ymax, 5)) +
+  scale_y_continuous(expand = c(0,0), breaks = seq(0, ymax, 10)) +
   geom_segment(aes(y = 0, yend = ymax, x = -Inf, xend = -Inf)) +
   guides(color = guide_legend(override.aes = list(fill = "black"))) +
   ## tabell
-  geom_text(aes(ref, ylocation, label = gsub(" ", "\n", text2)), hjust = 0.5) +
-  geom_text(aes(ref, ylocation + 8, label = gsub(" ", "\n", text1)), hjust = 0.5)
+  geom_text(aes(ref, yText1, label = gsub(" ", "\n", text2)), hjust = 0.5, size = fsize) +
+  geom_text(aes(ref, yText2, label = gsub(" ", "\n", text1)), hjust = 0.5, size = fsize) +
+  annotate("text", x = as.character(dfrow), y = yText1,
+           label = "2016 \n N (%)", fontface = "bold", size = fsize) +
+  annotate("text", x = as.character(dfrow), y = yText2,
+           label = "2017 \n N (%)", fontface = "bold", size = fsize)
 
 
 
-library(rreg)
-regbar(accData, var, prosent, num = "n")
+## save file generic
+fig1 <- figUlykke
+title <- "ulykketyper"
+
+## Save figure ================================
+fig1a <- ggplot_gtable(ggplot_build(fig1))
+fig1a$layout$clip[fig1a$layout$name == 'panel'] <- 'off'
+grid.draw(fig1a)
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+## ggsave("~/Git-work/HSR/arsrapport/fig1a.jpg")
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+
+
+
+
+
 
 
 
