@@ -83,6 +83,9 @@ dataLong <-melt(ageMK, id.vars=c("RHF", "Alder"),
 cols <- c("#4292c6", "#c6dbef", "#FF7260", "#084594")
 cols2 <- c("#FF7260", "#2171b5")
 cols1 <- "#4292c6"
+col1 <- "#6baed6"
+col2 <- "#2171b5"
+col3 <- "#084594"
 
 pthemes <- theme(axis.text = element_text(size = 9, color = "black"), #text for x og y axis
                  axis.ticks.y = element_blank(),
@@ -242,6 +245,16 @@ navnUT <- c("acc_transport",
             "acc_fire_inhal",
             "acc_other")
 
+navnIN <- c("Transport",
+            "Fall",
+            "Vold",
+            "Selvpåført",
+            "Arbeid",
+            "Sport- og fritid",
+            "Brann- og inhalasjon",
+            "Annen ulykke"
+            )
+
 ## Funksjon for telling kolonne
 tellCol <- function(x = dataUL, col, value = 1){
   require(data.table)
@@ -281,48 +294,65 @@ accData16 <- rbindlist(list(trans16, fall16, violence16, self16, work16, sport16
 accMix <- accData[accData16, on = c(var = "var")] #i.n, i.N og i.prosent er for 2016 dvs i = inne i mergeing
 
 
-#### Plot
-data <- accMix[order(accMix$prosent, decreasing = TRUE),]
-data[, ref := seq.int(nrow(accMix))]
+#### Plotting
+#################
+data <- accMix[order(accMix$prosent, decreasing = FALSE),] #order prosent
+dfrow <- nrow(data) + 1 #for dummy row column ref
+data[, ref := as.factor(seq.int(nrow(accMix)))]
+data <- rbindlist(list(data, data[NA])) #create dummy row for header table
+data[is.na(ref), ref := as.character(dfrow)]
+
+## Gir riktig til ulykke typer
+data[, navn:= factor(var, levels=navnUT, labels = navnIN)]
 
 ## text til tabell
 data[, text1:= paste0(n, " (", prosent, "%)"), by=var]
 data[, text2:= paste0(i.n, " (", i.prosent, "%)"), by=var]
 
-## New column for reference og dummy
-dfrow <- nrow(data)
-data$ref <- seq.int(dfrow)
+## finne høyste y for plassering av tabell
+yvar <- data[, list(v1 = max(prosent, na.rm = TRUE), v2 = max(i.prosent, na.rm = TRUE))]
+ymax <- ifelse(with(yvar, v1 > v2), yvar$v1, yvar$v2)
+ylocation <- ymax + ymax * 0.1
 
-## create dummy row for text - ref highest row and "" for var to avoid showing NA in
-## x-axis
-data <- rbindlist(list(data, data[NA]))
-data[is.na(ref), `:=` (var = "", ref = dfrow + 1)]
+## barplot
 
-ymax <- max(data$prosent, na.rm = TRUE)
-ylocal <- "prosent"
-ycomp = "i.prosent"
-ref = "ref"
-leg1 = "2017"
-leg2 = "2016"
-col1 = "blue"
-col2 = "orange"
+Theme001 <- theme(
+  axis.text = element_text(size = 10), #text for y and x axis
+  axis.ticks.y = element_blank(),
+  axis.line = element_blank(),
+  axis.title.y = element_blank(), #no title in y axis of plot
+  axis.title.x = element_text(margin = margin(t = 10), size = 10),
+  panel.background = element_rect(fill = "white"),
+  panel.border = element_rect(linetype = 1, fill = NA, color = "white"),
+  panel.grid.minor.x = element_blank(),
+  legend.position = "bottom",
+  legend.box = "horizontal",
+  legend.direction = "horizontal",
+  legend.title = element_blank(),
+  legend.key = element_rect(size = 0),
+  legend.key.width = unit(1, 'lines'), #width key
+  legend.spacing.x = unit(0.4, 'cm'),
+  plot.title = element_text(size = 14),
+  plot.margin = unit(c(0, 1, 1, 1), 'cm')
+  )
 
-p <- ggplot(data) +
-  geom_segment(aes(x = ref, y = ymax, xend = ref, yend = 0),
-               size = 0.3, linetype = 2, color = "grey70") +
-  ## 'fill' is used to get legend for geom_bar
-  geom_bar(aes_string(ref, ylocal, fill = leg1), stat = "identity") +
-  ## 'color' is used to get legend
-  geom_point(aes_string(ref, ycomp, color = leg2), stat = "identity",
-             shape = 18, size = 6) +
+ggplot(data) +
+  geom_bar(aes(ref, i.prosent, fill =  "2016", color = "2016"), stat = "identity") +
+  geom_segment(aes(x = ref, y = 0, xend = ref, yend = ymax), linetype = 2, color = "grey70") +
+  geom_segment(aes(x = ref, y = 0, xend = ref, yend = prosent, color = "2017"),
+               lineend = "butt", size = 8) +
+  scale_fill_manual(values = c("2016" = col1), guide = FALSE) + #for bar
+  scale_color_manual(values = c("2016" = col1, "2017" = col3)) + #for segment
+  scale_x_discrete(breaks = factor(data$ref), labels = data$navn) +
   coord_flip() +
-  scale_x_discrete(breaks = factor(data$ref), labels = data$var) +
-  scale_fill_manual(values = col1) + #for bar
-  scale_color_manual(values = col2) + #for point
-  ## order in guides to specify order of the legend and not alphabetically
-  guides(fill = guide_legend(override.aes = list(shape = NA), order = 1))
-
-
+  Theme001 +
+  ## limit y - axis scale
+  scale_y_continuous(expand = c(0,0), breaks = seq(0, ymax, 5)) +
+  geom_segment(aes(y = 0, yend = ymax, x = -Inf, xend = -Inf)) +
+  guides(color = guide_legend(override.aes = list(fill = "black"))) +
+  ## tabell
+  geom_text(aes(ref, ylocation, label = gsub(" ", "\n", text2)), hjust = 0.5) +
+  geom_text(aes(ref, ylocation + 8, label = gsub(" ", "\n", text1)), hjust = 0.5)
 
 
 
