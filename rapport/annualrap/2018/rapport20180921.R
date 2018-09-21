@@ -58,6 +58,102 @@ data16 <- dataRaw16[!is.na(ntrid) &
                       age != -1 &
                       !is.na(gender)]
 
+###################
+## ULYKKE DATA
+###################
+
+## 2017 Data
+dataRawUl <- ulykke[dateAll >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                      dateAll <= as.POSIXct(datoTil, format = "%Y-%m-%d")]
+
+
+## bort med NA og duplicated - ntrid, alder og kjønn
+dataUL <- dataRawUl[!is.na(ntrid) &
+                      !duplicated(ntrid) &
+                      !is.na(age) &
+                      age != -1 &
+                      !is.na(gender)]
+
+
+## 2016 Data
+dataRawUL16 <- ulykke[dateAll >= as.POSIXct(datoFra01, format = "%Y-%m-%d") &
+                        dateAll <= as.POSIXct(datoTil01, format = "%Y-%m-%d")]
+
+
+## bort med NA og duplicated - ntrid, alder og kjønn
+dataUL16 <- dataRawUL16[!is.na(ntrid) &
+                          !duplicated(ntrid) &
+                          !is.na(age) &
+                          age != -1 &
+                          !is.na(gender)]
+
+#########################
+## SKADE DATA
+#########################
+# kode om iss > 15
+skade[, iss15 := ifelse(inj_iss>15, 1, 0), by=seq_len(nrow(skade))]
+
+## 2017 Data
+dataRawSK <- skade[dateAll >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                      dateAll <= as.POSIXct(datoTil, format = "%Y-%m-%d")]
+
+
+## bort med NA og duplicated - ntrid, alder og kjønn
+dataSK <- dataRawSK[!is.na(ntrid) &
+                      !duplicated(ntrid) &
+                      !is.na(age) &
+                      age != -1 &
+                      !is.na(gender)]
+
+
+## 2016 Data
+dataRawSK16 <- skade[dateAll >= as.POSIXct(datoFra01, format = "%Y-%m-%d") &
+                        dateAll <= as.POSIXct(datoTil01, format = "%Y-%m-%d")]
+
+
+## bort med NA og duplicated - ntrid, alder og kjønn
+dataSK16 <- dataRawSK16[!is.na(ntrid) &
+                          !duplicated(ntrid) &
+                          !is.na(age) &
+                          age != -1 &
+                          !is.na(gender)]
+
+
+#####################
+## AKUTT DATA
+#####################
+
+## 2017 data
+dataRawAK <- akutt2[dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                      dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d")]
+
+
+## bort med NA og duplicated - ntrid, alder og kjønn
+dataAK <- dataRawAK[!is.na(ntrid) &
+                      !duplicated(ntrid) &
+                      !is.na(age) &
+                      age != -1 &
+                      !is.na(gender)]
+
+
+## 2016 Data
+dataRawAK16 <- akutt2[dateAll >= as.POSIXct(datoFra01, format = "%Y-%m-%d") &
+                       dateAll <= as.POSIXct(datoTil01, format = "%Y-%m-%d")]
+
+
+## bort med NA og duplicated - ntrid, alder og kjønn
+dataAK16 <- dataRawAK16[!is.na(ntrid) &
+                          !duplicated(ntrid) &
+                          !is.na(age) &
+                          age != -1 &
+                          !is.na(gender)]
+
+
+######################################################################################
+###################  ANALYSER  #######################################################
+######################################################################################
+
+
 ##################
 ## Antall traume
 ##################
@@ -191,18 +287,6 @@ fig1 <- NULL
 ## 3. Antall og ukedag
 ########################
 
-## 2017 data
-dataRawAK <- akutt2[dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
-                      dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d")]
-
-
-## bort med NA og duplicated - ntrid, alder og kjønn
-dataAK <- dataRawAK[!is.na(ntrid) &
-                      !duplicated(ntrid) &
-                   !is.na(age) &
-                   age != -1 &
-                   !is.na(gender)]
-
 
 valgDato <- dataAK[!duplicated(ntrid) & !is.na(dateSykehus)] #ed_arrival_dtg
 valgDag <- valgDato[, dag := weekdays(dateSykehus)]
@@ -270,31 +354,31 @@ fig1 <- NULL
 #################
 ## Prepare data TRAUME Skjema
 ################################
-
-## 2017 Data
-dataRawUl <- ulykke[dateAll >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
-                      dateAll <= as.POSIXct(datoTil, format = "%Y-%m-%d")]
-
-
-## bort med NA og duplicated - ntrid, alder og kjønn
-dataUL <- dataRawUl[!is.na(ntrid) &
-                      !duplicated(ntrid) &
-                   !is.na(age) &
-                   age != -1 &
-                   !is.na(gender)]
-
-
-## 2016 Data
-dataRawUL16 <- ulykke[dateAll >= as.POSIXct(datoFra01, format = "%Y-%m-%d") &
-                        dateAll <= as.POSIXct(datoTil01, format = "%Y-%m-%d")]
-
-
-## bort med NA og duplicated - ntrid, alder og kjønn
-dataUL16 <- dataRawUL16[!is.na(ntrid) &
-                          !duplicated(ntrid) &
-                       !is.na(age) &
-                       age != -1 &
-                       !is.na(gender)]
+# 
+# ## 2017 Data
+# dataRawUl <- ulykke[dateAll >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+#                       dateAll <= as.POSIXct(datoTil, format = "%Y-%m-%d")]
+# 
+# 
+# ## bort med NA og duplicated - ntrid, alder og kjønn
+# dataUL <- dataRawUl[!is.na(ntrid) &
+#                       !duplicated(ntrid) &
+#                    !is.na(age) &
+#                    age != -1 &
+#                    !is.na(gender)]
+# 
+# 
+# ## 2016 Data
+# dataRawUL16 <- ulykke[dateAll >= as.POSIXct(datoFra01, format = "%Y-%m-%d") &
+#                         dateAll <= as.POSIXct(datoTil01, format = "%Y-%m-%d")]
+# 
+# 
+# ## bort med NA og duplicated - ntrid, alder og kjønn
+# dataUL16 <- dataRawUL16[!is.na(ntrid) &
+#                           !duplicated(ntrid) &
+#                        !is.na(age) &
+#                        age != -1 &
+#                        !is.na(gender)]
 
 ## Liste over ulykke typer
 navnUT <- c("acc_transport",
@@ -357,115 +441,13 @@ accMix <- accData[accData16, on = c(var = "var")] #i.n, i.N og i.prosent er for 
 accMix[, navn := factor(var, levels = navnUT, labels = navnIN)]
 
 #### Plotting
-#################
-# dataACC <- accMix[order(accMix$prosent, decreasing = FALSE),] #order prosent
-# dfrow <- nrow(dataACC) + 1 #for dummy row column ref
-# dataACC[, ref := as.factor(seq.int(nrow(accMix)))]
-# dataACC <- rbindlist(list(dataACC, dataACC[NA])) #create dummy row for header table
-# dataACC[is.na(ref), ref := as.character(dfrow)]
-# 
-# ## Gir riktig navn til ulykke typer
-# dataACC[, navn:= factor(var, levels=navnUT, labels = navnIN)]
-# 
-# ## text til tabell
-# dataACC[, text1:= paste0(n, ";(", prosent, "%)"), by=var]
-# dataACC[, text2:= paste0(i.n, ";(", i.prosent, "%)"), by=var]
-# 
-# ## Bytt NA til "" for navn, text1 og text2
-# byttVar <- c("navn", "text1", "text2")
-# dataACC[ref == "9", `:=` (navn = "",
-#                        text1 = "",
-#                        text2 = "")]
-# 
-# 
-# ## finne høyste y for plassering av tabell
-# yvar <- dataACC[, list(v1 = max(prosent, na.rm = TRUE), v2 = max(i.prosent, na.rm = TRUE))]
-# ymax <- ifelse(with(yvar, v1 > v2), yvar$v1, yvar$v2)
-# 
-# ## Top text position
-# yText1 <- ymax + ymax * 0.1
-# yText2 <- yText1 + 8
-# 
-# ## Other paramenters
-# fsize <- 3 #fontsize
-# 
-# ## barplot
-# 
-# Theme001 <- theme(
-#   axis.text = element_text(size = 10), #text for y and x axis
-#   axis.ticks.y = element_blank(),
-#   axis.line = element_blank(),
-#   axis.title.y = element_blank(), #no title in y axis of plot
-#   axis.title.x = element_text(margin = margin(t = 10), size = 10),
-#   panel.background = element_blank(),
-#   panel.border = element_blank(),
-#   panel.grid.minor.x = element_blank(),
-#   legend.position = "bottom",
-#   legend.justification = c(0,1), #legend bottom left
-#   ## legend.box = "horizontal",
-#   legend.direction = "horizontal",
-#   legend.title = element_blank(),
-#   ## legend.key = element_rect(fill = "white"),
-#   legend.key.width = unit(1, 'lines'), #width key
-#   legend.spacing.x = unit(0.3, 'cm'), #avstand mellom keys
-#   legend.text = element_text(size = 9),
-#   plot.title = element_text(size = 14),
-#   plot.margin = unit(c(0, 1, 1, 1), 'cm')
-# )
-# 
-# figUlykke <- ggplot(dataACC) +
-#   geom_bar(aes(ref, i.prosent, fill =  "2016", color = "2016"), stat = "identity") +
-#   ## linje mot tallene på tabell
-#   geom_segment(aes(x = ref, y = 0, xend = ref, yend = ymax), linetype = 2, color = "grey70") +
-#   ## Dekker top linje
-#   geom_segment(dataACC = dataACC[ref == as.character(dfrow),],
-#                aes(x = ref, y = 0, xend = ref, yend = ymax), size = 1, color = "white") +
-#   geom_segment(aes(x = ref, y = 0, xend = ref, yend = prosent, color = "2017"),
-#                lineend = "butt", size = 8) +
-#   scale_fill_manual(values = c("2016" = col1), guide = FALSE) + #for bar
-#   scale_color_manual(values = c("2016" = col1, "2017" = col3)) + #for segment
-#   scale_x_discrete(breaks = factor(dataACC$ref), labels = dataACC$navn) +
-#   labs(y = "prosent") +
-#   coord_flip() +
-#   Theme001 +
-#   ## limit y - axis scale
-#   scale_y_continuous(expand = c(0,0), breaks = seq(0, ymax, 10)) +
-#   geom_segment(aes(y = 0, yend = ymax, x = -Inf, xend = -Inf)) +
-#   guides(color = guide_legend(override.aes = list(fill = "black"))) +
-#   ## tabell
-#   geom_text(aes(ref, yText1, label = gsub(";", "\n", text2)), hjust = 0.5, size = fsize) +
-#   geom_text(aes(ref, yText2, label = gsub(";", "\n", text1)), hjust = 0.5, size = fsize) +
-#   annotate("text", x = as.character(dfrow), y = yText1,
-#            label = "2016 \n N (%)", fontface = "bold", size = fsize) +
-#   annotate("text", x = as.character(dfrow), y = yText2,
-#            label = "2017 \n N (%)", fontface = "bold", size = fsize)
-# 
-# 
-# 
-# ## save file generic
-# fig1 <- figUlykke
-# title <- "ulykketyper"
-# 
-# ## Save figure ================================
-# fig1a <- ggplot_gtable(ggplot_build(fig1))
-# fig1a$layout$clip[fig1a$layout$name == 'panel'] <- 'off'
-# grid.draw(fig1a)
-# cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
-# cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
-# cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
-# ## ggsave("~/Git-work/HSR/arsrapport/fig1a.jpg")
-# dev.off()
-# 
-# ## reset fig1 - to avoid wrong figure
-# fig1 <- NULL
-
-
 #### bruk funksjon rapbar
 #########################
 
-fig1a <- rapbar(accMix, navn, n, i.n, prosent, i.prosent)
-title <- "ulykketyper"
+fig1 <- rapbar(accMix, navn, n, i.n, prosent, i.prosent)
+title <- "fig4_ulykketyper"
 
+fig1a <- fig1
 grid.draw(fig1a)
 cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
 cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
@@ -512,115 +494,14 @@ transMF[, navn := factor(transkode,
                            labels = transNavn)]
 
 
-## ## plotting
-###########################
-
-# transPlot <- transMF[order(transMF$pros, decreasing = FALSE),]
-# dfrow <- nrow(transPlot) + 1
-# transPlot[, ref := as.factor(seq.int(nrow(transPlot)))]
-# transPlot <- rbindlist(list(transPlot, transPlot[NA]))
-# transPlot[is.na(ref), ref := as.character(dfrow)]
-# 
-# ## text til å bruke til plot label
-# transPlot[, text1 := paste0(N, ";(", pros, "%)"), by = ref]
-# transPlot[, text2 := paste0(i.N, ";(", i.pros, "%)"), by = ref]
-# 
-# ## Bytt NA til "" for navn, text1 og text2
-# byttVar <- c("navn", "text1", "text2")
-# transPlot[ref == as.character(dfrow), `:=` (navn = "",
-#                                             text1 = "",
-#                                             text2 = "")]
-# ## hvis <5 tar bort !!OBSS!!!
-# transPlot[N == 1, `:=` (text1 = "n<6")]
-# 
-# 
-# ## finne høyste y for plassering av tabell
-# yvar <- transPlot[, list(v1 = max(pros, na.rm = TRUE), v2 = max(i.pros, na.rm = TRUE))]
-# ymax <- ifelse(with(yvar, v1 > v2), yvar$v1, yvar$v2)
-# 
-# ## Top text position
-# yText1 <- ymax + ymax * 0.1
-# yText2 <- yText1 + 8
-# 
-# ## Other paramenters
-# fsize <- 3 #fontsize
-# 
-# 
-# Theme001 <- theme(
-#   axis.text = element_text(size = 10), #text for y and x axis
-#   axis.ticks.y = element_blank(),
-#   axis.line = element_blank(),
-#   axis.title.y = element_blank(), #no title in y axis of plot
-#   axis.title.x = element_text(margin = margin(t = 10), size = 10),
-#   panel.background = element_blank(),
-#   panel.border = element_blank(),
-#   panel.grid.minor.x = element_blank(),
-#   legend.position = "bottom",
-#   legend.justification = c(0,1), #legend bottom left
-#   ## legend.box = "horizontal",
-#   legend.direction = "horizontal",
-#   legend.title = element_blank(),
-#   ## legend.key = element_rect(fill = "white"),
-#   legend.key.width = unit(1, 'lines'), #width key
-#   legend.spacing.x = unit(0.3, 'cm'), #avstand mellom keys
-#   legend.text = element_text(size = 9),
-#   plot.title = element_text(size = 14),
-#   plot.margin = unit(c(0, 1, 1, 1), 'cm')
-# )
-# 
-# figTrans <- ggplot(transPlot) +
-#   geom_bar(aes(ref, i.pros, fill =  "2016", color = "2016"), stat = "identity") +
-#   ## linje mot tallene på tabell
-#   geom_segment(aes(x = ref, y = 0, xend = ref, yend = ymax), linetype = 2, color = "grey70") +
-#   ## Dekker top linje
-#   geom_segment(data = transPlot[ref == as.character(dfrow),],
-#                aes(x = ref, y = 0, xend = ref, yend = ymax), size = 1, color = "white") +
-#   geom_segment(aes(x = ref, y = 0, xend = ref, yend = pros, color = "2017"),
-#                lineend = "butt", size = 8) +
-#   scale_fill_manual(values = c("2016" = col1), guide = FALSE) + #for bar
-#   scale_color_manual(values = c("2016" = col1, "2017" = col3)) + #for segment
-#   scale_x_discrete(breaks = factor(transPlot$ref), labels = transPlot$navn) +
-#   labs(y = "prosent") +
-#   coord_flip() +
-#   Theme001 +
-#   ## limit y - axis scale
-#   scale_y_continuous(expand = c(0,0), breaks = seq(0, ymax, 10)) +
-#   geom_segment(aes(y = 0, yend = ymax, x = -Inf, xend = -Inf)) +
-#   guides(color = guide_legend(override.aes = list(fill = "black"))) +
-#   ## tabell
-#   geom_text(aes(ref, yText1, label = gsub(";", "\n", text2)), hjust = 0.5, size = fsize) +
-#   geom_text(aes(ref, yText2, label = gsub(";", "\n", text1)), hjust = 0.5, size = fsize) +
-#   annotate("text", x = as.character(dfrow), y = yText1,
-#            label = "2016 \n N (%)", fontface = "bold", size = fsize) +
-#   annotate("text", x = as.character(dfrow), y = yText2,
-#            label = "2017 \n N (%)", fontface = "bold", size = fsize)
-# 
-
-# 
-# ## save file generic
-# fig1 <- figTrans
-# title <- "transport_type"
-# 
-# ## Save figure ================================
-# fig1a <- ggplot_gtable(ggplot_build(fig1))
-# fig1a$layout$clip[fig1a$layout$name == 'panel'] <- 'off'
-# grid.draw(fig1a)
-# cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
-# cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
-# cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
-# ## ggsave("~/Git-work/HSR/arsrapport/fig1a.jpg")
-# dev.off()
-# 
-# ## reset fig1 - to avoid wrong figure
-# fig1 <- NULL
-
-
-#### bruk funksjon rapbar
+## plotting
+## bruk funksjon rapbar
 #########################
 
-fig1a <- rapbar(transMF, navn, N, i.N, pros, i.pros)
-title <- "transport_type01"
+fig1 <- rapbar(transMF, navn, N, i.N, pros, i.pros)
+title <- "fig5_transport_type"
 
+fig1a <- fig1
 grid.draw(fig1a)
 cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
 cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
@@ -630,6 +511,60 @@ dev.off()
 
 ## reset fig1 - to avoid wrong figure
 fig1 <- NULL
+
+
+## Fig 6 - ISS > 15
+######################
+# skade[, iss15 := ifelse(inj_iss>15, 1, 0), by=seq_len(nrow(skade))]
+
+## 2017
+issData <- dataSK[!duplicated(ntrid), list(ntrid, iss15)]
+ulType <- dataUL[!duplicated(ntrid), list(ntrid, acc_trsp_rd_type, transkode)]
+issUL <- ulType[issData, on=c(ntrid="ntrid")]
+
+plotISSraw <- issUL[iss15==1, .N, by=transkode]
+plotISSraw[, navn := factor(transkode,
+                           levels = transInd,
+                           labels = transNavn)]
+
+plotISS <- plotISSraw[!is.na(navn), ]
+plotISS[, pros := round(N / sum(plotISS$N) * 100, digits = 1), by = transkode]
+
+## 2016
+issData16 <- dataSK16[!duplicated(ntrid), list(ntrid, iss15)]
+ulType16 <- dataUL16[!duplicated(ntrid), list(ntrid, acc_trsp_rd_type, transkode)]
+issUL16 <- ulType16[issData16, on=c(ntrid="ntrid")]
+
+plotISSraw16 <- issUL16[iss15==1, .N, by=transkode]
+plotISSraw16[, navn := factor(transkode,
+                            levels = transInd,
+                            labels = transNavn)]
+
+plotISS16 <- plotISSraw16[!is.na(navn),]
+plotISS16[, pros := round(N / sum(plotISS16$N) * 100, digits = 1), by = transkode]
+
+# Mix begge
+issMix <- plotISS[plotISS16, on=c(transkode = "transkode")]
+
+
+## plotting
+## bruk funksjon rapbar
+#########################
+
+fig1 <- rapbar(issMix, navn, N, i.N, pros, i.pros)
+title <- "fig6_iss15"
+
+fig1a <- fig1
+grid.draw(fig1a)
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+## ggsave("~/Git-work/HSR/arsrapport/fig1a.jpg")
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
 
 
 ##############
