@@ -447,6 +447,32 @@ figUlykke <- ggplot(data) +
            label = "2017 \n N (%)", fontface = "bold", size = fsize)
 
 
+figUlykkeAlt <- ggplot(data) +
+  ## linje mot tallene på tabell
+  geom_segment(aes(x = ref, y = 0, xend = ref, yend = ymax), linetype = 2, color = "grey70") +
+  ## Dekker top linje
+  geom_segment(data = data[ref == as.character(dfrow),],
+               aes(x = ref, y = 0, xend = ref, yend = ymax), size = 1, color = "white") +
+  geom_bar(aes(ref, i.prosent, fill = "2016"), stat = "identity") +
+  geom_bar(aes(ref, prosent, fill = "2017"), stat = "identity", width = 0.35) +
+  scale_fill_manual(values = c("2016" = col1, "2017" = col3)) +
+  scale_x_discrete(breaks = factor(data$ref), labels = data$navn) +
+  labs(y = "prosent") +
+  coord_flip() +
+  Theme001 +
+  ## limit y - axis scale
+  scale_y_continuous(expand = c(0,0), breaks = seq(0, ymax, 10)) +
+  geom_segment(aes(y = 0, yend = ymax, x = -Inf, xend = -Inf)) +
+  ## tabell
+  geom_text(aes(ref, yText1, label = gsub(";", "\n", text2)), hjust = 0.5, size = fsize) +
+  geom_text(aes(ref, yText2, label = gsub(";", "\n", text1)), hjust = 0.5, size = fsize) +
+  annotate("text", x = as.character(dfrow), y = yText1,
+           label = "2016 \n N (%)", fontface = "bold", size = fsize) +
+  annotate("text", x = as.character(dfrow), y = yText2,
+           label = "2017 \n N (%)", fontface = "bold", size = fsize)
+
+
+
 
 ## save file generic
 fig1 <- figUlykke
