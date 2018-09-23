@@ -374,8 +374,8 @@ data[is.na(ref), ref := as.character(dfrow)]
 data[, navn:= factor(var, levels=navnUT, labels = navnIN)]
 
 ## text til tabell
-data[, text1:= paste0(n, ";(", prosent, "%)"), by=var]
-data[, text2:= paste0(i.n, ";(", i.prosent, "%)"), by=var]
+data[, text1:= paste0(n, ";(", prosent, ")"), by=var]
+data[, text2:= paste0(i.n, ";(", i.prosent, ")"), by=var]
 
 ## Bytt NA til "" for navn, text1 og text2
 byttVar <- c("navn", "text1", "text2")
@@ -390,7 +390,7 @@ ymax <- ifelse(with(yvar, v1 > v2), yvar$v1, yvar$v2)
 
 ## Top text position
 yText1 <- ymax + ymax * 0.1
-yText2 <- yText1 + 8
+yText2 <- yText1 + 6
 
 ## Other paramenters
 fsize <- 3 #fontsize
@@ -406,9 +406,10 @@ Theme001 <- theme(
   panel.background = element_blank(),
   panel.border = element_blank(),
   panel.grid.minor.x = element_blank(),
-  legend.position = "bottom",
-  legend.justification = c(0,1), #legend bottom left
-  ## legend.box = "horizontal",
+  ## ## legend.position = "bottom",
+  ## legend.justification = c(0,1), #legend left
+  ## legend.position =  c(0,1), #legend top
+  ## ## legend.box = "horizontal",
   legend.direction = "horizontal",
   legend.title = element_blank(),
   ## legend.key = element_rect(fill = "white"),
@@ -447,30 +448,35 @@ figUlykke <- ggplot(data) +
            label = "2017 \n N (%)", fontface = "bold", size = fsize)
 
 
-figUlykkeAlt <- ggplot(data) +
-  ## linje mot tallene på tabell
-  geom_segment(aes(x = ref, y = 0, xend = ref, yend = ymax), linetype = 2, color = "grey70") +
-  ## Dekker top linje
-  geom_segment(data = data[ref == as.character(dfrow),],
-               aes(x = ref, y = 0, xend = ref, yend = ymax), size = 1, color = "white") +
-  geom_bar(aes(ref, i.prosent, fill = "2016"), stat = "identity") +
-  geom_bar(aes(ref, prosent, fill = "2017"), stat = "identity", width = 0.35) +
-  scale_fill_manual(values = c("2016" = col1, "2017" = col3)) +
-  scale_x_discrete(breaks = factor(data$ref), labels = data$navn) +
-  labs(y = "prosent") +
-  coord_flip() +
-  Theme001 +
-  ## limit y - axis scale
-  scale_y_continuous(expand = c(0,0), breaks = seq(0, ymax, 10)) +
-  geom_segment(aes(y = 0, yend = ymax, x = -Inf, xend = -Inf)) +
-  ## tabell
-  geom_text(aes(ref, yText1, label = gsub(";", "\n", text2)), hjust = 0.5, size = fsize) +
-  geom_text(aes(ref, yText2, label = gsub(";", "\n", text1)), hjust = 0.5, size = fsize) +
-  annotate("text", x = as.character(dfrow), y = yText1,
-           label = "2016 \n N (%)", fontface = "bold", size = fsize) +
-  annotate("text", x = as.character(dfrow), y = yText2,
-           label = "2017 \n N (%)", fontface = "bold", size = fsize)
+(figUlykkeAlt <- ggplot(data) +
+   ## linje mot tallene på tabell
+   geom_segment(aes(x = ref, y = 0, xend = ref, yend = ymax), linetype = 2, color = "grey70") +
+   ## Dekker top linje
+   geom_segment(data = data[ref == as.character(dfrow),],
+                aes(x = ref, y = 0, xend = ref, yend = ymax), size = 1, color = "white") +
+   geom_bar(aes(ref, i.prosent, fill = "2016"), stat = "identity") +
+   geom_bar(aes(ref, prosent, fill = "2017"), stat = "identity", width = 0.35) +
+   scale_fill_manual(values = c("2016" = col1, "2017" = col3)) +
+   scale_x_discrete(breaks = factor(data$ref), labels = data$navn) +
+   labs(y = "prosent") +
+   coord_flip() +
+   Theme001 +
+   theme(legend.position = c(0,0.92)) + #legend top left
+   ## limit y - axis scale
+   scale_y_continuous(expand = c(0,0), breaks = seq(0, ymax, 10)) +
+   geom_segment(aes(y = 0, yend = ymax, x = -Inf, xend = -Inf)) +
+   ## tabell
+   geom_text(aes(ref, yText1, label = gsub(";", "\n", text2)), hjust = 0.5, size = fsize) +
+   geom_text(aes(ref, yText2, label = gsub(";", "\n", text1)), hjust = 0.5, size = fsize) +
+   annotate("text", x = as.character(dfrow), y = yText1,
+            label = "2016 \n N (%)", fontface = "bold", size = fsize) +
+   annotate("text", x = as.character(dfrow), y = yText2,
+            label = "2017 \n N (%)", fontface = "bold", size = fsize)
+)
 
+## Thing som endre
+## avstand mellom text (yText2)
+## legend.position c(0,0.95)
 
 
 
