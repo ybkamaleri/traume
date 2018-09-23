@@ -15,12 +15,19 @@ source("K:\\Sensitivt\\kvalitetsregistre\\2013-9541_Nasjonalt_traumeregister\\Yu
 ## sted å lage figurer
 savefig <- "K:\\Sensitivt\\kvalitetsregistre\\2013-9541_Nasjonalt_traumeregister\\Yusman\\rapport\\2018\\fig"
 
+
+## Prepare data TRAUME Skjema
+################################
 ## Valg muligheter
 datoFra <- "2017-01-01"
 datoTil <- "2017-12-31"
 
 datoFra01 <- "2016-01-01"
 datoTil01 <- "2016-12-31"
+
+## henter data
+source("./valgdata.R")
+
 
 ## Felles paramenters
 cols4 <- c("#4292c6", "#c6dbef", "#FF7260", "#084594")
@@ -30,123 +37,6 @@ cols1 <- "#4292c6"
 col1 <- "#6baed6"
 col2 <- "#2171b5" #hvis bare en søyle
 col3 <- "#084594" #Den andre søyle
-
-## Prepare data TRAUME Skjema
-################################
-## Antall traume 2017
-dataRaw <- masterFile[dateAll >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
-                        dateAll <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
-
-
-## bort med NA og duplicated - ntrid, alder og kjønn
-data <- dataRaw[!is.na(ntrid) &
-                  !duplicated(ntrid) &
-                  !is.na(age) &
-                  age != -1 &
-                  !is.na(gender)]
-
-
-## Antall traume 2016
-dataRaw16 <- masterFile[dateAll >= as.POSIXct(datoFra01, format = "%Y-%m-%d") &
-                          dateAll <= as.POSIXct(datoTil01, format = "%Y-%m-%d"),]
-
-
-## bort med NA og duplicated - ntrid, alder og kjønn
-data16 <- dataRaw16[!is.na(ntrid) &
-                      !duplicated(ntrid) &
-                      !is.na(age) &
-                      age != -1 &
-                      !is.na(gender)]
-
-###################
-## ULYKKE DATA
-###################
-
-## 2017 Data
-dataRawUl <- ulykke[dateAll >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
-                      dateAll <= as.POSIXct(datoTil, format = "%Y-%m-%d")]
-
-
-## bort med NA og duplicated - ntrid, alder og kjønn
-dataUL <- dataRawUl[!is.na(ntrid) &
-                      !duplicated(ntrid) &
-                      !is.na(age) &
-                      age != -1 &
-                      !is.na(gender)]
-
-
-## 2016 Data
-dataRawUL16 <- ulykke[dateAll >= as.POSIXct(datoFra01, format = "%Y-%m-%d") &
-                        dateAll <= as.POSIXct(datoTil01, format = "%Y-%m-%d")]
-
-
-## bort med NA og duplicated - ntrid, alder og kjønn
-dataUL16 <- dataRawUL16[!is.na(ntrid) &
-                          !duplicated(ntrid) &
-                          !is.na(age) &
-                          age != -1 &
-                          !is.na(gender)]
-
-#########################
-## SKADE DATA
-#########################
-# kode om iss > 15
-skade[, iss15 := ifelse(inj_iss>15, 1, 0), by=seq_len(nrow(skade))]
-
-## 2017 Data
-dataRawSK <- skade[dateAll >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
-                      dateAll <= as.POSIXct(datoTil, format = "%Y-%m-%d")]
-
-
-## bort med NA og duplicated - ntrid, alder og kjønn
-dataSK <- dataRawSK[!is.na(ntrid) &
-                      !duplicated(ntrid) &
-                      !is.na(age) &
-                      age != -1 &
-                      !is.na(gender)]
-
-
-## 2016 Data
-dataRawSK16 <- skade[dateAll >= as.POSIXct(datoFra01, format = "%Y-%m-%d") &
-                        dateAll <= as.POSIXct(datoTil01, format = "%Y-%m-%d")]
-
-
-## bort med NA og duplicated - ntrid, alder og kjønn
-dataSK16 <- dataRawSK16[!is.na(ntrid) &
-                          !duplicated(ntrid) &
-                          !is.na(age) &
-                          age != -1 &
-                          !is.na(gender)]
-
-
-#####################
-## AKUTT DATA
-#####################
-
-## 2017 data
-dataRawAK <- akutt2[dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
-                      dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d")]
-
-
-## bort med NA og duplicated - ntrid, alder og kjønn
-dataAK <- dataRawAK[!is.na(ntrid) &
-                      !duplicated(ntrid) &
-                      !is.na(age) &
-                      age != -1 &
-                      !is.na(gender)]
-
-
-## 2016 Data
-dataRawAK16 <- akutt2[dateAll >= as.POSIXct(datoFra01, format = "%Y-%m-%d") &
-                       dateAll <= as.POSIXct(datoTil01, format = "%Y-%m-%d")]
-
-
-## bort med NA og duplicated - ntrid, alder og kjønn
-dataAK16 <- dataRawAK16[!is.na(ntrid) &
-                          !duplicated(ntrid) &
-                          !is.na(age) &
-                          age != -1 &
-                          !is.na(gender)]
 
 
 ######################################################################################
