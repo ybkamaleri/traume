@@ -68,10 +68,22 @@ rapbar <- function(DT, x, n1, n2, pros1, pros2, ascending = TRUE){
   yvar <- data[, list(v1 = max(pros1, na.rm = TRUE), v2 = max(pros2, na.rm = TRUE))]
   ymax <- ifelse(with(yvar, v1 > v2), yvar$v1, yvar$v2)
 
+  ## Y-axis for text position
+  yText1 <- ymax + ymax * 0.15
+  yText2 <- yText1 + 6
 
-  ## Top text position
-  yText1 <- ymax + ymax * 0.1
-  yText2 <- yText1 + 7
+  ## conditions for y-axis break
+  if (ymax < 11) {
+    ybreak <- 2
+    yline <- ymax
+  } else if (ymax < 51) {
+    ybreak <- 5
+    yline <- ymax
+  } else {
+    ybreak <- round(0.2 * ymax, -1)
+    yline_end <- 0.05 * yText1
+    yline <- round(yText1 - yline_end, -1) #extend y-axis and -1 to round to nearest 10
+  }
 
   ## Other paramenters
   fsize <- 3 #fontsize
@@ -91,12 +103,9 @@ rapbar <- function(DT, x, n1, n2, pros1, pros2, ascending = TRUE){
     panel.background = element_blank(),
     panel.border = element_blank(),
     panel.grid.minor.x = element_blank(),
-    legend.position = "bottom",
-    legend.justification = c(0,1), #legend bottom left
-    ## legend.box = "horizontal",
+    legend.position = c(0,0.92), #c(0,0) bottom left og c(1,1) top right
     legend.direction = "horizontal",
     legend.title = element_blank(),
-    ## legend.key = element_rect(fill = "white"),
     legend.key.width = unit(1, 'lines'), #width key
     legend.spacing.x = unit(0.3, 'cm'), #avstand mellom keys
     legend.text = element_text(size = 9),
@@ -106,32 +115,56 @@ rapbar <- function(DT, x, n1, n2, pros1, pros2, ascending = TRUE){
 
   ## Plot
   plotgg <- ggplot(data) +
-    geom_bar(aes(ref, pros2, fill =  "2016", color = "2016"), stat = "identity") +
     ## linje mot tallene på tabell
-    geom_segment(aes(x = ref, y = 0, xend = ref, yend = ymax), linetype = 2, color = "grey70") +
+    geom_segment(aes(x = ref, y = 0, xend = ref, yend = yline), linetype = 2, color = "grey70") +
     ## Dekker top linje
-    geom_segment(data = data[ref == refrow,],
-                 aes(x = ref, y = 0, xend = ref, yend = ymax), size = 1, color = "white") +
-    ## for prosent 2
-    geom_segment(aes(x = ref, y = 0, xend = ref, yend = pros1, color = "2017"),
-                 lineend = "butt", size = 10) +
-    scale_fill_manual(values = c("2016" = col1), guide = FALSE) + #for bar
-    scale_color_manual(values = c("2016" = col1, "2017" = col3)) + #for segment
+    geom_segment(data = data[ref == as.character(dfrow),],
+                 aes(x = ref, y = 0, xend = ref, yend = yline), size = 1, color = "white") +
+    geom_bar(aes(ref, pros2, fill = "2016"), stat = "identity") +
+    geom_bar(aes(ref, pros1, fill = "2017"), stat = "identity", width = 0.35) +
+    scale_fill_manual(values = c("2016" = col1, "2017" = col3)) +
     scale_x_discrete(breaks = factor(data$ref), labels = data$xvar) +
     labs(y = "prosent") +
     coord_flip() +
     Theme001 +
     ## limit y - axis scale
-    scale_y_continuous(expand = c(0,0), breaks = seq(0, ymax, 10)) +
-    geom_segment(aes(y = 0, yend = ymax, x = -Inf, xend = -Inf)) +
-    guides(color = guide_legend(override.aes = list(fill = "black"))) +
+    scale_y_continuous(expand = c(0,0), breaks = seq(0, yline, ybreak)) +
+    geom_segment(aes(y = 0, yend = yline, x = -Inf, xend = -Inf)) +
     ## tabell
     geom_text(aes(ref, yText1, label = gsub(";", "\n", text2)), hjust = 0.5, size = fsize) +
     geom_text(aes(ref, yText2, label = gsub(";", "\n", text1)), hjust = 0.5, size = fsize) +
-    annotate("text", x = refrow, y = yText1,
+    annotate("text", x = as.character(dfrow), y = yText1,
              label = "2016 \n N (%)", fontface = "bold", size = fsize) +
-    annotate("text", x = refrow, y = yText2,
+    annotate("text", x = as.character(dfrow), y = yText2,
              label = "2017 \n N (%)", fontface = "bold", size = fsize)
+
+
+##   geom_bar(aes(ref, pros2, fill =  "2016", color = "2016"), stat = "identity") +
+  ##   ## linje mot tallene på tabell
+  ##   geom_segment(aes(x = ref, y = 0, xend = ref, yend = ymax), linetype = 2, color = "grey70") +
+  ##   ## Dekker top linje
+  ##   geom_segment(data = data[ref == refrow,],
+  ##                aes(x = ref, y = 0, xend = ref, yend = ymax), size = 1, color = "white") +
+  ##   ## for prosent 2
+  ##   geom_segment(aes(x = ref, y = 0, xend = ref, yend = pros1, color = "2017"),
+  ##                lineend = "butt", size = 10) +
+  ##   scale_fill_manual(values = c("2016" = col1), guide = FALSE) + #for bar
+  ##   scale_color_manual(values = c("2016" = col1, "2017" = col3)) + #for segment
+  ##   scale_x_discrete(breaks = factor(data$ref), labels = data$xvar) +
+  ##   labs(y = "prosent") +
+  ##   coord_flip() +
+  ##   Theme001 +
+  ## ## limit y - axis scale
+  ## scale_y_continuous(expand = c(0,0), breaks = seq(0, ymax, 10)) +
+  ## geom_segment(aes(y = 0, yend = ymax, x = -Inf, xend = -Inf)) +
+  ## guides(color = guide_legend(override.aes = list(fill = "black"))) +
+  ## ## tabell
+  ## geom_text(aes(ref, yText1, label = gsub(";", "\n", text2)), hjust = 0.5, size = fsize) +
+  ## geom_text(aes(ref, yText2, label = gsub(";", "\n", text1)), hjust = 0.5, size = fsize) +
+  ## annotate("text", x = refrow, y = yText1,
+  ##          label = "2016 \n N (%)", fontface = "bold", size = fsize) +
+  ## annotate("text", x = refrow, y = yText2,
+  ##          label = "2017 \n N (%)", fontface = "bold", size = fsize)
 
 
   ## Save figure ================================
