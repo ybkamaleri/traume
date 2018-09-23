@@ -633,6 +633,13 @@ dev.off()
 fig1 <- NULL
 
 
+########################################
+## 7. Skademekanisme - inj_mechanism
+
+ulykke[, ]
+
+
+
 
 
 
