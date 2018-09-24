@@ -10,24 +10,19 @@ source("K:/Sensitivt/kvalitetsregistre/2013-9541_Nasjonalt_traumeregister/Yusman
 
 ## Function
 source("K:\\Sensitivt\\kvalitetsregistre\\2013-9541_Nasjonalt_traumeregister\\Yusman\\rapport\\2018\\function\\rapbar.R")
+source("K:\\Sensitivt\\kvalitetsregistre\\2013-9541_Nasjonalt_traumeregister\\Yusman\\rapport\\2018\\function\\rapbargg.R")
+source("K:\\Sensitivt\\kvalitetsregistre\\2013-9541_Nasjonalt_traumeregister\\Yusman\\rapport\\2018\\function\\sharelegend.R")
 source("K:\\Sensitivt\\kvalitetsregistre\\2013-9541_Nasjonalt_traumeregister\\Yusman\\rapport\\2018\\function\\byttna.R")
 
 ## sted å lage figurer
 savefig <- "K:\\Sensitivt\\kvalitetsregistre\\2013-9541_Nasjonalt_traumeregister\\Yusman\\rapport\\2018\\fig"
 
-
-## Prepare data TRAUME Skjema
-################################
 ## Valg muligheter
 datoFra <- "2017-01-01"
 datoTil <- "2017-12-31"
 
 datoFra01 <- "2016-01-01"
 datoTil01 <- "2016-12-31"
-
-## henter data
-source("./valgdata.R")
-
 
 ## Felles paramenters
 cols4 <- c("#4292c6", "#c6dbef", "#FF7260", "#084594")
@@ -38,6 +33,9 @@ col1 <- "#6baed6"
 col2 <- "#2171b5" #hvis bare en søyle
 col3 <- "#084594" #Den andre søyle
 
+## Prepare data TRAUME Skjema
+################################
+source("K:/Sensitivt/kvalitetsregistre/2013-9541_Nasjonalt_traumeregister/Yusman/rapport/2018/dataFilter.R")
 
 ######################################################################################
 ###################  ANALYSER  #######################################################
@@ -242,33 +240,6 @@ fig1 <- NULL
 ###################
 ## 4. Ulykketyper
 #################
-## Prepare data TRAUME Skjema
-################################
-# 
-# ## 2017 Data
-# dataRawUl <- ulykke[dateAll >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
-#                       dateAll <= as.POSIXct(datoTil, format = "%Y-%m-%d")]
-# 
-# 
-# ## bort med NA og duplicated - ntrid, alder og kjønn
-# dataUL <- dataRawUl[!is.na(ntrid) &
-#                       !duplicated(ntrid) &
-#                    !is.na(age) &
-#                    age != -1 &
-#                    !is.na(gender)]
-# 
-# 
-# ## 2016 Data
-# dataRawUL16 <- ulykke[dateAll >= as.POSIXct(datoFra01, format = "%Y-%m-%d") &
-#                         dateAll <= as.POSIXct(datoTil01, format = "%Y-%m-%d")]
-# 
-# 
-# ## bort med NA og duplicated - ntrid, alder og kjønn
-# dataUL16 <- dataRawUL16[!is.na(ntrid) &
-#                           !duplicated(ntrid) &
-#                        !is.na(age) &
-#                        age != -1 &
-#                        !is.na(gender)]
 
 ## Liste over ulykke typer
 navnUT <- c("acc_transport",
@@ -334,7 +305,7 @@ accMix[, navn := factor(var, levels = navnUT, labels = navnIN)]
 #### bruk funksjon rapbar
 #########################
 
-fig1 <- rapbar(accMix, navn, n, i.n, prosent, i.prosent)
+fig1 <- rapbar(accMix, navn, n, i.n, prosent, i.prosent, lpos=0.93)
 title <- "fig4_ulykketyper"
 
 fig1a <- fig1
@@ -352,7 +323,7 @@ fig1 <- NULL
 
 
 #########################
-## Transport
+## fig5 - Transport
 ########################
 
 ## Omkode Annet/ukjent og MC/Moped
@@ -402,7 +373,7 @@ dev.off()
 ## reset fig1 - to avoid wrong figure
 fig1 <- NULL
 
-
+#######################
 ## Fig 6 - ISS > 15
 ######################
 # skade[, iss15 := ifelse(inj_iss>15, 1, 0), by=seq_len(nrow(skade))]
@@ -441,7 +412,7 @@ issMix <- plotISS[plotISS16, on=c(transkode = "transkode")]
 ## bruk funksjon rapbar
 #########################
 
-fig1 <- rapbar(issMix, navn, N, i.N, pros, i.pros)
+fig1 <- rapbar(issMix, navn, N, i.N, pros, i.pros, lpos = 0.91)
 title <- "fig6_iss15"
 
 fig1a <- fig1
@@ -450,6 +421,257 @@ cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, 
 cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
 cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
 ## ggsave("~/Git-work/HSR/arsrapport/fig1a.jpg")
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+############################
+## nr. 7 - Skade mekanismen
+############################
+
+injInd <- c(1:11, 88)
+## bruk ";" for å dele tekst til 2 linjer når lager plot
+injNavn <- c("Trafikk: ulykke med motorkjøretøy; – ikke motorsykkel",
+             "Trafikk: motorsykkelulykke",
+             "Trafikk: sykkelulykke",
+             "Trafikk: fotgjenger",
+             "Trafikk: annet",
+             "Skutt av håndvåpen: hagle, rifle; eller annen type skytevåpen",
+             "Stukket av kniv, sverd, dolk,; andre skarpe eller spisse objekter",
+             "Truffet av eller slått; med stumpe objekt",
+             "Lavenergi fall",
+             "Høyenergi fall",
+             "Eksplosjonsskade",
+             "Annet"
+)
+
+#2017
+dataUL[inj_mechanism %in% c(99,999), inj_mechanism := 88] #Ukjent og Annet til 88
+injSum <- dataUL[, .N, by=inj_mechanism]
+injSum[, pros := round(N / sum(injSum$N) * 100, digits = 1), by=inj_mechanism]
+#2016
+dataUL16[inj_mechanism %in% c(99,999), inj_mechanism := 88] #Ukjent og Annet til 88
+injSum16 <- dataUL16[, .N, by=inj_mechanism]
+injSum16[, pros := round(N / sum(injSum16$N) * 100, digits = 1), by=inj_mechanism]
+
+injMix <- injSum[injSum16, on=c(inj_mechanism = "inj_mechanism")]
+injMix[, navn := factor(inj_mechanism,
+                        levels = injInd,
+                        labels = injNavn)]
+
+# plotting
+## bruk funksjon rapbar
+#########################
+
+fig1 <- rapbar(injMix, navn, N, i.N, pros, i.pros, line2 = TRUE, lpos=0.96)
+title <- "fig7_inj_mechanism"
+
+fig1a <- fig1
+grid.draw(fig1a)
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+#########################
+## nr. 7b - inj_dominan
+
+domInd <- c(1,2,999)
+domNavn <- c("Stump", "Penetrerende", "Ukjent")
+
+##2017
+domSum <- dataUL[, .N, by=inj_dominant]
+domSum[, pros := round(N /sum(domSum$N)*100, digits = 1), by=inj_dominant]
+##2016
+domSum16 <- dataUL16[, .N, by=inj_dominant]
+domSum16[, pros := round(N /sum(domSum16$N)*100, digits = 1), by=inj_dominant]
+
+domMix <- domSum[domSum16, on=c(inj_dominant ="inj_dominant")]
+domMix[, navn := factor(inj_dominant,
+                        levels = domInd,
+                        labels = domNavn)]
+
+
+# plotting
+## bruk funksjon rapbar
+#########################
+
+fig1 <- rapbar(domMix, navn, N, i.N, pros, i.pros, line2 = FALSE, lpos=0.85, lgap=9) #lgap er avstand mellom tallet 2016 og 2017
+title <- "fig7b_inj_dominant"
+
+fig1a <- fig1
+grid.draw(fig1a)
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 5, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 5, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 5, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+
+##########################
+## fig. 8. GOS endring
+##########################
+
+mixULIN <- dataIN[dataUL, on=c(ntrid="ntrid")]
+## bort med ikke valg og ukjent for begge
+gos <- mixULIN[, list(ntrid=ntrid, pre=pt_gos_preinjury, pos=res_gos_dischg, RHF=RHF)]
+gosall <- gos[!is.na(pre) & !is.na(pos) & pre!= 999 & pos!=999 & pre!=0 & pos!=0, ]
+gosall[, gos := pre - pos, by=ntrid]
+
+## GOS landet
+gosNorge <- gosall[gos>=0, .N, by=gos]
+gosNorge[, pros := round(N / sum(gosNorge$N)*100, digits = 1), by=gos]
+## Helse Vest
+gosVest <- gosall[gos>=0 & RHF=="Helse Vest", .N, by=gos]
+gosVest[, pros := round(N / sum(gosVest$N)*100, digits = 1), by=gos]
+gosVest2 <- gosVest[gosNorge, on=c(gos = "gos")] #merge med norge
+gosVest2[, navn := as.factor(gos)]
+## Helse Nord
+gosNord <- gosall[gos>=0 & RHF=="Helse Nord", .N, by=gos]
+gosNord[, pros := round(N / sum(gosNord$N)*100, digits = 1), by=gos]
+gosNord2 <- gosNord[gosNorge, on=c(gos = "gos")] #merge med norge
+gosNord2[, navn := as.factor(gos)]
+## Helse SØ
+gosSO <- gosall[gos>=0 & RHF=="Helse Sør-Øst", .N, by=gos]
+gosSO[, pros := round(N / sum(gosSO$N)*100, digits = 1), by=gos]
+gosSO2 <- gosSO[gosNorge, on=c(gos = "gos")] #merge med norge
+gosSO2[, navn := as.factor(gos)]
+## Helse Midt
+gosMidt <- gosall[gos>=0 & RHF=="Helse-Midt", .N, by=gos]
+gosMidt[, pros := round(N / sum(gosMidt$N)*100, digits = 1), by=gos]
+gosMidt2 <- gosMidt[gosNorge, on=c(gos = "gos")] #merge med norge
+gosMidt2[, navn := as.factor(gos)]
+
+source("K:\\Sensitivt\\kvalitetsregistre\\2013-9541_Nasjonalt_traumeregister\\Yusman\\rapport\\2018\\function\\rabVest.R")
+vest <- rapvest(gosVest2, navn, N, i.N, pros, i.pros)
+source("K:\\Sensitivt\\kvalitetsregistre\\2013-9541_Nasjonalt_traumeregister\\Yusman\\rapport\\2018\\function\\rapNord.R")
+nord <- rapNord(gosNord2, navn, N, i.N, pros, i.pros)
+source("K:\\Sensitivt\\kvalitetsregistre\\2013-9541_Nasjonalt_traumeregister\\Yusman\\rapport\\2018\\function\\rapSO.r")
+sor <- rapSO(gosSO2, navn, N, i.N, pros, i.pros)
+source("K:\\Sensitivt\\kvalitetsregistre\\2013-9541_Nasjonalt_traumeregister\\Yusman\\rapport\\2018\\function\\rapMidt.R")
+midt <- rapMidt(gosMidt2, navn, N, i.N, pros, i.pros)
+
+
+# plotting
+## bruk funksjon rapbar
+#########################
+
+## VEST ##################
+title <- "fig8_GOS_Vest"
+
+fig1a <- vest
+grid.draw(fig1a)
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+## Nord #####################
+title <- "fig8_GOS_Nord"
+
+fig1a <- nord
+grid.draw(fig1a)
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+## Sør ##################
+title <- "fig8_GOS_SorOst"
+
+fig1a <- sor
+grid.draw(fig1a)
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+## Midt ##############
+title <- "fig8_GOS_Midt"
+
+fig1a <- midt
+grid.draw(fig1a)
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+
+#############################################################################################################
+## Fig 9a - ISS > 15 hele landet og per HF, RHF og sykehus
+
+## Landet
+issNorge <- dataSK[, .N, by=iss15]
+issNorge[, RHF := "Hele landet"]
+issNorge[, tot := sum(N)]
+issNorge[, pros := round(N / sum(issNorge$N)*100, digits = 1), by=iss15]
+
+## RHF
+issRHF <- dataSK[, .N, by=list(RHF, iss15)]
+issRHF[, tot := sum(N), by=list(RHF)]
+issRHF[, pros := round(N / tot*100, digits = 1), by=.(RHF, iss15)]
+issRHFmix <- rbindlist(list(issRHF, issNorge), use.names = TRUE) #bind with correnct coloumnname
+issRHFplot <- issRHFmix[iss15==1,]
+
+library(rreg)
+fig1 <- regbar(issRHFplot, RHF, pros, comp = "landet", num = tot, ylab = "prosent")
+
+title <- "fig9a_RHFogISS15"
+fig1a <- fig1
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+###################
+## fig 9b - HF nivå
+issHFNorge <- dataSK[, .N, by=iss15]
+issHFNorge[, HF := "Hele landet"]
+issHFNorge[, tot := sum(N)]
+issHFNorge[, pros := round(N / sum(issNorge$N)*100, digits = 1), by=iss15]
+
+
+issHF <- dataSK[, .N, by=list(HF, iss15)]
+issHF[, tot := sum(N), by=list(HF)]
+issHF[, pros := round(N / tot*100, digits = 1), by=.(HF, iss15)]
+issHFmix <- rbindlist(list(issHF, issHFNorge), use.names = TRUE) #bind with correnct coloumnname
+issHFplot <- issHFmix[iss15==1,]
+
+
+library(rreg)
+fig1 <- regbar(issHFplot, HF, pros, comp = "Hele", num = tot, ylab = "prosent")
+
+title <- "fig9b_HFogISS15"
+fig1a <- fig1
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
 dev.off()
 
 ## reset fig1 - to avoid wrong figure
