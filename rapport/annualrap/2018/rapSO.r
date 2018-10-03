@@ -1,7 +1,7 @@
 
 ## Function for rapport barplot. bruke "grid.draw(plotOutPut)"
 
-rapMidt <- function(DT, x, n1, n2, pros1, pros2, ascending = FALSE, line2 = FALSE,lpos=0.92, lgap=6){
+rapSO <- function(DT, x, n1, n2, pros1, pros2, ascending = FALSE, line2 = FALSE,lpos=0.92, lgap=6){
   
   ## error message if at least 1 args ie. data, x, yl or yc is missing
   if (missing(DT) || missing(x) || missing(n1) || missing(n2)) {
@@ -106,7 +106,6 @@ rapMidt <- function(DT, x, n1, n2, pros1, pros2, ascending = FALSE, line2 = FALS
   )
   
   
-  
   ## Plot
   plotgg1 <- ggplot(data) +
     ## linje mot tallene p? tabell
@@ -115,10 +114,10 @@ rapMidt <- function(DT, x, n1, n2, pros1, pros2, ascending = FALSE, line2 = FALS
     geom_segment(data = data[ref == as.character(refrow),],
                  aes(x = ref, y = 0, xend = ref, yend = yline), size = 1, color = "white") +
     geom_bar(aes(ref, pros2, fill = "Norge"), stat = "identity") +
-    geom_bar(aes(ref, pros1, fill = "Midt"), stat = "identity", width = 0.35) +
-    scale_fill_manual(values = c("Norge"=col1, "Midt"=col3), labels=c("Helse Midt", "Hele landet")) +
+    geom_bar(aes(ref, pros1, fill = "Sør-Øst"), stat = "identity", width = 0.35) +
+    scale_fill_manual(values = c("Norge"=col1, "Sør-Øst"=col3), labels=c("Hele landet", "Helse Sør-Øst")) +
     labs(y = "prosent", x = "Endring fra innleggelse til utskriving") +
-    coord_flip() + guides(fill=guide_legend(reverse = TRUE)) +
+    coord_flip() +
     Theme001 
   
   if (line2){
@@ -140,7 +139,7 @@ rapMidt <- function(DT, x, n1, n2, pros1, pros2, ascending = FALSE, line2 = FALS
     annotate("text", x = as.character(refrow), y = yText1,
              label = "Norge \n N (%)", fontface = "bold", size = fsize) +
     annotate("text", x = as.character(refrow), y = yText2,
-             label = "Midt \n N (%)", fontface = "bold", size = fsize)
+             label = "Sør-Øst \n N (%)", fontface = "bold", size = fsize)
   
   
   ## Save figure ================================

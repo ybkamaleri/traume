@@ -1,7 +1,7 @@
 
 ## Function for rapport barplot. bruke "grid.draw(plotOutPut)"
 
-rapMidt <- function(DT, x, n1, n2, pros1, pros2, ascending = FALSE, line2 = FALSE,lpos=0.92, lgap=6){
+rapNord <- function(DT, x, n1, n2, pros1, pros2, ascending = FALSE, line2 = FALSE,lpos=0.92, lgap=6){
   
   ## error message if at least 1 args ie. data, x, yl or yc is missing
   if (missing(DT) || missing(x) || missing(n1) || missing(n2)) {
@@ -41,11 +41,11 @@ rapMidt <- function(DT, x, n1, n2, pros1, pros2, ascending = FALSE, line2 = FALS
   data <- data.table::rbindlist(list(data, data[NA])) #lager dummy row with NA
   data[is.na(ref), ref := refrow] #reference to dummy row
   
-  ## Tekst til ? bruke for tabell
+  ## Tekst til å bruke for tabell
   data[, text1 := paste0(n1, ";(", pros1, ")"), by = ref]
   data[, text2 := paste0(n2, ";(", pros2, ")"), by = ref]
   
-  ## Bytt NA til "" i dummy row s? det ikke skal vises som NA i figuren
+  ## Bytt NA til "" i dummy row så det ikke skal vises som NA i figuren
   data[ref == refrow, `:=` (xvar = "",
                             text1 = "",
                             text2 = "")]
@@ -54,7 +54,7 @@ rapMidt <- function(DT, x, n1, n2, pros1, pros2, ascending = FALSE, line2 = FALS
   data[n1 <= 5, text1 := "n<6"]
   data[n2 <= 5, text2 := "n<6"]
   
-  ## Finne h?yste s?yle
+  ## Finne høyste søyle
   yvar <- data[, list(v1 = max(pros1, na.rm = TRUE), v2 = max(pros2, na.rm = TRUE))]
   ymax <- ifelse(with(yvar, v1 > v2), yvar$v1, yvar$v2)
   
@@ -82,8 +82,8 @@ rapMidt <- function(DT, x, n1, n2, pros1, pros2, ascending = FALSE, line2 = FALS
   
   ## Farger
   col1 <- "#6baed6"
-  col2 <- "#2171b5" #hvis bare en s?yle
-  col3 <- "#084594" #Den andre s?yle
+  col2 <- "#2171b5" #hvis bare en søyle
+  col3 <- "#084594" #Den andre søyle
   
   ## Theme
   Theme001 <- theme(
@@ -105,7 +105,7 @@ rapMidt <- function(DT, x, n1, n2, pros1, pros2, ascending = FALSE, line2 = FALS
     plot.margin = unit(c(0, 1, 1, 1), 'cm')
   )
   
-  
+
   
   ## Plot
   plotgg1 <- ggplot(data) +
@@ -115,8 +115,8 @@ rapMidt <- function(DT, x, n1, n2, pros1, pros2, ascending = FALSE, line2 = FALS
     geom_segment(data = data[ref == as.character(refrow),],
                  aes(x = ref, y = 0, xend = ref, yend = yline), size = 1, color = "white") +
     geom_bar(aes(ref, pros2, fill = "Norge"), stat = "identity") +
-    geom_bar(aes(ref, pros1, fill = "Midt"), stat = "identity", width = 0.35) +
-    scale_fill_manual(values = c("Norge"=col1, "Midt"=col3), labels=c("Helse Midt", "Hele landet")) +
+    geom_bar(aes(ref, pros1, fill = "Nord"), stat = "identity", width = 0.35) +
+    scale_fill_manual(values = c("Norge"=col1, "Nord"=col3), labels=c("Helse Nord", "Hele landet")) +
     labs(y = "prosent", x = "Endring fra innleggelse til utskriving") +
     coord_flip() + guides(fill=guide_legend(reverse = TRUE)) +
     Theme001 
@@ -140,7 +140,7 @@ rapMidt <- function(DT, x, n1, n2, pros1, pros2, ascending = FALSE, line2 = FALS
     annotate("text", x = as.character(refrow), y = yText1,
              label = "Norge \n N (%)", fontface = "bold", size = fsize) +
     annotate("text", x = as.character(refrow), y = yText2,
-             label = "Midt \n N (%)", fontface = "bold", size = fsize)
+             label = "Nord \n N (%)", fontface = "bold", size = fsize)
   
   
   ## Save figure ================================

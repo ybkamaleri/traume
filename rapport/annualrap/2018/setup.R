@@ -31,14 +31,14 @@ intensiv <- indSkjema("Intensiv")
 prehosp <- indSkjema("Prehospital")
 ulykke <- indSkjema("Ulykke")
 skade <- indSkjema("Skadegradering")
-## bruk miscDir for å lese filen
+## bruk miscDir for ? lese filen
 resh <- indSkjema("Resh", ntrdir = FALSE, fname = miscCSV, encode = "Latin-1")
 
 
 ## Resh HF
 ###############################
 ## endrer navn RHF
-## resh[RHF == "HSØ", RHF := "Helse Sør-Øst"]
+## resh[RHF == "HS?", RHF := "Helse S?r-?st"]
 ## resh[HF == "OUS", HF := "Oslo universitetssykehus"]
 
 
@@ -64,7 +64,7 @@ setkey(prehosp, HovedskjemaGUID)
 setkey(ulykke, HovedskjemaGUID)
 setkey(skade, HovedskjemaGUID)
 
-## tar bort alle som ikke har riktig trume nr dvs. starter med NTR og uten dato på inj_start_date
+## tar bort alle som ikke har riktig trume nr dvs. starter med NTR og uten dato p? inj_start_date
 traumeRaw[, bortID := nchar(pt_id_ntr), by=seq_len(nrow(traumeRaw))][, bort := nchar(inj_start_date), by=seq_len(nrow(traumeRaw))]
 traume <- traumeRaw[bort==16, ] #slett uten riktig dato
 traume <- traume[bortID==10, ] #slett uten riktig NTR-nr
@@ -102,7 +102,7 @@ setkeyv(bsFile, c("HovedskjemaGUID", "UnitId"))
 bsFile[, ntrid := as.numeric(gsub("^NTR-", "", pt_id_ntr))]
 
 ##########################################################################
-## OBS!!! -- Dette skal slettes når man kan trekke ut de fra MRS direkte
+## OBS!!! -- Dette skal slettes n?r man kan trekke ut de fra MRS direkte
 ## legge RHF, HF og Sykehusnavn fra resh fil
 # resh <- indSkjema("Resh", encode = "Latin-1")
 delW(resh)
@@ -158,3 +158,8 @@ setkey(masterFile, ntrid)
 ##############################
 akutt2 <- akutt[resh, on = c(UnitId = "reshid")]
 
+## legge HF, RHF, Hosp
+ulykke2 <- ulykke[resh, on = c(UnitId = "reshid")]
+skade2 <- skade[resh, on = c(UnitId = "reshid")]
+intensiv2 <- intensiv[resh, on = c(UnitId = "reshid")]
+prehosp2 <- prehosp[resh, on = c(UnitId = "reshid")]

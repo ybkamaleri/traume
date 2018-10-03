@@ -1,19 +1,7 @@
 
 ## Function for rapport barplot. bruke "grid.draw(plotOutPut)"
 
-rapbar <- function(DT, x, n1, n2, pros1, pros2, ascending = TRUE){
-# 
-# 
-#   pkg <- c("data.table", "ggplot2", "directlabels", "cowplot", "gridExtra", "grid")
-# 
-#   sapply(pkg, require, character.only = TRUE)
-# 
-#   ## bytt NA med 0
-#   bNA <- function(DT, na = 0){
-#     for (j in seq_len(ncol(DT)))
-#       set(DT,which(is.na(DT[[j]])),j, na)
-#   }
-#  
+rapbar <- function(DT, x, n1, n2, pros1, pros2, ascending = TRUE, line2 = FALSE,lpos=0.92, lgap=6){
 
   ## error message if at least 1 args ie. data, x, yl or yc is missing
   if (missing(DT) || missing(x) || missing(n1) || missing(n2)) {
@@ -69,8 +57,8 @@ rapbar <- function(DT, x, n1, n2, pros1, pros2, ascending = TRUE){
   ymax <- ifelse(with(yvar, v1 > v2), yvar$v1, yvar$v2)
 
   ## Y-axis for text position
-  yText1 <- ymax + ymax * 0.15
-  yText2 <- yText1 + 6
+  yText1 <- ymax + ymax * 0.1
+  yText2 <- yText1 + lgap
 
   ## conditions for y-axis break
   if (ymax < 11) {
@@ -80,9 +68,11 @@ rapbar <- function(DT, x, n1, n2, pros1, pros2, ascending = TRUE){
     ybreak <- 5
     yline <- ymax
   } else {
-    ybreak <- round(0.2 * ymax, -1)
-    yline_end <- 0.05 * yText1
-    yline <- round(yText1 - yline_end, -1) #extend y-axis and -1 to round to nearest 10
+    # ybreak <- round(0.2 * ymax, -1)
+    # yline_end <- 0.05 * yText1
+    # yline <- round(yText1 - yline_end, -1) #extend y-axis and -1 to round to nearest 10
+    ybreak <- 10
+    yline <- ymax
   }
 
   ## Other paramenters
@@ -103,7 +93,7 @@ rapbar <- function(DT, x, n1, n2, pros1, pros2, ascending = TRUE){
     panel.background = element_blank(),
     panel.border = element_blank(),
     panel.grid.minor.x = element_blank(),
-    legend.position = c(0,0.92), #c(0,0) bottom left og c(1,1) top right
+    legend.position = c(0,lpos), #c(0,0) bottom left og c(1,1) top right
     legend.direction = "horizontal",
     legend.title = element_blank(),
     legend.key.width = unit(1, 'lines'), #width key
@@ -113,59 +103,42 @@ rapbar <- function(DT, x, n1, n2, pros1, pros2, ascending = TRUE){
     plot.margin = unit(c(0, 1, 1, 1), 'cm')
   )
 
+ 
   ## Plot
-  plotgg <- ggplot(data) +
+  plotgg1 <- ggplot(data) +
     ## linje mot tallene på tabell
     geom_segment(aes(x = ref, y = 0, xend = ref, yend = yline), linetype = 2, color = "grey70") +
     ## Dekker top linje
-    geom_segment(data = data[ref == as.character(dfrow),],
+    geom_segment(data = data[ref == as.character(refrow),],
                  aes(x = ref, y = 0, xend = ref, yend = yline), size = 1, color = "white") +
     geom_bar(aes(ref, pros2, fill = "2016"), stat = "identity") +
     geom_bar(aes(ref, pros1, fill = "2017"), stat = "identity", width = 0.35) +
-    scale_fill_manual(values = c("2016" = col1, "2017" = col3)) +
-    scale_x_discrete(breaks = factor(data$ref), labels = data$xvar) +
+    scale_fill_manual(values = c("2016"=col1, "2017"=col3)) +
     labs(y = "prosent") +
     coord_flip() +
-    Theme001 +
+    Theme001 
+  
+  if (line2){
+    plotgg2 <- plotgg1 +
+      scale_x_discrete(breaks=factor(data$ref),
+                       labels=gsub(";", "\n", data$xvar))
+  } else {
+    plotgg2 <- plotgg1 +
+    scale_x_discrete(breaks = factor(data$ref), labels = data$xvar)
+  }
+
+  plotgg <- plotgg2 +
     ## limit y - axis scale
     scale_y_continuous(expand = c(0,0), breaks = seq(0, yline, ybreak)) +
     geom_segment(aes(y = 0, yend = yline, x = -Inf, xend = -Inf)) +
     ## tabell
     geom_text(aes(ref, yText1, label = gsub(";", "\n", text2)), hjust = 0.5, size = fsize) +
     geom_text(aes(ref, yText2, label = gsub(";", "\n", text1)), hjust = 0.5, size = fsize) +
-    annotate("text", x = as.character(dfrow), y = yText1,
+    annotate("text", x = as.character(refrow), y = yText1,
              label = "2016 \n N (%)", fontface = "bold", size = fsize) +
-    annotate("text", x = as.character(dfrow), y = yText2,
+    annotate("text", x = as.character(refrow), y = yText2,
              label = "2017 \n N (%)", fontface = "bold", size = fsize)
-
-
-##   geom_bar(aes(ref, pros2, fill =  "2016", color = "2016"), stat = "identity") +
-  ##   ## linje mot tallene på tabell
-  ##   geom_segment(aes(x = ref, y = 0, xend = ref, yend = ymax), linetype = 2, color = "grey70") +
-  ##   ## Dekker top linje
-  ##   geom_segment(data = data[ref == refrow,],
-  ##                aes(x = ref, y = 0, xend = ref, yend = ymax), size = 1, color = "white") +
-  ##   ## for prosent 2
-  ##   geom_segment(aes(x = ref, y = 0, xend = ref, yend = pros1, color = "2017"),
-  ##                lineend = "butt", size = 10) +
-  ##   scale_fill_manual(values = c("2016" = col1), guide = FALSE) + #for bar
-  ##   scale_color_manual(values = c("2016" = col1, "2017" = col3)) + #for segment
-  ##   scale_x_discrete(breaks = factor(data$ref), labels = data$xvar) +
-  ##   labs(y = "prosent") +
-  ##   coord_flip() +
-  ##   Theme001 +
-  ## ## limit y - axis scale
-  ## scale_y_continuous(expand = c(0,0), breaks = seq(0, ymax, 10)) +
-  ## geom_segment(aes(y = 0, yend = ymax, x = -Inf, xend = -Inf)) +
-  ## guides(color = guide_legend(override.aes = list(fill = "black"))) +
-  ## ## tabell
-  ## geom_text(aes(ref, yText1, label = gsub(";", "\n", text2)), hjust = 0.5, size = fsize) +
-  ## geom_text(aes(ref, yText2, label = gsub(";", "\n", text1)), hjust = 0.5, size = fsize) +
-  ## annotate("text", x = refrow, y = yText1,
-  ##          label = "2016 \n N (%)", fontface = "bold", size = fsize) +
-  ## annotate("text", x = refrow, y = yText2,
-  ##          label = "2017 \n N (%)", fontface = "bold", size = fsize)
-
+  
 
   ## Save figure ================================
   fig1a <- ggplot_gtable(ggplot_build(plotgg))
