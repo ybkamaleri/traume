@@ -91,4 +91,6 @@ function(input, output, session){
   #######################
   dataClean <- callModule(filterSV, "dataFilter", resh, masterFile)
 
+
+  session$onSessionEnded(stopApp)
 }

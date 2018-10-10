@@ -52,16 +52,17 @@ filterUI <- function(id){
             style = 'padding:5px 30px; border: none; text-align: center; font-size:15px;' ))
       )
     ),
-    fluidRow(
-      verbatimTextOutput(ns("test"))
-    ),
-    fluidRow(
-      verbatimTextOutput(ns("test2"))
-    ),
+
     fluidRow(
       tabBox(side = 'left', selected = "Figur", width = 12,
         tabPanel("Figur", plotOutput(ns("fig"))),
         tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
+    ),
+
+    fluidRow(
+      infoBoxOutput(ns("traume_info")),
+      infoBoxOutput(ns("mann_info")),
+      infoBoxOutput(ns("kvinne_info"))
     )
   )
 }
@@ -156,6 +157,23 @@ filterSV <- function(input, output, session, resh, data){
     valgUT
   })
 
+  ## InfoBox
+  ###################
+  output$traume_info <- renderInfoBox({
+    infoBox("Antall traume", uniqueN(dataFil()$ntrid), icon = icon("pie-chart"))
+  })
+
+  output$mann_info <- renderInfoBox({
+    data <- dataFil()[!duplicated(ntrid) & gender == 1, .N]
+    infoBox("Antall menn", data, icon = icon("male"))
+  })
+
+  output$kvinne_info <- renderInfoBox({
+    data <- dataFil()[!duplicated(ntrid) & gender == 2, .N]
+    infoBox("Antall kvinner", data, icon = icon("female"))
+  })
+
+  
   ## Plot alder og kjønn
   output$fig <- renderPlot({
     plotUT <- dataUT()$plot
