@@ -91,12 +91,16 @@ function(input, output, session){
   dataClean <- callModule(filterSV, "dataFilter", resh, masterFile)
 
 
-  ## Skadegradering
+  ## Ulykke
   ####################
-  skadegradDT <- callModule(skadegradSV,
-    id = "skadegrad",
+  ulykkeDT <- callModule(ulykkeSV,
+    id = "ulykke",
     valgDT = dataClean,
     data = ulykke)
+
+  ## Skade
+  ################
+  callModule(skadeSV, "skade", ulykkeDT, skade)
 
   ## Virksomhetsdata på sykehus
   ###############################
@@ -108,7 +112,7 @@ function(input, output, session){
   ###################
   output$test <- renderPrint({
     str(dataClean$data)
-    str(skadegradDT$data)
+    str(ulykkeDT$data)
   })
 
   session$onSessionEnded(stopApp)

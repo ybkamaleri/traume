@@ -20,7 +20,7 @@ sidebar <- dashboardSidebar(width = 250, #tilpase title tekst
       tabName = "tab_intensiv",
       icon = icon("bar-chart")),
     menuItem("Skadegradering",
-      tabName = "tab_skade",
+      tabName = "tab_skadegrad",
       icon = icon("bar-chart")),
     tags$hr(), #linje
 

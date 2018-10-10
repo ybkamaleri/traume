@@ -44,10 +44,11 @@ body <- dashboardBody(
       )),
 
     ## Skadegradering
-    tabItem(tabName = "tab_skade",
+    tabItem(tabName = "tab_skadegrad",
       fluidPage(
         fluidRow(
-          skadegradUI("skadegrad")
+          ulykkeUI("ulykke"),
+          skadeUI("skade")
         )
       )),
 

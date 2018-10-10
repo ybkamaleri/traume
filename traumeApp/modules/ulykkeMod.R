@@ -1,6 +1,6 @@
 ## Module UI
 #################
-skadegradUI <- function(id){
+ulykkeUI <- function(id){
 
   ns  <- NS(id)
   ## input er character eller string type derfor må konverteres til tall
@@ -43,7 +43,7 @@ skadegradUI <- function(id){
 }
 
 
-skadegradSV <- function(input, output, session, valgDT, data){
+ulykkeSV <- function(input, output, session, valgDT, data){
 
   ## filtert data for å velge ntrid valgDT henter data fra filterModule. Bruk is.null
   ## hvis ingen data ikke er filtert enda
