@@ -17,7 +17,7 @@ sapply(pakke, require, character.only = TRUE)
 ## library(data.table)
 ## library(ggplot2)
 
-## source("~/Git-work/traume/ntrApp/data.R")
+## source("~/Git-work/traume/ntrApp/data2.R")
 
 ## Module UI
 #################
@@ -64,9 +64,10 @@ filterUI <- function(id){
       box(width = 3, height = 165, background = "light-blue",
         tags$h4("Filtert info:"),
         htmlOutput(ns("txtList")),
-        column(width = 10, offset = 5,
-          actionButton(ns("runButton"), label = "Kjør",
-            style = 'padding:8px 32px; border: none; text-align: center; font-size:16px;' ))
+        column(width = 10, offset = 4,
+          tags$br(),
+          actionButton(ns("runButton"), label = "Bruk valget",
+            style = 'padding:5px 30px; border: none; text-align: center; font-size:15px;' ))
       )
     ),
     fluidRow(
@@ -76,6 +77,9 @@ filterUI <- function(id){
       verbatimTextOutput(ns("test2"))
     ),
     fluidRow(
+      tabBox(side = 'left', selected = "Figur", width = 12,
+        tabPanel("Figur", plotOutput(ns("fig"))),
+        tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
     )
   )
 }
@@ -132,19 +136,71 @@ filterSV <- function(input, output, session, resh, data){
 
   })
 
+  ## Filtert data
+  dataFil <- eventReactive(input$runButton, {
+
+    datoFra <- as.POSIXct(input$tidsrom_in[1], format = "%Y-%m-%d")
+    datoTil <- as.POSIXct(input$tidsrom_in[2], format = "%Y-%m-%d")
+
+    ageFra <- as.numeric(input$alder_in[1])
+    ageTil <- as.numeric(input$alder_in[2])
+
+    ## Tar bort missing ntrid og alder og kjønn
+    cleanData <- data[!is.na(ntrid) & !duplicated(ntrid) & !is.na(age) & !is.na(gender)]
+
+    ## Filter dato
+    dataDate <- switch(input$valgLevel01,
+      '1' = {cleanData[dateAll >= datoFra & dateAll <= datoTil, ]},
+      '2' = {cleanData[RHF == input$valgLevel02 & dateAll >= datoFra & dateAll <= datoTil, ]},
+      '3' = {cleanData[HF == input$valgLevel02 & dateAll >= datoFra & dateAll <= datoTil, ]},
+      '4' = {cleanData[Hospital == input$valgLevel02 & dateAll >= datoFra & dateAll <= datoTil, ]})
+
+    ## Filter alder
+    dataSub <- dataDate[age >= ageFra & age <= ageTil, ]
+
+    dataSub
+  })
+
+  ## byttNA
+  source("/home/yuskam/Git-work/traume/ntrApp/misc/byttna.R")
+  #plotreg function
+  source("/home/yuskam/Git-work/traume/ntrApp/misc/functionPlot.R")
+
+
+  dataUT <- eventReactive(input$runButton, {
+
+    if (input$alder_kat){
+      valgUT <- plotreg(dataFil(), TRUE)
+    } else {
+      valgUT <- plotreg(dataFil())
+    }
+    valgUT
+  })
+
+  ## Plot alder og kjønn
+  output$fig <- renderPlot({
+    plotUT <- dataUT()$plot
+    print(plotUT)
+  })
+
+  ## Tabell for alder og kjønn
+  output$tabell <- DT::renderDT({
+    dataUT()$data
+  })
+
 
   ##################
   ###### TEST ######
   ##################
 
   output$test <- renderPrint({
-    input$tidsrom_in[1]
+    names(dataFil())
   })
 
   output$test2 <- renderPrint({
-    input$alder_in[1]
+    dim(dataFil())
 
-})
+  })
 
 }
 
