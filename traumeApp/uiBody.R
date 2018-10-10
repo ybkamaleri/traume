@@ -7,8 +7,8 @@ body <- dashboardBody(
   tabItems(
     tabItem(tabName = "tab_info",
       fluidPage(
-        ## tags$h4("Oversikt informasjon for hele NTR databasen"),
-        ## tags$br(),
+        tags$h3(HTML(paste0('<center>', "Oversikt informasjon for hele Nasjonalt traumeregister databasen", '</center>' ))),
+        tags$br(),
         fluidRow(
           valueBoxOutput("o_traume"),
           valueBoxOutput("o_ais"),
