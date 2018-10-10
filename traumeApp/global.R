@@ -1,0 +1,23 @@
+### pakker ###
+pakke <- c("shiny",
+  "shinyBS",
+  "shinydashboard",
+  "data.table",
+  "ggplot2",
+  "dygraphs",
+  "xts",
+  "zoo",
+  "DT")
+
+sapply(pakke, require, character.only = TRUE)
+
+source("data2.R")
+
+#Funksjoner
+############
+source("./functions/byttNA.R") #bNA
+source("./functions/plotAgeSex.R") #fun.plotAS
+
+
+## modules
+###########
