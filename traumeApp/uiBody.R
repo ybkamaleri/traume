@@ -24,7 +24,6 @@ body <- dashboardBody(
         fluidRow(
           filterUI("dataFilter")
         )
-      )))
-
-
+      ))
+  )
 )

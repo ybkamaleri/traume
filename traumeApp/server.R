@@ -39,10 +39,13 @@ function(input, output, session){
   ## Dygraphs for antall traume with timeseries
   ##################################################
   output$traume_dygraph <- renderDygraph({
+    dataDG <- copy(masterFile)
+    dataDG[, dateAll := as.Date(dateAll)]
+
     ## Time-series antall traume per dag
-    dateAll_dt <- masterFile[!is.na(dateAll), .N, by = .(dateAll)]
-    dateMann_dt <- masterFile[!is.na(dateAll)][gender == 1,.N, by = .(dateAll)]
-    dateKvinne_dt <- masterFile[!is.na(dateAll)][gender == 2,.N, by = .(dateAll)]
+    dateAll_dt <- dataDG[!is.na(dateAll), .N, by = .(dateAll)]
+    dateMann_dt <- dataDG[!is.na(dateAll)][gender == 1,.N, by = .(dateAll)]
+    dateKvinne_dt <- dataDG[!is.na(dateAll)][gender == 2,.N, by = .(dateAll)]
 
     tsTraumeSub <- dateMann_dt[dateAll_dt, on = c(dateAll = "dateAll")]
     tsTraumeAll <- dateKvinne_dt[tsTraumeSub, on = c(dateAll = "dateAll")]
@@ -63,7 +66,7 @@ function(input, output, session){
 
     ## maxDato og minDato for dyRangeSelector()
     maxDato <- strftime(max(dateAll_dt$dateAll))
-    minDato <- strftime(zoo::as.yearqtr(as.POSIXct(maxDato)) - 1, frac = 2)
+    minDato <- strftime(zoo::as.yearqtr(as.Date(maxDato)) - 1, frac = 2)
 
     ## library(dygraphs)
     dygraph(timeTraumeAlle,
