@@ -9,7 +9,7 @@ filterUI <- function(id){
 
   fluidPage(
     fluidRow(
-      box(width = 3, height = 165,
+      box(width = 3, height = 165, status = "info",
         selectInput(ns("valgLevel01"), "Analysenivå:",
           choices = c("Hele landet" = 1,
             "RHF" = 2,
@@ -20,7 +20,8 @@ filterUI <- function(id){
           selectInput(ns("valgLevel02"), label = "",
             choices = "",
             selected = ""))),
-      box(width = 3, height = 165,
+
+      box(width = 3, height = 165, status = "info",
         dateRangeInput(inputId = ns("tidsrom_in"),
           label = "Valg dato fra og til",
           start = Sys.Date() - 175, #alt. min date
@@ -30,7 +31,8 @@ filterUI <- function(id){
           startview = "month",
           language = "no",
           weekstart = 1)),
-      box(width = 3, height = 165,
+
+      box(width = 3, height = 165, status = "info",
         sliderInput(inputId = ns("alder_in"),
           label = "Valg aldersgruppe",
           min = 0, max = 120,
@@ -43,6 +45,7 @@ filterUI <- function(id){
           placement = "bottom",
           trigger = "focus",
           options = list(container = "body"))),
+
       box(width = 3, height = 165, background = "light-blue",
         tags$h4("Filtert info:"),
         htmlOutput(ns("txtList")),
@@ -185,6 +188,13 @@ filterSV <- function(input, output, session, resh, data){
     dataUT()$data
   })
 
-  return(list(data = reactive(dataUT())))
+  ## return data
+  var <- reactiveValues()
+
+  observeEvent(input$runButton,{
+    var$data <- dataFil()
+  })
+
+  return(var)
 
 }

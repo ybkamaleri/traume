@@ -92,5 +92,12 @@ function(input, output, session){
   dataClean <- callModule(filterSV, "dataFilter", resh, masterFile)
 
 
+
+  ## Test
+  ###################
+  output$test <- renderPrint({
+    dim(dataClean$data)
+  })
+
   session$onSessionEnded(stopApp)
 }

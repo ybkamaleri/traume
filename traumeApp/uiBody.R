@@ -24,6 +24,13 @@ body <- dashboardBody(
         fluidRow(
           filterUI("dataFilter")
         )
+      )),
+
+    tabItem(tabName = "tab_test",
+      fluidPage(
+        fluidRow(
+          verbatimTextOutput("test")
+        )
       ))
   )
 )
