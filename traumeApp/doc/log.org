@@ -3,5 +3,5 @@
 |---------+-----------------------------+--------|
 | Ref     | Issues                      | Remark |
 |---------+-----------------------------+--------|
-| prob100 | Dygraphs figure not showing |        |
+| prob100 | Dygraphs figure not showing | fixed  |
 |         |                             |        |
