@@ -63,7 +63,10 @@ filterUI <- function(id){
           options = list(container = "body"))),
       box(width = 3, height = 165, background = "light-blue",
         tags$h4("Filtert info:"),
-        htmlOutput(ns("txtList"))
+        htmlOutput(ns("txtList")),
+        column(width = 10, offset = 5,
+          actionButton(ns("runButton"), label = "Kjør",
+            style = 'padding:8px 32px; border: none; text-align: center; font-size:16px;' ))
       )
     ),
     fluidRow(
@@ -78,15 +81,15 @@ filterUI <- function(id){
 }
 
 
-filterSV <- function(input, output, session, data){
+filterSV <- function(input, output, session, resh, data){
 
   ns <- session$ns
 
   navnLevel <- reactive({
     switch(as.character(input$valgLevel01),
-      '2' = unique(data$RHF),
-      '3' = unique(data$HF),
-      '4' = unique(data$Hospital))
+      '2' = unique(resh$RHF),
+      '3' = unique(resh$HF),
+      '4' = unique(resh$Hospital))
   })
 
   valgNavn <- reactive({
@@ -105,6 +108,7 @@ filterSV <- function(input, output, session, data){
       selected = "")
   })
 
+  ## Tekst for utvalg filter
   output$txtList <- renderUI({
 
     if (input$valgLevel01 == 1){
@@ -128,6 +132,7 @@ filterSV <- function(input, output, session, data){
 
   })
 
+
   ##################
   ###### TEST ######
   ##################
@@ -136,8 +141,8 @@ filterSV <- function(input, output, session, data){
     input$tidsrom_in[1]
   })
 
-output$test2 <- renderPrint({
-  input$alder_in[1]
+  output$test2 <- renderPrint({
+    input$alder_in[1]
 
 })
 
@@ -161,7 +166,7 @@ ui <- dashboardPage(
 
 
 server <- function(input, output, session){
-  callModule(filterSV, "filter", resh)
+  callModule(filterSV, "filter", resh, masterFile)
 
   session$onSessionEnded(stopApp)
 }
