@@ -81,12 +81,14 @@ function(input, output, session){
       dyLegend(show = "always", hideOnMouseOut = FALSE, width = 280) %>%
       dyRangeSelector(dateWindow = c(minDato, maxDato))
 
-    ########################################################
-
-
-    ## Filter data
-    #######################
-    dataClean <- callModule(filterSV, "dataFilter", resh, masterFile)
-
   })
+
+
+  ########################################################
+
+
+  ## Filter data
+  #######################
+  dataClean <- callModule(filterSV, "dataFilter", resh, masterFile)
+
 }

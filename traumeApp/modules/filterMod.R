@@ -167,8 +167,6 @@ filterSV <- function(input, output, session, resh, data){
     dataUT()$data
   })
 
-  data <- reactiveVal(dataUT())
-
-  return(data())
+  return(list(data = reactive(dataUT())))
 
 }
