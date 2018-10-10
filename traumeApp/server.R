@@ -86,11 +86,16 @@ function(input, output, session){
 
   ########################################################
 
-
   ## Filter data
   #######################
   dataClean <- callModule(filterSV, "dataFilter", resh, masterFile)
 
+
+
+  ## Virksomhetsdata på sykehus
+  ###############################
+  valgHosp <- callModule(virkDataSV, "virkData", resh)
+  callModule(virkPlotSV, "virkPlot", valg = valgHosp, data = akutt2)
 
 
   ## Test

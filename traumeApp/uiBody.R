@@ -26,6 +26,14 @@ body <- dashboardBody(
         )
       )),
 
+    tabItem(tabName = "tab_virk",
+      fluidPage(
+        fluidRow(
+          virkDataUI("virkData"),
+          virkPlotUI("virkPlot")
+        )
+      )),
+
     tabItem(tabName = "tab_test",
       fluidPage(
         fluidRow(
