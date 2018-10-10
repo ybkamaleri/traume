@@ -1,7 +1,7 @@
 #+Title: NTR shiny
 
-|---------+-----------------------------+--------|
-| Ref     | Issues                      | Remark |
-|---------+-----------------------------+--------|
-| prob100 | Dygraphs figure not showing | fixed  |
-|         |                             |        |
+|----------+---------------------------------+--------|
+| Ref      | Issues                          | Remark |
+|----------+---------------------------------+--------|
+| prob100  | Dygraphs figure not showing     | fixed  |
+| prob1001 | Skadegradring blir ikke filtret |        |
