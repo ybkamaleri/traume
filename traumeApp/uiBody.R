@@ -17,6 +17,14 @@ body <- dashboardBody(
           box(width = 12,
             dygraphOutput("traume_dygraph"))
         )
+      )),
+
+    tabItem(tabName = "tab_filter",
+      fluidPage(
+        fluidRow(
+          filterUI("dataFilter")
+        )
       )))
+
 
 )

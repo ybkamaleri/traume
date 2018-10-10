@@ -63,7 +63,7 @@ function(input, output, session){
 
     ## maxDato og minDato for dyRangeSelector()
     maxDato <- strftime(max(dateAll_dt$dateAll))
-    minDato <- strftime(zoo::as.yearqtr(as.Date(maxDato)) - 1, frac = 2)
+    minDato <- strftime(zoo::as.yearqtr(as.POSIXct(maxDato)) - 1, frac = 2)
 
     ## library(dygraphs)
     dygraph(timeTraumeAlle,
@@ -79,6 +79,11 @@ function(input, output, session){
       dyRangeSelector(dateWindow = c(minDato, maxDato))
 
     ########################################################
+
+
+    ## Filter data
+    #######################
+    dataClean <- callModule(filterSV, "dataFilter", resh, masterFile)
 
   })
 }
