@@ -23,3 +23,4 @@ source("./functions/plotAgeSex.R") #fun.plotAS
 ###########
 source("./modules/filterMod.R")
 source("./modules/virskomhetMod.R")
+source("./modules/skadegradMod.R")

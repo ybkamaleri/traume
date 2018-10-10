@@ -91,6 +91,12 @@ function(input, output, session){
   dataClean <- callModule(filterSV, "dataFilter", resh, masterFile)
 
 
+  ## Skadegradering
+  ####################
+  skadegradDT <- callModule(skadegradSV,
+    id = "skadegrad",
+    valgDT = dataClean,
+    data = ulykke)
 
   ## Virksomhetsdata på sykehus
   ###############################
@@ -101,7 +107,8 @@ function(input, output, session){
   ## Test
   ###################
   output$test <- renderPrint({
-    dim(dataClean$data)
+    str(dataClean$data)
+    str(skadegradDT$data)
   })
 
   session$onSessionEnded(stopApp)

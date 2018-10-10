@@ -196,5 +196,6 @@ filterSV <- function(input, output, session, resh, data){
   })
 
   return(var)
+  ## return(reactive({data <- dataFil()}))
 
 }

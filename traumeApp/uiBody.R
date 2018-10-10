@@ -19,10 +19,35 @@ body <- dashboardBody(
         )
       )),
 
+    ## data filtrering
     tabItem(tabName = "tab_filter",
       fluidPage(
         fluidRow(
           filterUI("dataFilter")
+        )
+      )),
+
+    ## Ulykke
+    tabItem(tabName = "tab_ulykke",
+      fluidPage(
+        fluidRow(
+
+        )
+      )),
+
+    ## Akutt
+    tabItem(tabName = "tab_akutt",
+      fluidPage(
+        fluidRow(
+
+        )
+      )),
+
+    ## Skadegradering
+    tabItem(tabName = "tab_skade",
+      fluidPage(
+        fluidRow(
+          skadegradUI("skadegrad")
         )
       )),
 
