@@ -100,7 +100,10 @@ function(input, output, session){
 
   ## Skade
   ################
-  callModule(skadeSV, "skade", ulykkeDT, skade)
+  callModule(module = skadeSV,
+    id = "skade",
+    valgDT = ulykkeDT,
+    data = skade)
 
   ## Virksomhetsdata på sykehus
   ###############################
@@ -112,7 +115,7 @@ function(input, output, session){
   ###################
   output$test <- renderPrint({
     str(dataClean$data)
-    str(ulykkeDT$data)
+    length(ulykkeDT$data)
   })
 
   session$onSessionEnded(stopApp)
