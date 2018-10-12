@@ -10,7 +10,8 @@ skadeUI <- function(id){
         title = "Kroppsregioner",
         selectInput(inputId = ns("kropp"),
           label = NULL,
-          choices = list("Alle" = 10,
+          choices = list(
+            "Alle" = 10,
             "Head" = 1,
             "Face" = 2,
             "Neck" = 3,
@@ -24,30 +25,35 @@ skadeUI <- function(id){
           selected = 10
         ),
         ## Tillegg abdomen
-        conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 5"),
+        conditionalPanel(condition = 'input.kropp==5', ns = ns,
           selectInput(inputId = ns("til_abdomen"),
             label = "Tilleggsuttrekk:",
-            choices = list("Alle" = 1,
+            choices = list(
+              "Alle" = 1,
               "Leverskader" = 2,
               "Miltskader" = 3
             ),
-            selected = 3
+            selected = 1
           )),
         ## Deler for Ryggsøyle
         conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 6"),
           selectInput(inputId = ns("til_rygg"),
             label = "Spesifisert deler:",
-            choices = list("Alle" = 1,
+            choices = list(
+              "Alle" = 1,
               "Cervicalcolumna" = 2,
               "Lumbalcolumna" = 3,
-              "Thoracalcolumna" = 4)
+              "Thoracalcolumna" = 4
+            ),
+            selected = 1
           )),
         ## Tillegg for Cervicalcolumna
         conditionalPanel(condition = paste0("input['", ns("til_rygg"),
           "'] == 2 && input['", ns("kropp"), "'] == 6"),
           selectInput(inputId = ns("til_cerv"),
             label = "Tilleggsuttrekk (nakke):",
-            choices = list("Alle" = 1,
+            choices = list(
+              "Alle" = 1,
               "Isolerte skjelettskader" = 2,
               "Ryggmargsskade" = 3
             ),
@@ -131,9 +137,7 @@ skadeSV <- function(input, output, session, valgDT, data){
   ## Dummy data
 
 
-
-  ## Data må filtreres med 'dataFiltert' når modulen skal implemeteres
-
+  ## Data hentes fra filterModule
   ## OBS!! bruk 'aisMix' for å velge skade gradering
   regData <- reactive({
     #her skal det merge med valg ie. filtertdata
