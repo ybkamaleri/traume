@@ -571,4 +571,5 @@ server <- function(input, output, session){
   session$onSessionEnded(stopApp)
 }
 
+options(shiny.reactlog=TRUE)
 shinyApp(ui, server)
