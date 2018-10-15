@@ -53,11 +53,12 @@ skadeUI <- function(id){
           selectInput(inputId = ns("til_cerv"),
             label = "Tilleggsuttrekk (nakke):",
             choices = list(
+              " " = 0,
               "Alle" = 1,
               "Isolerte skjelettskader" = 2,
               "Ryggmargsskade" = 3
             ),
-            selected = 1),
+            selected = 0),
           bsTooltip(id = ns("til_cerv"),
             title = "Telling for minst en av de allerede spesifiserte AIS koder. Filter for Skadegradering blir ikke benyttes",
             placement = "right",
@@ -274,6 +275,7 @@ skadeSV <- function(input, output, session, valgDT, data){
     kode_skjelett <- "^6502[1-3][024678].*[23]$"
     kode_rygg <- "^6402.*[3-6]$"
 
+    ## Lager subset data
     ## kode er skjelettskader og kode2 ryggmargsskade
     dataSK <- dataIN[, list(
       kode = ifelse(
@@ -287,19 +289,23 @@ skadeSV <- function(input, output, session, valgDT, data){
       age = age), by = ntrid]
 
     ## kode1 == 1 hvis begge skjelettskader og ryggmargsskade
-    dataSK[, kode1 := ifelse(kode == 1 && kode2 == 1, 1, 0), by = ntrid]
+    dataSK[, kode1 := ifelse(kode == 1 & kode2 == 1, 1, 0), by = ntrid]
 
     if (as.numeric(input$til_cerv) == 1){
       data <- tilSpine()
     } else if (as.numeric(input$til_cerv) == 2){
       ## bare de med skjelettskader uten rygmargsskade
-      data <- dataSK[kode == 1 && kode1 != 1,
+      data <- dataSK[kode == 1 & kode1 == 0,
         list(n = 1, gender = gender, age = age), by = ntrid]
     } else {
       data <- dataSK[kode2 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     }
 
-    dataUT <- data[n == 1]
+    if (input$til_cerv == 0){
+      dataUT <- NULL
+    } else {
+      dataUT <- data[n == 1]
+    }
     return(dataUT)
 
   })
