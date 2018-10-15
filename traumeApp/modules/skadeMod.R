@@ -53,12 +53,11 @@ skadeUI <- function(id){
           selectInput(inputId = ns("til_cerv"),
             label = "Tilleggsuttrekk (nakke):",
             choices = list(
-              " " = 0,
               "Alle" = 1,
               "Isolerte skjelettskader" = 2,
               "Ryggmargsskade" = 3
             ),
-            selected = 0),
+            selected = 1),
           bsTooltip(id = ns("til_cerv"),
             title = "Telling for minst en av de allerede spesifiserte AIS koder. Filter for Skadegradering blir ikke benyttes",
             placement = "right",
@@ -270,18 +269,24 @@ skadeSV <- function(input, output, session, valgDT, data){
   ## Spine Tilleggsuttrekk - Cervicalcolumna
   tilCerv <- eventReactive(input$til_cerv, {
 
-    dataIN <- regData()
+    dataIN <- tilSpine()
 
     kode_skjelett <- "^6502[1-3][024678].*[23]$"
     kode_rygg <- "^6402.*[3-6]$"
 
     ## Lager subset data
     ## kode er skjelettskader og kode2 ryggmargsskade
+
+    kode_skjelett <- "^6502[1-3][024678].*[23]$"
+    kode_rygg <- "^6402.*[3-6]$"
+
+    ## Lager subset data
+    ## kode er skjelettskader og kode1 ryggmargsskade
     dataSK <- dataIN[, list(
       kode = ifelse(
         sum(grepl(kode_skjelett,
           trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
-      kode2 = ifelse(
+      kode1 = ifelse(
         sum(grepl(kode_rygg,
           trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
       ntrid = ntrid,
@@ -289,23 +294,20 @@ skadeSV <- function(input, output, session, valgDT, data){
       age = age), by = ntrid]
 
     ## kode1 == 1 hvis begge skjelettskader og ryggmargsskade
-    dataSK[, kode1 := ifelse(kode == 1 & kode2 == 1, 1, 0), by = ntrid]
+    dataSK[, kode2 := ifelse(kode == 1 & kode1 == 1, 1, 0), by = ntrid]
 
     if (as.numeric(input$til_cerv) == 1){
-      data <- tilSpine()
+      data <- dataIN
     } else if (as.numeric(input$til_cerv) == 2){
       ## bare de med skjelettskader uten rygmargsskade
-      data <- dataSK[kode == 1 & kode1 == 0,
+      data <- dataSK[kode == 1 & kode2 == 0,
         list(n = 1, gender = gender, age = age), by = ntrid]
     } else {
-      data <- dataSK[kode2 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
+      data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     }
 
-    if (input$til_cerv == 0){
-      dataUT <- NULL
-    } else {
-      dataUT <- data[n == 1]
-    }
+
+    dataUT <- data[n == 1]
     return(dataUT)
 
   })
