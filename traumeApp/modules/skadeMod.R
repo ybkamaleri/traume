@@ -6,7 +6,46 @@ skadeUI <- function(id){
 
   fluidPage(
     fluidRow(
-      box(with = 4,
+      ## Ulykke typer
+      ##################
+      box(width = 3,
+        status = "primary",
+        title = "Type ulykke",
+        selectInput(inputId = ns("ulykke"),
+          label = NULL,
+          choices = list("Alle" = 9,
+            "Transport" = 1,
+            "Fall" = 2,
+            "Vold" = 3,
+            "Selvpåført" = 4,
+            "Arbeid" = 5,
+            "Sport og fritid" = 6,
+            "Brann og inhalasjon" = 7,
+            "Annen" = 8
+          ),
+          selected = 9
+        ),
+        conditionalPanel(condition = paste0("input['", ns("ulykke"), "'] == 1"),
+          selectInput(inputId = ns("transport"),
+            label = "Valg transport type:",
+            choices = list("Alle" = 9,
+              "Bil" = 1,
+              "MC" = 2,
+              "Sykkel" = 3,
+              "Båt" = 4,
+              "Tog" = 5,
+              "Fly" = 6,
+              "Moped" = 7,
+              "Annet" = 99,
+              "Ukjent" = 999
+            ),
+            selected = 50
+          ))),
+
+      ## Kroppsregioner
+      #########################
+      box(width = 3,
+        status = "primary",
         title = "Kroppsregioner",
         selectInput(inputId = ns("kropp"),
           label = NULL,
@@ -94,7 +133,9 @@ skadeUI <- function(id){
             trigger = "hover",
             options = list(container = "body")))),
 
-      box(with = 4,
+      ## Skadegradering
+      #######################
+      box(width = 3,
         title = "Skadegradering",
         status = "primary",
         checkboxGroupInput(inputId = ns("skadegrad"),
@@ -132,18 +173,122 @@ skadeUI <- function(id){
 
 ###################### SERVER ###############################
 
-skadeSV <- function(input, output, session, valgDT, data){
+skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
-  ## Dummy data
 
+  ## filtert data for å velge ntrid valgDT henter data fra filterModule. Bruk is.null
+  ## hvis ingen data ikke er filtert enda
+  listNTR <- reactive({
+    if (is.null(valgDT$data)){
+      dataIN <- data.table(ntrid = 0)
+    } else {
+      dataIN <- as.data.table(valgDT$data)
+    }
+
+    valgNTR <- dataIN[, list(ntrid)]
+    valgNTR
+  })
+
+  ## data som skal brukes
+  dataMod <- reactive({
+    dataDT <- dataUK #ulykke data
+    ntrNR <- listNTR()
+    dataDT[ntrNR, on = c(ntrid = "ntrid")]
+  })
+
+  ## Liste av variablenavn i ullyke datasett som skal plukkes ut
+  valgCol <- c("acc_transport",
+    "acc_fall",
+    "acc_violence",
+    "acc_self_inflict", #selvpåført
+    "acc_work",
+    "acc_sprt_recreat", #sport og fritid
+    "acc_fire_inhal",
+    "acc_other",
+    "acc_trsp_rd_type", #transport typer
+    "ntrid")
+
+  ## Liste over ulykke typer
+  navnUT <- c("acc_transport",
+    "acc_fall",
+    "acc_violence",
+    "acc_self_inflict",
+    "acc_work",
+    "acc_sprt_recreat",
+    "acc_fire_inhal",
+    "acc_other")
+
+  ## Valg relevant kolonner og bort med duplicated id og NA
+  regDataUK <- reactive({
+
+    regDT = dataMod()[!duplicated(ntrid) & !is.na(ntrid), valgCol, with = FALSE]
+
+    ## Legg alle type ulykke - alleUT : alle ulykke typer
+    #######################################################
+    regDT[, alleUT := {
+      v1 <- unlist(.SD) #ungroup .SDcols
+      indUT <- which(v1 == 1)[1] #plukke index som oppfylle kravet
+      list(v1[indUT], names(.SD)[indUT])}, #legge verdien på .SDcols ift. index indUT
+      .SDcols = navnUT, by = 1:nrow(regDT)]
+  })
+
+
+  ## Valg kolonne
+  ulykkeCol <- reactive({
+    switch(as.numeric(input$ulykke),
+      "acc_transport",
+      "acc_fall",
+      "acc_violence",
+      "acc_self_inflict",
+      "acc_work",
+      "acc_sprt_recreat",
+      "acc_fire_inhal",
+      "acc_other",
+      "alleUT")
+  })
+
+
+  ## Filtert data for ulykke typer
+  filDataUlykke <- eventReactive(input$ulykke, {
+    colValg <- ulykkeCol()
+    regDataUK()[get(colValg) == 1, list(valgCol = get(colValg)),
+      keyby = ntrid]
+  })
+
+
+  ## Transport data
+  ## Filtert data for transport typer
+  ## problem å bruker !is.na(ntrid)
+  filDataTrans <- eventReactive(input$transport, {
+    transVar <- "acc_trsp_rd_type"
+    alleTrans <-  c(1:7, 99, 999)
+
+    if (as.numeric(input$transport) == 9){
+      data <- regDataUK()[get(transVar) %in% alleTrans, list(valgCol = acc_trsp_rd_type), keyby = ntrid]
+    } else {
+      data <- regDataUK()[get(transVar) == as.numeric(input$transport), list(valgCol = acc_trsp_rd_type), keyby = ntrid]
+    }
+    data
+  })
+
+  ## ReactiveVal for subset data
+  dataUlykke <- reactiveVal(NULL)
+
+  observe({
+    inDataUK  <- ifelse(as.numeric(input$ulykke) != 1, filDataUlykke(), filDataTrans())
+    dataUlykke(inDataUK)
+  })
+
+
+  ####################### SKADE DATA ###################
 
   ## Data hentes fra filterModule
   ## OBS!! bruk 'aisMix' for å velge skade gradering
   regData <- reactive({
     #her skal det merge med valg ie. filtertdata
-    listNTR <- as.data.table(valgDT$data)
-    setnames(listNTR, 1, "V1") #gir colname
-    dataRaw <- data[listNTR, on = c(ntrid = "V1")]
+    listNTR <- as.data.table(dataUlykke())
+    setnames(listNTR, 1, "V1") #gir colname for å sikre riktig kolonnevalg
+    dataRaw <- dataSK[listNTR, on = c(ntrid = "V1")]
     dataRaw[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
 
     dataMix <- dataRaw[!duplicated(ntrid)]
@@ -496,32 +641,32 @@ skadeSV <- function(input, output, session, valgDT, data){
       dataUT <- tilCerv()
     }
 
-  if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3 && as.numeric(input$til_lumb) %in% 1:3){
-    dataUT <- tilLumb()
-  }
+    if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3 && as.numeric(input$til_lumb) %in% 1:3){
+      dataUT <- tilLumb()
+    }
 
-  if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 4 && as.numeric(input$til_thor) %in% 1:3){
-    dataUT <- tilThor()
-  }
+    if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 4 && as.numeric(input$til_thor) %in% 1:3){
+      dataUT <- tilThor()
+    }
 
-  return(dataUT)
+    return(dataUT)
 
-})
+  })
 
 
-##################
-###### TEST ######
-##################
+  ##################
+  ###### TEST ######
+  ##################
 
-output$test <- renderPrint({
-  ## str(regData())
-  str(tilCerv())
+  output$test <- renderPrint({
+    ## str(regData())
+    str(dataUlykke())
 
-})
+  })
 
   output$test2 <- renderPrint({
     ## str(valgKropp())
-    str(tabUT())
+    str(regData())
 
   })
 
