@@ -51,11 +51,6 @@ filterUI <- function(id){
         actionButton(ns("runButton"), label = "Bruk valget",
           style = 'padding:5px 30px; border: none; text-align: center; font-size:15px;' ),
         htmlOutput(ns("txtList"))
-        ## column(width = 10, offset = 4,
-        ## tags$br(),
-        ## actionButton(ns("runButton"), label = "Bruk valget",
-        ##   style = 'padding:5px 30px; border: none; text-align: center; font-size:15px;' )
-        ## )
       )
     ),
 
@@ -124,6 +119,32 @@ filterSV <- function(input, output, session, resh, data){
       input$alder_in[2], " år")
 
     HTML(paste0(valgUnit, br(), valgTid, br(), valgAge))
+
+
+  })
+
+  ## text til videre visning
+  txt <- reactive({
+
+    if (input$valgLevel01 == 1){
+      valgUnit <-  paste0("Data for hele landet")
+    }else{
+      valgUnit <- paste0("Data for ", input$valgLevel02)
+    }
+
+    valgTid <- paste0("Tidsrom: ",
+      format(as.Date(as.character(input$tidsrom_in[1])), "%d.%m.%Y"),
+      " til ",
+      format(as.Date(input$tidsrom_in[2]), "%d.%m.%Y")
+    )
+
+    valgAge <- paste0("Aldersgruppe: ",
+      input$alder_in[1],
+      " til ",
+      input$alder_in[2], " år")
+
+    txtUT <- paste0(valgUnit, br(), valgTid, br(), valgAge)
+    txtUT
 
   })
 
@@ -196,6 +217,7 @@ filterSV <- function(input, output, session, resh, data){
 
   observeEvent(input$runButton,{
     var$data <- dataFil()
+    var$txt <- txt()
   })
 
   return(var)
