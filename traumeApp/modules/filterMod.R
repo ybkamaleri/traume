@@ -48,11 +48,14 @@ filterUI <- function(id){
 
       box(width = 3, height = 165, background = "light-blue",
         tags$h4("Filtert info:"),
-        htmlOutput(ns("txtList")),
-        column(width = 10, offset = 4,
-          tags$br(),
-          actionButton(ns("runButton"), label = "Bruk valget",
-            style = 'padding:5px 30px; border: none; text-align: center; font-size:15px;' ))
+        actionButton(ns("runButton"), label = "Bruk valget",
+          style = 'padding:5px 30px; border: none; text-align: center; font-size:15px;' ),
+        htmlOutput(ns("txtList"))
+        ## column(width = 10, offset = 4,
+        ## tags$br(),
+        ## actionButton(ns("runButton"), label = "Bruk valget",
+        ##   style = 'padding:5px 30px; border: none; text-align: center; font-size:15px;' )
+        ## )
       )
     ),
 
