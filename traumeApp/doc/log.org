@@ -1,9 +1,14 @@
 #+Title: NTR shiny
 
-|----------+---------------------------------------+--------+-----------------------|
-| Ref      | Issues                                | status | Remark                |
-|----------+---------------------------------------+--------+-----------------------|
-| prob100  | Dygraphs figure not showing           | fixed  |                       |
-| prob1001 | Skadegradring blir ikke filtret       | fixed  | gir navn 'V1' til col |
-| prob102  | Filterering for cerv rygg og skjelett |        |                       |
-|          |                                       |        |                       |
+#+STARTUP: align
+
+
+
+| Ref      | Issues                             | status | Remark                |
+|----------+------------------------------------+--------+-----------------------|
+| prob100  | Dygraphs figure not showing        | fixed  |                       |
+| prob1001 | Skadegradring blir ikke filtret    | fixed  | gir navn 'V1' til col |
+| prob102  | Filterering for cerv rygg og       |        |                       |
+|          | skjelett                           |        |                       |
+| pnr103   | Transport alle type ikke updateres |        |                       |
+|          |                                    |        |                       |
