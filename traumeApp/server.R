@@ -91,19 +91,13 @@ function(input, output, session){
   dataClean <- callModule(filterSV, "dataFilter", resh, masterFile)
 
 
-  ## Ulykke
-  ####################
-  ulykkeDT <- callModule(ulykkeSV,
-    id = "ulykke",
-    valgDT = dataClean,
-    data = ulykke)
-
-  ## Skade
-  ################
+  ## Skadegradering
+  ##################
   callModule(module = skadeSV,
     id = "skade",
-    valgDT = ulykkeDT,
-    data = skade)
+    valgDT = dataClean,
+    dataUK = ulykke,
+    dataSK = skade)
 
   ## Virksomhetsdata på sykehus
   ###############################
