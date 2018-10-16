@@ -6,6 +6,13 @@ skadeUI <- function(id){
 
   fluidPage(
     fluidRow(
+      ## Tekst valgte data
+      #####################
+      box(width = 3,
+        htmlOutput(ns("txt")),
+        actionButton(ns("goButton"), "Hent data")
+      ),
+
       ## Ulykke typer
       ##################
       box(width = 3,
@@ -39,7 +46,7 @@ skadeUI <- function(id){
               "Annet" = 99,
               "Ukjent" = 999
             ),
-            selected = 50
+            selected = 999
           ))),
 
       ## Kroppsregioner
@@ -175,19 +182,36 @@ skadeUI <- function(id){
 
 skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
+  ## Hend data button
+  listNTR <- eventReactive(input$goButton, {
+    req(input$ulykke)
+    dataIN <- as.data.table(valgDT$data)
+    dataIN[, list(ntrid)]
+  })
+
+
+  ## Tekst til data valg
+  output$txt <- renderUI({
+    HTML(valgDT$txt)
+  })
+
 
   ## filtert data for å velge ntrid valgDT henter data fra filterModule. Bruk is.null
   ## hvis ingen data ikke er filtert enda
-  listNTR <- reactive({
-    if (is.null(valgDT$data)){
-      dataIN <- data.table(ntrid = 0)
-    } else {
-      dataIN <- as.data.table(valgDT$data)
-    }
+  ## listNTR <- reactive({
 
-    valgNTR <- dataIN[, list(ntrid)]
-    valgNTR
-  })
+  ##   req(input$ulykke)
+
+  ##   if (is.null(valgDT$data)){
+  ##     dataIN <- data.table(ntrid = 0)
+  ##   } else {
+  ##     dataIN <- as.data.table(valgDT$data)
+  ##   }
+
+  ##   valgNTR <- dataIN[, list(ntrid)]
+  ##   valgNTR
+  ## })
+
 
   ## data som skal brukes
   dataMod <- reactive({
@@ -660,13 +684,13 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
   output$test <- renderPrint({
     ## str(regData())
-    str(dataUlykke())
+    str(tabUT())
 
   })
 
   output$test2 <- renderPrint({
     ## str(valgKropp())
-    str(regData())
+    str(listNTR())
 
   })
 
