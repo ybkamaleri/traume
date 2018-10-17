@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2018-09-14 fr. 16:27 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nasjonalt traumeregister</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Yusman Kamaleri" />
+<link rel="stylesheet" type="text/css" href="https://www.pirilampo.org/styles/readtheorg/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://www.pirilampo.org/styles/readtheorg/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://www.pirilampo.org/styles/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://www.pirilampo.org/styles/readtheorg/js/readtheorg.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Nasjonalt traumeregister</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge666308">1. Nyhet</a></li>
+<li><a href="#org71f2496">2. Inledning</a></li>
+<li><a href="#org33b95b8">3. Filstruktur</a></li>
+<li><a href="#org9ae72ae">4. Hva trenger man for å bruke programmet?</a></li>
+<li><a href="#orge9f3b14">5. Hvordan bruker man programmet?</a></li>
+<li><a href="#org8120ac3">6. AIS <code>[2/8]</code></a></li>
+<li><a href="#org2bb3f2f">7. Analyse ønsker <code>[7/12]</code></a></li>
+<li><a href="#orge658210">8. Kommentar/observasjoner</a></li>
+<li><a href="#org26f5bc3">9. Spørsmål</a>
+<ul>
+<li><a href="#orgabfcf65">9.1. Kobling av data</a></li>
+<li><a href="#orgb266448">9.2. UnitId</a></li>
+<li><a href="#orgbe6a2fc">9.3. hosp_serial_num fra traumeskjema</a></li>
+<li><a href="#org1f372e5">9.4. Alder</a></li>
+<li><a href="#org2b146bb">9.5. Tillegg ais</a></li>
+<li><a href="#org39df381">9.6. AIS kode for Spine tilleggsuttrekk</a></li>
+</ul>
+</li>
+<li><a href="#org22b8337">10. Hvordan relasjoner gjøres</a>
+<ul>
+<li><a href="#orgadd63e2">10.1. Ulykke typer</a></li>
+<li><a href="#org5a57ba2">10.2. Skade</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<h3> Resultattjenester versjon 0.03 </h3>
+<div id="outline-container-orge666308" class="outline-2">
+<h2 id="orge666308"><span class="section-number-2">1</span> Nyhet</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>Resultater kan vises for hele landet, HF, RHF eller sykehusnivå</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org71f2496" class="outline-2">
+<h2 id="org71f2496"><span class="section-number-2">2</span> Inledning</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Dette er et forsøk for å lage en resultatpresentasjon ved bruk av <a href="https://www.r-project.org/">R</a> for analyse og
+<a href="https://shiny.rstudio.com/">Shiny</a> for interaktiv presentasjon.
+</p>
+</div>
+</div>
+<div id="outline-container-org33b95b8" class="outline-2">
+<h2 id="org33b95b8"><span class="section-number-2">3</span> Filstruktur</h2>
+</div>
+<div id="outline-container-org9ae72ae" class="outline-2">
+<h2 id="org9ae72ae"><span class="section-number-2">4</span> Hva trenger man for å bruke programmet?</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Det kreves at man har installert <a href="https://www.rstudio.com/">RStudio</a>. Hvis du jobber på OUS, kan man søker om å
+få installert programmet fra Sykehuspartner.
+</p>
+</div>
+</div>
+<div id="outline-container-orge9f3b14" class="outline-2">
+<h2 id="orge9f3b14"><span class="section-number-2">5</span> Hvordan bruker man programmet?</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Når RStudio er installert så skal men gjøre følgende:
+</p>
+<ul class="org-ul">
+<li>Bla bla bla</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org8120ac3" class="outline-2">
+<h2 id="org8120ac3"><span class="section-number-2">6</span> AIS <code>[2/8]</code></h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li class="on"><code>[X]</code> Kode 91000.1 vises som 010000.1 i GUI. Check at datadump har 091000.1 (Ingen som har 09**)</li>
+<li class="on"><code>[X]</code> kode <code>******.9</code> betyr skadegrad er ukjent</li>
+<li class="off"><code>[&#xa0;]</code> AIS <code>******.1</code> skal bort i analysen for nevne. Lage bare en knapp hvis man vil
+inkluderer skadegrad 1</li>
+<li class="off"><code>[&#xa0;]</code> Bare høyest skadegradering som teller</li>
+<li class="off"><code>[&#xa0;]</code> ISS &gt; 15 betyr alvorlig skade. For ISS beregning er kvadrat av 3 alvorligste AIS</li>
+<li class="off"><code>[&#xa0;]</code> Beregn eg. vanligste skade ved en vist type ulykke</li>
+<li class="off"><code>[&#xa0;]</code> Lage AIS fane uten ulykketype eller skade mekanismen</li>
+<li class="off"><code>[&#xa0;]</code> Beholder duplikater</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org2bb3f2f" class="outline-2">
+<h2 id="org2bb3f2f"><span class="section-number-2">7</span> Analyse ønsker <code>[7/12]</code></h2>
+<div class="outline-text-2" id="text-7">
+<p>
+De er basert på diskusjonen med NTR og bestillingsdokument
+</p>
+<ul class="org-ul">
+<li class="on"><code>[X]</code> Dashboard med ISS &gt; 15</li>
+<li class="on"><code>[X]</code> Død etter 30 dager (som det er nå)</li>
+<li class="on"><code>[X]</code> Filter for dato Nasjonal - inj_start_date (Traume skjema)</li>
+<li class="on"><code>[X]</code> Filter for dato Sykehus - ed_arrival_dtg (Akutt skjema)</li>
+<li class="off"><code>[&#xa0;]</code> Antall fordelt på tid - ukedag (virksomhetsdata)</li>
+<li class="off"><code>[&#xa0;]</code> Ulykke og pre-hospital skjema fra sykehus 1 (hosp_serial_num fra Traume Skjema)</li>
+<li class="on"><code>[X]</code> Filter for Alder (traumeskjema &ldquo;PatientAge&rdquo;)</li>
+<li class="on"><code>[X]</code> Filter for kjønn (traumeskjema &ldquo;PatientGender&rdquo; 1=Mann 2=Kvinne)</li>
+<li class="off"><code>[&#xa0;]</code> Filter for penetrerende skade (ulykkeskjema - &ldquo;inj_penetrating&rdquo; 0:ikke valgt 1:Ja 2:Nei 3:Ukjent)</li>
+<li class="off"><code>[&#xa0;]</code> Sykehus opphold for liggertid (Intensiv skjema) hvis mulig</li>
+<li class="off"><code>[&#xa0;]</code> Transport forskjellige koder</li>
+<li class="off"><code>[&#xa0;]</code> Forklarer alle analysene i shiny</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orge658210" class="outline-2">
+<h2 id="orge658210"><span class="section-number-2">8</span> Kommentar/observasjoner</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Tilbakemelding til IKT og kommentarer til data uttrekk som kan forbedres eller endres:
+</p>
+<ol class="org-ol">
+<li>Variablenavn <code>Valgte ais-koder</code> fra <i>skade</i> datasett bør har variablenavn med bare
+<b>et ord</b> dvs. uten mellomrom.</li>
+<li>Navn for HF og RHF trekkes ikke ut i datadump. Den må gjøres for å ha riktig
+navn. Akkurat nå lages liste for HF og RHF manuelt.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org26f5bc3" class="outline-2">
+<h2 id="org26f5bc3"><span class="section-number-2">9</span> Spørsmål</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-orgabfcf65" class="outline-3">
+<h3 id="orgabfcf65"><span class="section-number-3">9.1</span> Kobling av data</h3>
+<div class="outline-text-3" id="text-9-1">
+<ul class="org-ul">
+<li>NTR nummer representerer 1 pasient.</li>
+<li>Traumeskjema har <i>SkjemaGUID</i> som er 1 til 1 mot NTR nummer</li>
+<li>Andre skjema har <i>HovedskjemaGUID</i> som er nøkkelen mot Traumeskjema</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgb266448" class="outline-3">
+<h3 id="orgb266448"><span class="section-number-3">9.2</span> UnitId</h3>
+<div class="outline-text-3" id="text-9-2">
+<ul class="org-ul">
+<li>Alle skjemaer har <i>UnitId</i>. Filtering for Sykehus, RHF og HF basert på
+<i>UnitId</i> til hvert skjema</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgbe6a2fc" class="outline-3">
+<h3 id="orgbe6a2fc"><span class="section-number-3">9.3</span> hosp_serial_num fra traumeskjema</h3>
+<div class="outline-text-3" id="text-9-3">
+<ul class="org-ul">
+<li>hva skal det brukers til?</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org1f372e5" class="outline-3">
+<h3 id="org1f372e5"><span class="section-number-3">9.4</span> Alder</h3>
+<div class="outline-text-3" id="text-9-4">
+<ul class="org-ul">
+<li>Alder med -1. Er det riktig tall dvs. spebarn</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org2b146bb" class="outline-3">
+<h3 id="org2b146bb"><span class="section-number-3">9.5</span> Tillegg ais</h3>
+<div class="outline-text-3" id="text-9-5">
+<ul class="org-ul">
+<li>Ryggsøyle (spine) tillegguttrekk under Cervicalcolumna, Thoracalcolumna og
+Lumbalcolumna. Er det bare å telle minst en til begge isolerte skjelettskader og
+ryggmargsskade? Eller bør skadegradering brukes?</li>
+<li>Tillegg til Lumbalcolumna og Thoracalcolumna for Ryggmargsskade inneholder bare
+skadegrad 3 til 5 mens Cervicalcolumna har 3 til 6?</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org39df381" class="outline-3">
+<h3 id="org39df381"><span class="section-number-3">9.6</span> AIS kode for Spine tilleggsuttrekk</h3>
+</div>
+</div>
+<div id="outline-container-org22b8337" class="outline-2">
+<h2 id="org22b8337"><span class="section-number-2">10</span> Hvordan relasjoner gjøres</h2>
+<div class="outline-text-2" id="text-10">
+</div>
+<div id="outline-container-orgadd63e2" class="outline-3">
+<h3 id="orgadd63e2"><span class="section-number-3">10.1</span> Ulykke typer</h3>
+<div class="outline-text-3" id="text-10-1">
+<p>
+Hvordan data relasjon er lages..
+</p>
+
+<div class="figure">
+<p><img src="./img/example2.png" alt="example2.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5a57ba2" class="outline-3">
+<h3 id="org5a57ba2"><span class="section-number-3">10.2</span> Skade</h3>
+<div class="outline-text-3" id="text-10-2">
+<p>
+Hvis <i>TRUE</i> valg alle og <i>FALSE</i> valg input kropp
+</p>
+
+
+<div class="figure">
+<p><img src="./img/example1.png" alt="example1.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Yusman Kamaleri</p>
+<p class="date">Created: 2018-09-14 fr. 16:27</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
