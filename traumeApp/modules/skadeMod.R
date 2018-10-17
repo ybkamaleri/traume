@@ -46,7 +46,7 @@ skadeUI <- function(id){
               "Annet" = 99,
               "Ukjent" = 999
             ),
-            selected = 999
+            selected = 9
           ))),
 
       ## Kroppsregioner
@@ -105,7 +105,7 @@ skadeUI <- function(id){
             ),
             selected = 1),
           bsTooltip(id = ns("til_cerv"),
-            title = "Telling for minst en av de allerede spesifiserte AIS koder. Filter for Skadegradering blir ikke benyttes",
+            title = "Se på 'FAQ' for mer info",
             placement = "right",
             trigger = "hover",
             options = list(container = "body"))),
@@ -120,7 +120,7 @@ skadeUI <- function(id){
             ),
             selected = 1),
           bsTooltip(id = ns("til_lumb"),
-            title = "Telling for minst en av de allerede spesifiserte AIS koder. Filter for Skadegradering blir ikke benyttes",
+            title = "Se på 'FAQ' for mer info",
             placement = "right",
             trigger = "hover",
             options = list(container = "body"))),
@@ -135,7 +135,7 @@ skadeUI <- function(id){
             ),
             selected = 1),
           bsTooltip(id = ns("til_thor"),
-            title = "Telling for minst en av de allerede spesifiserte AIS koder. Filter for Skadegradering blir ikke benyttes",
+            title = "Se på 'FAQ' for mer info",
             placement = "right",
             trigger = "hover",
             options = list(container = "body")))),
@@ -296,11 +296,16 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   })
 
   ## ReactiveVal for subset data
-  dataUlykke <- reactiveVal(NULL)
+  dataUlykke <- reactiveVal()
 
   observe({
-    inDataUK  <- ifelse(as.numeric(input$ulykke) != 1, filDataUlykke(), filDataTrans())
-    dataUlykke(inDataUK)
+      selTall <- ifelse(as.numeric(input$ulykke) != 1, 1, 2)
+      inDataUK <- switch(as.character(selTall),
+        "1" = filDataUlykke(),
+        "2" = filDataTrans()
+      )
+
+      dataUlykke(inDataUK)
   })
 
 
@@ -482,44 +487,56 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   })
 
 
-  ## ## Spine tilleggsuttrekk - Lumbalcolumna
-  ## tilLumb <- eventReactive(input$til_lumb, {
+  ## Spine tilleggsuttrekk - Lumbalcolumna
+  tilLumb <- eventReactive(input$til_lumb, {
 
-  ##   dataIN <- regData()
+    dataIN <- tilSpine()
 
-  ##   kode_skjelett <- "^6506[1-3][024678].*[23]$"
-  ##   kode_rygg <- "^6406.*[3-5]$"
-
-  ##   ## kode er skjelettskader og kode2 ryggmargsskade
-  ##   dataSK <- dataIN[!is.na(ntrid), list(
-  ##     kode = ifelse(
-  ##       sum(grepl(kode_skjelett,
-  ##         trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
-  ##     kode2 = ifelse(
-  ##       sum(grepl(kode_rygg,
-  ##         trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
-  ##     ntrid = ntrid,
-  ##     gender = gender,
-  ##     age = age), by = ntrid]
+    kode_skjelett <- "^6506[1-3][024678].*[23]$"
+    kode_rygg <- "^6406.*[3-5]$"
 
 
-  ##   #kode1 0 hvis begge skjelettskader og ryggmargsskade
-  ##   dataSK[, kode1 := kode, by = ntrid]
-  ##   dataSK[, kode1 := ifelse(kode == 1 && kode2 == 1, 0, kode), by = ntrid]
+    ## Lager subset data
+    ## kode er skjelettskader og kode1 ryggmargsskade
+    dataSK <- dataIN[, list(
+      kode = ifelse(
+        sum(grepl(kode_skjelett,
+          trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
+      kode1 = ifelse(
+        sum(grepl(kode_rygg,
+          trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
+      ntrid = ntrid,
+      gender = gender,
+      age = age), by = ntrid]
 
-  ##   data <- switch(as.character(input$til_lumb),
-  ##     "1" = tilSpine(),
-  ##     "2" = dataSK[kode1 == 1,
-  ##       list(n = 1, gender = gender, age = age),
-  ##       by = ntrid],
-  ##     "3" = dataSK[kode2 == 1,
-  ##       list(n = 1, gender = gender, age = age),
-  ##       by = ntrid]
-  ##   )
 
-  ##   dataUT <- data[n == 1]
-  ##   return(dataUT)
-  ## })
+    ## kode1 == 1 hvis begge skjelettskader og ryggmargsskade
+    dataSK[, kode2 := ifelse(kode == 1 & kode1 == 1, 1, 0), by = ntrid]
+
+    data <- switch(as.character(input$til_lumb),
+      "1" = dataIN,
+      "2" = dataSK[kode == 1 & kode2 == 0,
+        list(n = 1, gender = gender, age = age),
+        by = ntrid],
+      "3" = dataSK[kode1 == 1,
+        list(n = 1, gender = gender, age = age),
+        by = ntrid]
+    )
+
+
+    ## if (as.numeric(input$til_lumb) == 1){
+    ##   data <- dataIN
+    ## } else if (as.numeric(input$til_lumb) == 2){
+    ##   ## bare de med skjelettskader uten rygmargsskade
+    ##   data <- dataSK[kode == 1 & kode2 == 0,
+    ##     list(n = 1, gender = gender, age = age), by = ntrid]
+    ## } else {
+    ##   data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
+    ## }
+
+    dataUT <- data[n == 1]
+    return(dataUT)
+  })
 
 
   ## ## Spine tilleggsuttrekk - Thoracalcolumna
@@ -690,7 +707,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
   output$test2 <- renderPrint({
     ## str(valgKropp())
-    str(listNTR())
+    str(dataUlykke())
 
   })
 
