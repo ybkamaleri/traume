@@ -105,8 +105,16 @@ function(input, output, session){
   callModule(virkPlotSV, "virkPlot", valg = valgHosp, data = akutt2)
 
 
+  ## HTML side
+  ## ==================
+  htmlSide <- function(){
+    return(includeHTML("./documents/analyse.html"))
+  }
+
+  output$txtSide <- renderUI({htmlSide()})
+
   ## Test
-  ###################
+  ## ====================
   output$test <- renderPrint({
     str(dataClean$data)
     length(ulykkeDT$data)

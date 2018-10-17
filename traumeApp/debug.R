@@ -1,5 +1,4 @@
 ## Brukers for å kjøre debuging fordi C-c s funker ikke fro debuging
-
 library(shiny)
 appDir <- getwd()
 runApp(appDir)
