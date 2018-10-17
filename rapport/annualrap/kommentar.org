@@ -1,0 +1,11 @@
+#+Title: Årsrapport traume
+* Datasett
+Observasjoner om datasettet:
+1. Kategoriske variabler i teksk f.eks Patient_Gender og de som er TRUE/FALSE
+2. Variable "Valgte ais-koder" med mellom rom i variablenavn
+3. "inj_start_date" inneholder tekst string
+4. 'hosp_comments' må ut fra datauttrekk
+* Analyse
+Ting skal gjøres eller har gjort [0/1]
+- [ ] konverterer kjønn 1-mann 2-kvinne
+- [ ] Bort med uten inj_start_date i traumeskjema

@@ -1,3 +1,6 @@
+
+## Dato with as.POSIXct
+
 ## laste opp data
 ###################
 rm(list = ls())
@@ -119,8 +122,8 @@ setnames(masterFile, c("PatientAge",
 ## timeSykehus - dato med klokkelsett
 ## dateAll og dateSykehus inneholder bare dato
 masterFile[, `:=` (timeSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"),
-                   dateAll = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"),
-                   dateSykehus = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"))]
+  dateAll = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"),
+  dateSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"))]
 
 
 

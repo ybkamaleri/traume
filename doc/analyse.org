@@ -26,11 +26,12 @@ Ting må gjøres for analsyen
   kodebook (definisjonskatalogen)
 - [ ] Tid er registret
 
-* AIS [2/8]
+* AIS [3/9]
 - [X] Kode 91000.1 vises som 010000.1 i GUI. Check at datadump har 091000.1 (Ingen som har 09**)
 - [X] kode ~******.9~ betyr skadegrad er ukjent
 - [ ] AIS ~******.1~ skal bort i analysen for nevne. Lage bare en knapp hvis man vil
   inkluderer skadegrad 1
+- [X] AIS kode for spine regionsdeler flytter til 3 digits
 - [ ] Bare høyest skadegradering som teller
 - [ ] ISS > 15 betyr alvorlig skade. For ISS beregning er kvadrat av 3 alvorligste AIS
 - [ ] Beregn eg. vanligste skade ved en vist type ulykke
@@ -42,7 +43,7 @@ De er basert på diskusjonen med NTR og bestillingsdokument
 - [X] Død etter 30 dager (som det er nå)
 - [X] Filter for dato Nasjonal - inj_start_date (Traume skjema)
 - [X] Filter for dato Sykehus - ed_arrival_dtg (Akutt skjema)
-- [ ] Antall fordelt på tid - ukedag (virksomhetsdata)
+- [X] Antall fordelt på tid - ukedag (virksomhetsdata)
 - [ ] Ulykke og pre-hospital skjema fra sykehus 1 (hosp_serial_num fra Traume Skjema)
 - [X] Filter for Alder (traumeskjema "PatientAge")
 - [X] Filter for kjønn (traumeskjema "PatientGender" 1=Mann 2=Kvinne)
@@ -50,16 +51,24 @@ De er basert på diskusjonen med NTR og bestillingsdokument
 - [ ] Sykehus opphold for liggertid (Intensiv skjema) hvis mulig
 - [ ] Transport forskjellige koder
 - [ ] Forklarer alle analysene i shiny
-* Analyse gjøres slik:
+* Spørsmål
 ** Kobling av data
 - NTR nummer representerer 1 pasient.
 - Traumeskjema har /SkjemaGUID/ som er 1 til 1 mot NTR nummer
 - Andre skjema har /HovedskjemaGUID/ som er nøkkelen mot Traumeskjema
 ** UnitId
 - Alle skjemaer har /UnitId/. Filtering for Sykehus, RHF og HF basert på
-  /HealthUnitId/ til hvert skjema
+  /UnitId/ til hvert skjema
 ** hosp_serial_num fra traumeskjema
 - hva skal det brukers til?
+** Alder
+- Alder med -1. Er det riktig tall dvs. spebarn
+** Tillegg ais
+- Ryggsøyle (spine) tillegguttrekk under Cervicalcolumna, Thoracalcolumna og
+  Lumbalcolumna. Er det bare å telle minst en til begge isolerte skjelettskader og
+  ryggmargsskade? Eller bør skadegradering brukes?
+- Tillegg til Lumbalcolumna og Thoracalcolumna for Ryggmargsskade inneholder bare
+  skadegrad 3 til 5 mens Cervicalcolumna har 3 til 6?
 * Outline
 ** Generelle Info
 Dashboard som gir informasjon om:
@@ -75,7 +84,10 @@ Dashboard som gir informasjon om:
 ** Periode
 - Valg av dato fra og til
 - Valg av dato fra og til for sykehus
-** Valg kjønn
 ** Valg Alder
 ** AIS
 ** Ulykke
+* Påminnelse [1/2]
+- [X] Tar bort NA i dataset i data.R
+- [ ] Text for hver tab hva dataene gjelder
+- [ ] For å bruke Shinyjs for Debian, = libv8-3.14-dev (formerly: libv8-dev)= må installeres

@@ -1,0 +1,123 @@
+#+Title: Dokument Ulykke og AIS#+options: toc:nil
+
+* Ulykke
+Module for ulykke utvalg for kolonne
+** reactiveValus for 'vars'
+brukes til å samle vardier som skal returneres
+** vars$velge
+Vis /TRUE/ skal kolonne for ulykke type velges else transport type
+velges. Verdien returneres reactive =velge()=
+** vars$ulykke
+velge kolonne som skal velges dvs. ulykke type == 1
+** vars$trans
+Koder som velge i kolonne transport type. Derfor må spesifiseres hvilken kolonne
+ie. ~acc_trsp_rd_type~ når utvalges skal gjøres.
+** Filter data
+Lage ny kolonne med alle ulykke typer dvs. alle kolonne som har verdi "1".
+
+#+BEGIN_SRC R
+  regData[, alleUT := {v1 <- unlist(.SD) #ungroup .SDcols
+    indUT <- which(v1 == 1)[1] #plukke index som oppfylle kravet
+    list(v1[indUT], names(.SD)[indUT])}, #legge verdien på .SDcols ift. index indUT
+    .SDcols = navnUT, by = 1:nrow(regData)]
+#+END_SRC
+
+** Relasjoner
+Hvordan data relasjon er lages er slik..
+#+begin_src dot :file ./img/example2.png :cmdline -Kdot -Tpng
+  digraph ulykke{
+
+  K [label="Ulykke typer = transport"] // node K
+  A [label="Ullyke typer"] // node A
+  H [label="Transport typer"] // node H
+  R [label="Alle ulykke typer"] // node R
+  B [label="Alle transport typer"] // node B
+  V [label="valgte ulykke type"] // node V
+  T [label="valgte transport typer"] //node T
+
+
+  K->H [label="TRUE", fontcolor=darkgreen] // edge K->H
+  K->A [label="FALSE", fontcolor=red] // edge K->A
+  H->B [label="TRUE", fontcolor=darkgreen] // edge H->B
+  A->R [label="TRUE", fontcolor=darkgreen] // edge A->R
+  A->V [label="FALSE", fontcolor=red] // edge A->V
+  H->T [label="FALSE", fontcolor=red] // edge H->T
+  }
+
+#+end_src
+
+#+RESULTS:
+[[file:./img/example2.png]]
+
+* Skade
+Module for skade
+** Relasjoner
+Hvis /TRUE/ valg alle og /FALSE/ valg input kropp
+
+#+begin_src dot :file ./img/example1.png :cmdline -Kdot -Tpng
+  digraph ais{
+
+  K [label="Kroppsregioner"] // node K
+  A [label="Alle kroppsregioner \n 0 to 9"] // node A
+  H [label="Head"] // node H
+  R [label="Rygg"] // node R
+  B [label="Tillegg rygg"] // node B
+  V [label="valgte kroppsregion"] // node V
+  S [label="Spine"]
+  D [label="Tillegg spine"]
+  C [label="Alle spine"]
+  E [label="valgte deler"]
+
+  K->A [label="TRUE", fontcolor=darkgreen] // edge K->A
+  K->H [label="FALSE", fontcolor=red] // edge K->H
+  H->V [label="TRUE", fontcolor=darkgreen] // edge H->V
+  K->R [label="FALSE", fontcolor=red] // cedge K->R
+  R->V [label="TRUE", fontcolor=darkgreen] //edge R->V
+  R->B [label="FALSE", fontcolor=red] // edge R->B
+  K->S [label="FALSE", fontcolor=red]
+  S->V [label="TRUE", fontcolor=darkgreen]
+  S->D [label="FALSE", fontcolor=red]
+  D->C [label="TRUE", fontcolor=darkgreen]
+  D->E [label="FALSE", fontcolor=red]
+
+  }
+#+end_src
+
+#+RESULTS:
+[[file:./img/example1.png]]
+** Kode for beregning
+Forslag til koding
+#+BEGIN_SRC R
+  valgRegion <- if (kroppsregion == 10){1:9} else {input$kropp}
+
+  masterData[, grepl(paste0("'^", valgRegion, "'"), ais)]
+#+END_SRC
+
+** 'vars' reactiveValues
+For å beholder vardier som skal returneres
+* Tips
+- Hvis det er reactive value så kan det bare brukes innenfor reactive expression eller observer.
+#+BEGIN_EXAMPLE
+    ## Guna observe utk aktifkan ifelse
+    observe({
+      if (Input()$Data1 == '1') {
+        output$plot2 = renderPlot(plot(1:5))
+      } else {
+        output$plot2 = renderPlot(plot(1:50))
+      }
+    })
+#+END_EXAMPLE
+- Reactive data som skal brukes i module skrives utennom =()= men når det skal brukes
+  inne i Module =()= må benyttes. Eksample er =valgDT= her.
+
+#+BEGIN_EXAMPLE
+  ulykkeServer <- function(input, output, session, valgDT, data) {
+
+    listNTR <- reactive({valgDT()[, list(ntrid)]})
+
+    dataMod <- reactive({
+      data[listNTR(), on = c(ntrid = "ntrid")]
+    })
+
+  }
+#+END_EXAMPLE

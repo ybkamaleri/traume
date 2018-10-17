@@ -17,7 +17,8 @@ body <- dashboardBody(
               fluidRow(
                 box(width = 12,
                     dygraphOutput("traume_dygraph"))
-              ))),
+              )
+            )),
     tabItem(tabName = "tab_rapport",
             fluidPage(
               tags$h3(textOutput("text_enhetNavn")),
@@ -27,16 +28,46 @@ body <- dashboardBody(
                        tabPanel("Figur", plotOutput("plotAT")),
                        tabPanel("Tabell", DT::dataTableOutput("tabAT")))
               ),
+              tags$h5(textOutput("alderNA")),
+              tags$br(),
               fluidRow(
-                tags$h5("Tallene ekluderer missing data for 'alder' og 'kjønn'"),
-                infoBoxOutput("traume_info")
-              ),
-              ## plotOutput("plotAT"),
-              verbatimTextOutput("test"),
-              verbatimTextOutput("testText"))),
+                ## tags$div(tags$blockquote(textOutput("alderNA"))),
+                infoBoxOutput("traume_info"),
+                infoBoxOutput("mann_info"),
+                infoBoxOutput("kvinne_info")
+              )
+            )),
+    tabItem(tabName = "tab_ulykke",
+            tags$h3("Ulykke data")
+            ),
+    tabItem(tabName = "tab_akutt",
+            tags$h3("Akutt data")
+            ),
+    tabItem(tabName = "tab_intensiv",
+            tags$h3("Intensiv data")
+            ),
+    ## AIS Skadegradering
+    tabItem(tabName = "tab_skade",
+            ulykkeUI("ulykkemod"),
+            skadeModUI("skademod")
+            ),
     tabItem(tabName = "tab_virk_rap",
-            h2("Virksomhetsdata"),
-            textOutput("test2"))
+            fluidPage(
+              tags$h3("Virksomhetsrapport"),
+              fluidRow(
+                virk_ModUI("virk")),
+              fluidRow(
+                virkPlotUI("vplot"))
+            )),
+    ## TEST
+    tabItem(tabName = "test",
+            tags$h3("Test side"),
+            fluidPage(
+              fluidRow(
+                verbatimTextOutput("test1")),
+              fluidRow(
+                verbatimTextOutput("test2"))
+            ))
 
   )
 )

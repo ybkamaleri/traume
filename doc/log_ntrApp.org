@@ -27,6 +27,11 @@
 ** AIS kode for hud ikke vises
 Koden ble konvertert til numeric. Derfor forsvinner første tallet i koden som er
 ~0~. Beholder koden som character evt. bruker ~as.character~ for sikrehet skyld.
+** Commit
+- ref d554912 - TODO-20180912.23.11 : kategorisering av alder og plot. Telling ved
+  alder er ikke riktig.
+- commit b45fc47 - fix 20180913.2044 - returning to alle Cervicalcolumna works but Lumbalcolumna alle
+  has only few rows. Check why.
 
 * Kommentar/observasjoner
 Tilbakemelding til IKT og kommentarer til data uttrekk som kan forbedres eller endres:

@@ -10,7 +10,7 @@ function(input, output, session) {
     valueBox(
       value = sumTraume,
       subtitle = "Antall traume",
-      icon = icon("male"),
+      icon = icon("pie-chart"),
       color = "blue"
     )
   })
@@ -127,6 +127,13 @@ function(input, output, session) {
                                dateAll <= as.Date(datoTil, format = "%Y-%m-%d")]})
   })
 
+  ## Antall missing alder
+  ########################
+  output$alderNA <- renderText({
+    ageNA <- filterData()[!duplicated(ntrid) & is.na(age), .N]
+    paste0("Missing: ", ageNA, " personer mangler data for alder og er eksludert i analysen")
+  })
+
 
   ## tekst for utvalgte enhetNavn og alder
   ########################################
@@ -145,54 +152,46 @@ function(input, output, session) {
     ageFra <- input$alder_in[1]
     ageTil <- input$alder_in[2]
 
-    paste0("Tidsrom er fra ", format(valgDatoFra(), "%d-%m-%Y"),
+    paste0("Valgt tidsrom: ", format(valgDatoFra(), "%d-%m-%Y"),
            " til ", format(valgDatoTil(), "%d-%m-%Y"), ".",
-           " Alder er fra ", ageFra, " til ", ageTil, " år")
+           " Aldersgruppe: ", ageFra, " til ", ageTil, " år")
   })
 
 
-  ## Filter for og alder
-  ##########################
+  ## Filter alder for data som er allerede filtert for tidsrom
+  ##############################################################
   filterDataAge <- reactive({
     ageFra <- input$alder_in[1]
     ageTil <- input$alder_in[2]
 
-    data <- filterData()[!duplicated(ntrid) & age >= ageFra & age <= ageTil]
+    filterData()[!duplicated(ntrid) & age >= ageFra & age <= ageTil]
 
   })
 
+  ## List ntrid filtert for helseenhet, alder og tidsrom
+  listNTR <- reactive({filterDataAge()[, .(ntrid = ntrid)]})
 
+
+  ## Alder og Traume data for plot
+  ################################
+  ntrData <- reactive({
+
+    data <- filterDataAge()
+    if (input$alder_kat){
+      dataUT <- plotreg(data, TRUE)
+    } else {
+      dataUT <- plotreg(data)
+    }
+    return(dataUT)
+  })
+  
 
   ## Plot Alder og Traume
   #########################
   output$plotAT <- renderPlot({
-    ## reactive data
-    data <- filterDataAge()
 
-    ## Renser data - bort med NA og -1
-    cleanAgeTraume <- data[!is.na(age) & age != -1, .N, keyby = list(age, gender)]
-
-    ## Teller antall kvinner og menn for hver aldersgruppe
-    ageMan <- cleanAgeTraume[gender == 1, list(mann = N), key = age]
-    ageKvinne <- cleanAgeTraume[gender == 2, list(kvinne = N), key = age]
-    ageMK <- merge(ageMan, ageKvinne, all = TRUE)
-
-    ## Erstater NA med 0
-    bNA(ageMK)
-
-    ## lage summen for begge kjønn
-    ageMK[, alle := mann + kvinne, by = age]
-
-    ## konverterer data til long
-    dataLongAK <-melt(ageMK, id.vars="age", measure.vars=c("mann","kvinne","alle"), variable.name="gender", value.name="n")
-
-    ## plot with long data
-    plotAT <- ggplot(dataLongAK, aes(age, n, group = gender, color = gender)) +
-      geom_line() +
-      xlab("Alder") +
-      ylab("Antall")
-
-    print(plotAT)
+    dataUT <- ntrData()$plot
+    print(dataUT)
 
   })
 
@@ -200,54 +199,59 @@ function(input, output, session) {
   ############################
   output$tabAT <- DT::renderDataTable({
 
-    data <- filterDataAge()
-
-    ## Renser data - bort med NA og -1
-    cleanAgeTraume <- data[!is.na(age) & age != -1, .N, keyby = list(age, gender)]
-
-    ## Teller antall kvinner og menn for hver aldersgruppe
-    ageMan <- cleanAgeTraume[gender == 1, list(mann = N), key = age]
-    ageKvinne <- cleanAgeTraume[gender == 2, list(kvinne = N), key = age]
-    ageMK <- merge(ageMan, ageKvinne, all = TRUE)
-
-    ## Erstater NA med 0
-    bNA(ageMK)
-
-    ## lage summen for begge kjønn
-    ageMK[, alle := mann + kvinne, by = age]
-
-    ## Gir nytt navn
-    newNavn <- c("Alder", "Menn", "Kvinner", "Alle")
-    data.table::setnames(ageMK, 1:4, newNavn)
-    ageMK
+    dataUT <- ntrData()$data
+    dataUT
 
   })
 
+  ## InfoBox
+  ##################
   output$traume_info <- renderInfoBox({
     data <- filterDataAge()
-    infoBox("Antall traume", uniqueN(data$ntrid))
+    infoBox("Antall traume", uniqueN(data$ntrid), icon = icon("pie-chart"))
   })
+
+  output$mann_info <- renderInfoBox({
+    data <- filterDataAge()[!duplicated(ntrid) & gender == 1, .N]
+    infoBox("Antall menn", data, icon = icon("male"))
+  })
+
+  output$kvinne_info <- renderInfoBox({
+    data <- filterDataAge()[!duplicated(ntrid) & gender == 2, .N]
+    infoBox("Antall kvinner", data, icon = icon("female"))
+  })
+
+  ## AIS Skadegradering
+  ## aisGrad <- callModule(aisMod, "ais", filterDataAge)
+  aisDataUT <- callModule(ulykkeServer, "ulykkemod", valgDT = filterDataAge, data = ulykke)
+  callModule(skadeMod, "skademod", aisDataUT, skade)
 
   ## Virksomhetsdata på sykehus
   ###############################
-  output[["virk_sykehus_out"]] <- renderUI({
-    helseEnhet <- as.factor(unique(resh$Hospital))
-    selectInput("virk_sykehus_in", label = NULL, choices = sort(helseEnhet))
-  })
+  valgHosp <- callModule(virk_Mod, "virk", resh)
+  callModule(virkPlot, "vplot", valg = valgHosp, data = akutt2)
 
-  output$test2 <- renderText({
-    paste0(input$virk_sykehus_in)
-  })
+
 
 
   ## TEST TEST TEST TEST TEST
   #################################
-  output$test <- renderPrint({
+  ## list filtert NTR
+  ## testData <- reactive({filterDataAge()[, .(ntrid = ntrid)]})
 
+  dataUL <- reactive({ulykke[testData(), on = c(ntrid = "ntrid")]}) ## bruk til ulykke module
+
+  output$test2 <- renderPrint({
+    ## str(aisGrad$data)
+    ## dim(aisGrad$data)
+    ## paste0("min ntrid ",valg$minAge, " og max ntrid ", valg$maxAge)
+    ab <- as.data.table(aisDataUT$data)
+    ab
   })
 
-  output$testText <- renderPrint({
-
+  output$test1 <- renderPrint({
+    data <- aisGrad$data
+    data[, .N, by = .(Hospital, RHF, HF)]
   })
   #####################################
 

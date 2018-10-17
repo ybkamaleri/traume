@@ -1,4 +1,4 @@
-\documentclass{article}
+
 
 %% Lage section deling
 \makeatletter

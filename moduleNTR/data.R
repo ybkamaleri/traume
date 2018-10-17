@@ -66,20 +66,17 @@ setnames(skade, grep("Valgte ais-koder", names(skade)), "ais")
 
 ## Master File
 ################
-## slett row med missing ntrid eller pt_id_ntr == ""
-
-baseFile <- traume[pt_id_ntr != "", c("pt_id_ntr",
-                                      "UnitId",
-                                      "hosp_serial_num",
-                                      "SkjemaGUID",
-                                      "PatientAge",
-                                      "PatientGender",
-                                      "inj_start_date")]
-## henter dato for datovalg til Virksomhetrapport
+baseFile <- traume[, c("pt_id_ntr",
+                       "UnitId",
+                       "hosp_serial_num",
+                       "SkjemaGUID",
+                       "PatientAge",
+                       "PatientGender",
+                       "inj_start_date")]
 sykehusFile <- akutt[, c("HovedskjemaGUID", "ed_arrival_dtg")]
 
-## Merge begge filer ved å beholder alle i baseFile. Row i akuttfil som ikke har
-## kombling til SkjemaGUID i traume blir slettes ved koblingen til bsFile
+## Beholder alle i baseFile. Row i akuttfil som ikke har kombling til SkjemaGUID i
+## traume slettes
 bsFile <- sykehusFile[baseFile, on = c(HovedskjemaGUID = "SkjemaGUID")]
 
 ## set key for bsFile (base og sykehus data)
@@ -87,7 +84,6 @@ setkeyv(bsFile, c("HovedskjemaGUID", "UnitId"))
 
 ## tar bort prefix "NTR-" for ntr-ID
 bsFile[, ntrid := as.numeric(gsub("^NTR-", "", pt_id_ntr))]
-
 
 ##########################################################################
 ## OBS!!! -- Dette skal slettes når man kan trekke ut de fra MRS direkte
@@ -123,7 +119,6 @@ masterFile[, `:=` (timeSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S
                    dateSykehus = as.Date(dateAll, format = "%d.%m.%Y %H:%M:%S"))]
 
 
-
 ## merge selected variables from masterFile to all files
 ##################################
 newName <- c("pt_id_ntr","ntrid","gender","age","dateAll","dateSykehus", "timeSykehus")
@@ -137,7 +132,3 @@ skade[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newNam
 ## setkey
 #####################
 setkey(masterFile, ntrid)
-
-## akutt med HF, RHF, Hospital
-##############################
-akutt2 <- akutt[resh, on = c(UnitId = "reshid")]
