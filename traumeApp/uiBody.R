@@ -57,7 +57,8 @@ body <- dashboardBody(
       )),
 
     tabItem(tabName = "tab_manual",
-      htmlOutput("txtSide")),
+      htmlOutput("txtSide")
+    ),
 
     tabItem(tabName = "tab_test",
       fluidPage(

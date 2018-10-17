@@ -108,7 +108,7 @@ function(input, output, session){
   ## HTML side
   ## ==================
   htmlSide <- function(){
-    return(includeHTML("./documents/analyse.html"))
+    return(includeHTML("./index.html"))
   }
 
   output$txtSide <- renderUI({htmlSide()})
