@@ -13,7 +13,7 @@ library(shinyBS)
 dummy <- data.table(a = 1:10, b = 1:10)
 txt <- "Test tekst <br> test 0123"
 DT <- masterFile[sample(.N, 5000)]
-dataSelect <- list(data = DT, txt = txt, dum = dummy)
+dataSelect <- list(data = masterFile, txt = txt, dum = dummy)
 
 ############### Module UI #######################
 
@@ -131,7 +131,8 @@ skadeUI <- function(id){
           "'] == 3 && input['", ns("kropp"), "'] == 6"),
           selectInput(inputId = ns("til_lumb"),
             label = "Tilleggsuttrekk (korsrygg):",
-            choices = list("Alle" = 1,
+            choices = list(
+              "Alle" = 1,
               "Isolerte skjelettskader" = 2,
               "Ryggmargsskade" = 3
             ),
@@ -146,7 +147,8 @@ skadeUI <- function(id){
           "'] == 4 && input['", ns("kropp"), "'] == 6"),
           selectInput(inputId = ns("til_thor"),
             label = "Tilleggsuttrekk (thorax):",
-            choices = list("Alle" = 1,
+            choices = list(
+              "Alle" = 1,
               "Isolerte skjelettskader" = 2,
               "Ryggmargsskade" = 3
             ),
@@ -289,7 +291,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
 
   ## Filtert data for ulykke typer
-  filDataUlykke <- eventReactive(input$ulykke, {
+  filDataUlykke <- reactive({
     colValg <- ulykkeCol()
     regDataUK()[get(colValg) == 1, list(valgCol = get(colValg)),
       keyby = ntrid]
@@ -299,7 +301,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   ## Transport data
   ## Filtert data for transport typer
   ## problem å bruker !is.na(ntrid)
-  filDataTrans <- eventReactive(input$transport, {
+  filDataTrans <- reactive({
     transVar <- "acc_trsp_rd_type"
     alleTrans <-  c(1:7, 99, 999)
 
@@ -338,6 +340,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
     dataMix <- dataRaw[!duplicated(ntrid)]
     dataMix[, ais := NULL] #slett ais siden aisMix inneholder alle ais koder
+    dataMix
   })
 
 
@@ -374,8 +377,8 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
         aisMix = aisMix), by = ntrid]
     }
 
-    dataUT <- data[n == 1]
-    return(dataUT)
+    data[n == 1, ]
+
   })
 
   ## Tilleggsuttrekk Abdomen
@@ -420,9 +423,9 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     req(input$skadegrad) #vises ingen hvis NULL
 
     spineValg <- switch(as.character(input$til_rygg),
-      '2' = "^6\\d{2}2.*",
-      "3" = "^6\\d{2}6.*",
-      "4" = "^6\\d{2}4.*"
+      '2' = {"^6\\d{2}2.*"},
+      '3' = {"^6\\d{2}6.*"},
+      '4' = {"^6\\d{2}4.*"}
     )
 
 
@@ -452,7 +455,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   #####################################################
 
   ## Spine Tilleggsuttrekk - Cervicalcolumna
-  tilCerv <- eventReactive(input$til_cerv, {
+  tilCerv <- reactive({
 
     dataIN <- tilSpine()
 
@@ -494,7 +497,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
 
   ## Spine tilleggsuttrekk - Lumbalcolumna
-  tilLumb <- eventReactive(input$til_lumb, {
+  tilLumb <- reactive({
 
     dataIN <- tilSpine()
 
@@ -537,7 +540,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
 
   ## Spine tilleggsuttrekk - Thoracalcolumna
-  tilThor <- eventReactive(input$til_thor, {
+  tilThor <- reactive({
 
     dataIN <- tilSpine()
 
@@ -565,11 +568,9 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     data <- switch(as.character(input$til_thor),
       "1" = {dataIN},
       "2" = {dataSK[kode == 1 & kode2 == 0,
-        list(n = 1, gender = gender, age = age),
-        by = ntrid]},
+        list(n = 1, gender = gender, age = age), by = ntrid]},
       "3" = {dataSK[kode1 == 1,
-        list(n = 1, gender = gender, age = age),
-        by = ntrid]}
+        list(n = 1, gender = gender, age = age), by = ntrid]}
     )
 
     data[n == 1, ]
@@ -691,9 +692,11 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
       dataUT <- tilThor()
     }
 
-    return(dataUT)
+    dataUT
 
   })
+
+
 
 
   ##################
@@ -708,7 +711,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
   output$test2 <- renderPrint({
     ## str(valgKropp())
-    str(regData())
+    str(tilSpine())
     str(tilThor())
 
   })
