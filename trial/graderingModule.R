@@ -462,7 +462,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
     ## Lager subset data
     ## kode er skjelettskader og kode1 ryggmargsskade
-    dataSK <- dataIN[, list(
+    dataValg <- dataIN[, list(
       kode = ifelse(
         sum(grepl(kode_skjelett,
           trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
@@ -474,7 +474,9 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
       age = age), by = ntrid]
 
     ## kode1 == 1 hvis begge skjelettskader og ryggmargsskade
-    dataSK[, kode2 := ifelse(kode == 1 & kode1 == 1, 1, 0), by = ntrid]
+    dataSK <- dataValg[, list(kode2 = ifelse(kode == 1 & kode1 == 1, 1, 0),
+      gender = gender, age = age, kode = kode, kode1 = kode1), by = ntrid]
+
 
     if (as.numeric(input$til_cerv) == 1){
       data <- dataIN
@@ -503,7 +505,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
     ## Lager subset data
     ## kode er skjelettskader og kode1 ryggmargsskade
-    dataSK <- dataIN[, list(
+    dataValg <- dataIN[, list(
       kode = ifelse(
         sum(grepl(kode_skjelett,
           trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
@@ -516,7 +518,8 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
 
     ## kode1 == 1 hvis begge skjelettskader og ryggmargsskade
-    dataSK[, kode2 := ifelse(kode == 1 & kode1 == 1, 1, 0), by = ntrid]
+    dataSK <- dataValg[, list(kode2 = ifelse(kode == 1 & kode1 == 1, 1, 0),
+      gender = gender, age = age, kode = kode, kode1 = kode1), by = ntrid]
 
     data <- switch(as.character(input$til_lumb),
       "1" = {dataIN},
@@ -533,41 +536,45 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   })
 
 
-  ## ## Spine tilleggsuttrekk - Thoracalcolumna
-  ## tilThor <- eventReactive(input$til_thor, {
+  ## Spine tilleggsuttrekk - Thoracalcolumna
+  tilThor <- eventReactive(input$til_thor, {
 
-  ##   dataIN <- regData()
+    dataIN <- tilSpine()
 
-  ##   kode_skjelett <- "^6504[1-3][024678].*[23]$"
-  ##   kode_rygg <- "^6404.*[3-5]$"
+    ## kode å velge
+    kode_skjelett <- "^6504[1-3][024678].*[23]$"
+    kode_rygg <- "^6404.*[3-5]$"
 
-  ##   ## kode er skjelettskader og kode2 ryggmargsskade
-  ##   dataSK <- dataIN[, list(
-  ##     kode = ifelse(
-  ##       sum(grepl(kode_skjelett,
-  ##         trimws(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
-  ##     kode2 = ifelse(
-  ##       sum(grepl(kode_rygg,
-  ##         trimws(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
-  ##     ntrid = ntrid,
-  ##     gender = gender,
-  ##     age = age), by = ntrid]
+    ## Lager subset data
+    ## kode er skjelettskader og kode1 ryggmargsskade
+    dataValg <- dataIN[, list(
+      kode = ifelse(
+        sum(grepl(kode_skjelett,
+          trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
+      kode1 = ifelse(
+        sum(grepl(kode_rygg,
+          trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
+      ntrid = ntrid,
+      gender = gender,
+      age = age), by = ntrid]
 
-  ##   #kode1 0 hvis begge skjelettskader og ryggmargsskade
-  ##   dataSK[, kode1 := kode, by = ntrid]
-  ##   dataSK[, kode1 := ifelse(kode == 1 && kode2 == 1, 0, kode), by = ntrid]
+    ## kode1 == 1 hvis begge skjelettskader og ryggmargsskade
+    dataSK <- dataValg[, list(kode2 = ifelse(kode == 1 & kode1 == 1, 1, 0),
+      gender = gender, age = age, kode = kode, kode1 = kode1), by = ntrid]
 
-  ##   if (as.numeric(input$til_thor) == 1){
-  ##     data <- tilSpine()
-  ##   } else if (as.numeric(input$til_thor) == 2){
-  ##     data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
-  ##   } else {
-  ##     data <- dataSK[kode2 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
-  ##   }
+    data <- switch(as.character(input$til_thor),
+      "1" = {dataIN},
+      "2" = {dataSK[kode == 1 & kode2 == 0,
+        list(n = 1, gender = gender, age = age),
+        by = ntrid]},
+      "3" = {dataSK[kode1 == 1,
+        list(n = 1, gender = gender, age = age),
+        by = ntrid]}
+    )
 
-  ##   dataUT <- data[n == 1]
-  ##   return(dataUT)
-  ## })
+    data[n == 1, ]
+
+  })
 
 
   ## ## hvis tillegg !=1 så velge output fra tillegg input
@@ -702,7 +709,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   output$test2 <- renderPrint({
     ## str(valgKropp())
     str(regData())
-    str(tilLumb())
+    str(tilThor())
 
   })
 
