@@ -34,6 +34,7 @@ filterUI <- function(id){
             "HF" = 3,
             "Sykehus" = 4),
           selected = 1),
+        ## updateSelectInput i server for choices oppdateringsliste
         conditionalPanel(condition = 'input.valgLevel01!=1', ns = ns,
           selectInput(ns("valgLevel02"), label = "",
             choices = "",
@@ -170,7 +171,7 @@ filterSV <- function(input, output, session, resh, data){
   dataUT <- eventReactive(input$runButton, {
 
     if (input$alder_kat){
-      valgUT <- plotreg(dataFil(), TRUE)
+      valgUT <- plotreg(dataFil(), kat = TRUE)
     } else {
       valgUT <- plotreg(dataFil())
     }
@@ -194,11 +195,11 @@ filterSV <- function(input, output, session, resh, data){
   ##################
 
   output$test <- renderPrint({
-    names(dataFil())
+    str(input$valgLevel01)
   })
 
   output$test2 <- renderPrint({
-    dim(dataFil())
+    str(dataFil())
 
   })
 
