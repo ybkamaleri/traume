@@ -316,9 +316,9 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
   observe({
     selTall <- ifelse(as.numeric(input$ulykke) != 1, 1, 2)
-    inDataUK <- switch(as.character(selTall),
-      "1" = filDataUlykke(),
-      "2" = filDataTrans()
+    inDataUK <- switch(selTall,
+      filDataUlykke(),
+      filDataTrans()
     )
 
     dataUlykke(inDataUK)
@@ -331,9 +331,9 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   ## OBS!! bruk 'aisMix' for å velge skade gradering
   regData <- reactive({
     #her skal det merge med valg ie. filtertdata
-    listNTR <- as.data.table(dataUlykke())
-    setnames(listNTR, 1, "V1") #gir colname for å sikre riktig kolonnevalg
-    dataRaw <- dataSK[listNTR, on = c(ntrid = "V1")]
+    listNTR <- dataUlykke()
+    ## setnames(listNTR, 1, "V1") #gir colname for å sikre riktig kolonnevalg
+    dataRaw <- dataSK[listNTR, on = c(ntrid = "ntrid")]
     dataRaw[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
 
     dataMix <- dataRaw[!duplicated(ntrid)]
@@ -397,21 +397,18 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
       data <- valgKropp()
 
     } else {
-      ## tar bort kolonn "n"
-      data <- valgKropp()[, list(valg = ifelse(
+
+      data <- valgKropp()[, list(n = ifelse(
         sum(grepl(paste0("^", kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
           as.character(toString(trimws(unlist(strsplit(aisMix, split = ","))))))) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
 
-      data[, n := valg]
-
     }
 
+    data[n == 1, ]
 
-    dataUT <- data[n == 1]
-    return(dataUT)
   })
 
 
@@ -723,8 +720,8 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
   output$test2 <- renderPrint({
     ## str(valgKropp())
-    str(listNTR())
-    str(dataMod())
+    str(regData())
+    str(tilAbdomen())
 
   })
 
