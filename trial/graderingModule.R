@@ -117,7 +117,7 @@ skadeUI <- function(id){
           trigger = "hover",
           options = list(container = "body")),
 
-        ## Deler for Ryggsøyle
+        ## Deler for Ryggsøyle (Spine)
         conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 6"),
           selectInput(inputId = ns("til_rygg"),
             label = "Spesifisert deler:",
@@ -139,12 +139,12 @@ skadeUI <- function(id){
               "Isolerte skjelettskader" = 2,
               "Ryggmargsskade" = 3
             ),
-            selected = 1),
-          bsTooltip(id = ns("til_cerv"),
-            title = "Se på 'FAQ' for mer info",
-            placement = "right",
-            trigger = "hover",
-            options = list(container = "body"))),
+            selected = 1)),
+        shinyBS::bsTooltip(id = ns("til_cerv"),
+          title = "Se på FAQ for mer info",
+          placement = "right",
+          trigger = "hover",
+          options = list(container = "body")),
         ## Tillegg for Lumbalcolumna
         conditionalPanel(condition = paste0("input['", ns("til_rygg"),
           "'] == 3 && input['", ns("kropp"), "'] == 6"),
@@ -155,12 +155,12 @@ skadeUI <- function(id){
               "Isolerte skjelettskader" = 2,
               "Ryggmargsskade" = 3
             ),
-            selected = 1),
-          bsTooltip(id = ns("til_lumb"),
-            title = "Se på 'FAQ' for mer info",
+            selected = 1)),
+        bsTooltip(id = ns("til_lumb"),
+            title = "Se på FAQ for mer info",
             placement = "right",
             trigger = "hover",
-            options = list(container = "body"))),
+            options = list(container = "body")),
         ## Tillegg for Thoracalcolumna
         conditionalPanel(condition = paste0("input['", ns("til_rygg"),
           "'] == 4 && input['", ns("kropp"), "'] == 6"),
@@ -171,12 +171,13 @@ skadeUI <- function(id){
               "Isolerte skjelettskader" = 2,
               "Ryggmargsskade" = 3
             ),
-            selected = 1),
-          bsTooltip(id = ns("til_thor"),
-            title = "Se på 'FAQ' for mer info",
+            selected = 1)),
+        bsTooltip(id = ns("til_thor"),
+            title = "Se på FAQ for mer info",
             placement = "right",
             trigger = "hover",
-            options = list(container = "body")))),
+            options = list(container = "body"))
+      ),
 
       ## Skadegradering
       #######################
