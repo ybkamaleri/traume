@@ -87,6 +87,7 @@ skadeUI <- function(id){
           ),
           selected = 10
         ),
+
         ## Tillegg abdomen
         conditionalPanel(condition = 'input.kropp==5', ns = ns,
           selectInput(inputId = ns("til_abdomen"),
@@ -98,6 +99,24 @@ skadeUI <- function(id){
             ),
             selected = 1
           )),
+
+        ## Tillegg lower extremity (Ben)
+        conditionalPanel(condition = 'input.kropp==8', ns = ns,
+          selectInput(inputId = ns("til_lowext"),
+            label = "Tilleggsuttrekk:",
+            choices = list(
+              "Alle" = 1,
+              "Bekken" = 2,
+              "Femur og tibiafrakturer" = 3
+            ),
+            selected = 1
+          )),
+        shinyBS::bsTooltip(ns("til_lowext"),
+          title = "Referer kodelisten",
+          placement = "right",
+          trigger = "hover",
+          options = list(container = "body")),
+
         ## Deler for Ryggsøyle
         conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 6"),
           selectInput(inputId = ns("til_rygg"),
@@ -578,6 +597,40 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   })
 
 
+  ## Lower Extremities
+  ## =========================
+  tilLowex <- reactive({
+
+    req(input$skadegrad) #vises ingen hvis NULL
+
+    ## Milt og lever først 4 tall
+    valgBekken <- 856
+    valgFemur <- 853
+    valgTibia <- "^854[0-3]"
+
+
+    kodeTillegg <- ifelse(as.numeric(input$til_abdomen) == 2, lever, milt)
+
+    if (as.numeric(input$til_abdomen) == 1){
+
+      data <- valgKropp()
+
+    } else {
+
+      data <- valgKropp()[, list(bekken = ifelse(
+        sum(grepl(paste0("^", kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
+          as.character(toString(trimws(unlist(strsplit(aisMix, split = ","))))))) != 0, 1, 0),
+        gender = gender,
+        age = age,
+        aisMix = aisMix), by = ntrid]
+
+    }
+
+    data[n == 1, ]
+
+  })
+
+
   ## ## hvis tillegg !=1 så velge output fra tillegg input
   ## ## ellers velger valgKropp
 
@@ -668,26 +721,30 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
 
     ## Valg data
-    if (as.numeric(input$kropp) %in% c(1:4, 10)){
+    ## ===============================
+    ## Head, Face, Neck, Thorax, Upper extremities
+    if (as.numeric(input$kropp) %in% c(1:4, 7, 10)){
       dataUT <- valgKropp()
     }
 
+    ## Abdomen
     if (as.numeric(input$kropp) == 5 && as.numeric(input$til_abdomen) %in% 1:3){
       dataUT <- tilAbdomen()
     }
 
+    ## Spine
     if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) %in% 1:4) {
       dataUT <- tilSpine()
     }
-
+    ## Tillegg Spine - Cervicalcolumna
     if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 2 && as.numeric(input$til_cerv) %in% 1:3){
       dataUT <- tilCerv()
     }
-
+    ## Tillegg Spine - Lumbalcolumna
     if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3 && as.numeric(input$til_lumb) %in% 1:3){
       dataUT <- tilLumb()
     }
-
+    ## Tillegg Spine - Thoracalcolumna
     if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 4 && as.numeric(input$til_thor) %in% 1:3){
       dataUT <- tilThor()
     }
