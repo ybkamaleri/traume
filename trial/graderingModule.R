@@ -381,7 +381,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
       data <- dataIN[, list(n = ifelse(
         sum(grepl(paste0(".[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ","))))))) != 0, 1, 0),
+          as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
@@ -391,7 +391,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
       ## Valgte kroppsregion
       data <- dataIN[, list(n = ifelse(
         sum(grepl(paste0("^", valKropp(), ".*[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ","))))))) != 0, 1, 0),
+          as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
@@ -423,7 +423,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
       data <- valgKropp()[, list(n = ifelse(
         sum(grepl(paste0("^", kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ","))))))) != 0, 1, 0),
+          as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
@@ -600,32 +600,40 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
   ## Lower Extremities
   ## =========================
-  tilLowex <- reactive({
+  tilLowext <- reactive({
 
     req(input$skadegrad) #vises ingen hvis NULL
 
-    ## Milt og lever først 4 tall
-    valgBekken <- 856
-    valgFemur <- 853
+    ## Tilleggkoder
+    valgBekken <- "^856"
+    valgFemur <- "^853"
     valgTibia <- "^854[0-3]"
 
-
-    kodeTillegg <- ifelse(as.numeric(input$til_abdomen) == 2, lever, milt)
-
-    if (as.numeric(input$til_abdomen) == 1){
-
-      data <- valgKropp()
-
-    } else {
-
-      data <- valgKropp()[, list(bekken = ifelse(
-        sum(grepl(paste0("^", kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ","))))))) != 0, 1, 0),
+    ## Kode om bekken og femu / tibiafrakturer
+    if (as.numeric(input$til_lowext) != 1){
+      data <- valgKropp()[, list(
+        bekken = ifelse(
+          sum(grepl(paste0(valgBekken, ".*[", paste(valSkade(), collapse = ""), "]$"),
+            as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+        femur = ifelse(
+          sum(grepl(paste0(valgFemur, ".*[", paste(valSkade(), collapse = ""), "]$"),
+            as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+        tibia = ifelse(
+          sum(grepl(paste0(valgTibia, ".*[", paste(valSkade(), collapse = ""), "]$"),
+            as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
 
+      data[femur == 1 | tibia == 1 , femtib := 1]
+
     }
+
+    data <- switch(input$til_lowext,
+      "1" = { valgKropp() },
+      "2" = { data[, list(n = bekken, gender = gender, age = age, aisMix = aisMix)]},
+      "3" = { data[, list(n = femtib, gender = gender, age = age, aisMix = aisMix)]}
+    )
 
     data[n == 1, ]
 
@@ -748,6 +756,11 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     ## Tillegg Spine - Thoracalcolumna
     if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 4 && as.numeric(input$til_thor) %in% 1:3){
       dataUT <- tilThor()
+    }
+
+    ## Lower extremities (Ben)
+    if (as.numeric(input$kropp) == 8 && as.numeric(input$til_lowext) %in% 1:3){
+      dataUT <- tilLowext()
     }
 
     dataUT
