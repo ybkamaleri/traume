@@ -7,13 +7,13 @@ library(data.table)
 library(ggplot2)
 library(shinyBS)
 
-## source("~/Git-work/traume/ntrApp/data2.R")
+## source("~/Git-work/traume/traumeApp/data2.R")
 
 ## lager tilfeldig utvalg
 dummy <- data.table(a = 1:10, b = 1:10)
 txt <- "Test tekst <br> test 0123"
 DT <- masterFile[sample(.N, 5000)]
-dataSelect <- list(data = masterFile, txt = txt, dum = dummy)
+dataSelect <- list(data = DT, txt = txt, dum = dummy)
 
 ############### Module UI #######################
 
@@ -638,6 +638,8 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     data[n == 1, ]
 
   })
+
+
 
 
   ## ## hvis tillegg !=1 så velge output fra tillegg input
