@@ -53,3 +53,11 @@ regDT[, .N, by = alleUT]
 for (j in navnUT) {set(regDT, which(regDT[[j]] != 1), j, 10)}
 regDT[, Nsum := rowSums(.SD, na.rm = T), .SDcols = navnUT]
 regDT[, .N, by = Nsum] #80 means alle er NA
+
+
+## Skade data
+## ===========
+dataRaw <- skade[regDT, on = c(ntrid = "ntrid")]
+dataRaw[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
+
+dataRaw[ntrid == 7058, c("ntrid", "ais", "aisMix")]
