@@ -47,24 +47,41 @@ filterUI <- function(id){
           options = list(container = "body"))),
 
       box(width = 3, height = 165, background = "light-blue",
-        tags$h4("Filtert info:"),
-        actionButton(ns("runButton"), label = "Bruk valget",
+        tags$h4("Bruk valgte spesifikasjoner?"),
+        actionButton(ns("runButton"), label = "OK",
           style = 'padding:5px 30px; border: none; text-align: center; font-size:15px;' ),
         htmlOutput(ns("txtList"))
       )
     ),
 
     fluidRow(
-      tabBox(side = 'left', selected = "Figur", width = 12,
-        tabPanel("Figur", plotOutput(ns("fig"))),
-        tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
-    ),
-
-    fluidRow(
-      infoBoxOutput(ns("traume_info")),
-      infoBoxOutput(ns("mann_info")),
-      infoBoxOutput(ns("kvinne_info"))
+      box(width = 9,
+        tabBox(side = 'left', selected = "Figur", width = 12,
+          tabPanel("Figur", plotOutput(ns("fig"))),
+          tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
+      ),
+      column(width = 3,
+        fluidRow(
+          box(width = 12,
+            background = "orange",
+            textOutput(ns("kilde")))),
+        fluidRow(
+          box(width = 12, background = "navy",
+            textOutput(ns("traume_info")))),
+        fluidRow(
+          box(width = 12, background = "navy",
+            textOutput(ns("mann_info")))),
+        fluidRow(
+          box(width = 12, background = "navy",
+            textOutput(ns("kvinne_info"))))
+      )
     )
+
+    ## fluidRow(
+    ##   infoBoxOutput(ns("traume_info")),
+    ##   infoBoxOutput(ns("mann_info")),
+    ##   infoBoxOutput(ns("kvinne_info"))
+    ## )
   )
 }
 
@@ -102,9 +119,9 @@ filterSV <- function(input, output, session, resh, data){
   output$txtList <- renderUI({
 
     if (input$valgLevel01 == 1){
-      valgUnit <-  paste0("Data for hele landet")
+      valgUnit <-  paste0("Velger data for hele landet")
     }else{
-      valgUnit <- paste0("Data for ", input$valgLevel02)
+      valgUnit <- paste0("Velger data for ", input$valgLevel02)
     }
 
     valgTid <- paste0("Tidsrom: ",
@@ -124,10 +141,11 @@ filterSV <- function(input, output, session, resh, data){
   })
 
   ## text til videre visning
+  ## =======================
   txt <- reactive({
 
     if (input$valgLevel01 == 1){
-      valgUnit <-  paste0("Data for hele landet")
+      valgUnit <- paste0("Data for hele landet")
     }else{
       valgUnit <- paste0("Data for ", input$valgLevel02)
     }
@@ -184,20 +202,34 @@ filterSV <- function(input, output, session, resh, data){
     valgUT
   })
 
-  ## InfoBox
+  ## Info
   ###################
-  output$traume_info <- renderInfoBox({
-    infoBox("Antall traume", uniqueN(dataFil()$ntrid), icon = icon("pie-chart"))
+  outKilde <- eventReactive(input$runButton, {
+    if (input$valgLevel01 == 1){
+      valgUnit <-  paste0("Tall for hele landet")
+    }else{
+      valgUnit <- paste0("Tall for ", input$valgLevel02)
+    }
   })
 
-  output$mann_info <- renderInfoBox({
+  output$kilde <- renderText({
+    outKilde()
+
+  })
+
+
+  output$traume_info <- renderText({
+    paste0("Antall traume: ", uniqueN(dataFil()$ntrid))
+  })
+
+  output$mann_info <- renderText({
     data <- dataFil()[!duplicated(ntrid) & gender == 1, .N]
-    infoBox("Antall menn", data, icon = icon("male"))
+    paste0("Antall menn: ", data)
   })
 
-  output$kvinne_info <- renderInfoBox({
+  output$kvinne_info <- renderText({
     data <- dataFil()[!duplicated(ntrid) & gender == 2, .N]
-    infoBox("Antall kvinner", data, icon = icon("female"))
+    paste0("Antall kvinner: ", data)
   })
 
   
