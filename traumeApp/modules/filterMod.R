@@ -204,6 +204,7 @@ filterSV <- function(input, output, session, resh, data){
 
   ## Info
   ###################
+  ## Data kilder som brukes
   outKilde <- eventReactive(input$runButton, {
     if (input$valgLevel01 == 1){
       valgUnit <-  paste0("Tall for hele landet")
@@ -216,7 +217,6 @@ filterSV <- function(input, output, session, resh, data){
     outKilde()
 
   })
-
 
   output$traume_info <- renderText({
     paste0("Antall traume: ", uniqueN(dataFil()$ntrid))
