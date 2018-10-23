@@ -117,6 +117,23 @@ skadeUI <- function(id){
           trigger = "hover",
           options = list(container = "body")),
 
+        ## Tillegg external and other (Hudskader og andre skader)
+        conditionalPanel(condition = 'input.kropp==9', ns = ns,
+          selectInput(inputId = ns("til_hud"),
+            label = "Tilleggsuttrekk:",
+            choices = list(
+              "Alle" = 1,
+              "Brannskader" = 2,
+              "Hypotermi" = 3
+            ),
+            selected = 1
+          )),
+        shinyBS::bsTooltip(ns("til_hud"),
+          title = "Referer kodelisten",
+          placement = "right",
+          trigger = "hover",
+          options = list(container = "body")),
+
         ## Deler for Ryggsøyle (Spine)
         conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 6"),
           selectInput(inputId = ns("til_rygg"),
@@ -386,15 +403,29 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
         age = age,
         aisMix = aisMix), by = ntrid]
 
-    } else {
+    }
 
-      ## Valgte kroppsregion
+    ## Valgte kroppsregion
+    if (as.numeric(input$kropp) %in% 1:8) {
+
       data <- dataIN[, list(n = ifelse(
         sum(grepl(paste0("^", valKropp(), ".*[", paste(valSkade(), collapse = ""), "]$"),
           as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
+    }
+
+    ## Valg External and ogher (Hudskader og andre)
+    if (as.numeric(input$kropp) == 9){
+
+      data <- dataIN[, list(n = ifelse(
+        sum(grepl(paste0("[90].*[", paste(valSkade(), collapse = ""), "]$"),
+          as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+        gender = gender,
+        age = age,
+        aisMix = aisMix), by = ntrid]
+
     }
 
     data[n == 1, ]
@@ -640,6 +671,37 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   })
 
 
+  ## External and other
+  ## ======================
+  tilHud <- reactive({
+
+    req(input$skadegrad)
+
+    valgBrann <- "^9120"
+    valgHypo <- "^01"
+
+    kodeTillegg <- ifelse(as.numeric(input$til_hud) == 2, valgBrann, valgHypo)
+
+    if (as.numeric(input$til_hud) == 1){
+
+      data <- valgKropp()
+
+    } else {
+
+      data <- valgKropp()[, list(n = ifelse(
+        sum(grepl(paste0(kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
+          as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+        gender = gender,
+        age = age,
+        aisMix = aisMix), by = ntrid]
+
+    }
+
+    data[n == 1, ]
+
+
+  })
+
 
 
   ## ## hvis tillegg !=1 så velge output fra tillegg input
@@ -750,6 +812,12 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
       dataUT <- tilLowext()
     }
 
+
+    ## External and others (Hud)
+    if (as.numeric(input$kropp) == 9 && as.numeric(input$til_hud) %in% 1:3){
+      dataUT <- tilHud()
+    }
+
     dataUT
 
   })
@@ -768,9 +836,9 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   })
 
   output$test2 <- renderPrint({
-    ## str(valgKropp())
-    str(tilSpine())
-    str(tilLowext())
+    str(valgKropp())
+    str(tilHud())
+    ## str(tilLowext())
 
   })
 
