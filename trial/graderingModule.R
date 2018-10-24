@@ -31,9 +31,9 @@ skadeUI <- function(id){
       box(width = 3,
         htmlOutput(ns("txt")),
         column(width = 6,
-          actionButton(ns("regnButton"), "plot")),
+          actionButton(ns("regnButton"), "Beregn")),
         column(width = 6,
-          actionButton(ns("resetButton"), "reset"))
+          actionButton(ns("resetButton"), "Reset"))
       ),
 
       ## Ulykke typer
@@ -237,7 +237,11 @@ skadeUI <- function(id){
           tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
       ),
       box(width = 3,
-        textOutput(ns("info_total"))
+        textOutput(ns("info_antall")),
+        tags$br(),
+        textOutput(ns("info_mann")),
+        tags$br(),
+        textOutput(ns("info_kvinne"))
       )),
 
     fluidRow(
@@ -466,6 +470,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     data[n == 1, ]
 
   })
+
 
   ## Tilleggsuttrekk Abdomen
   ##########################
@@ -746,26 +751,26 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   ## Andel ##
   ###########
 
-  ## Inkluderer Grad 1 eller ikke til å beregne andel
-  andelGradAlle  <- reactive({
+  ## ## Inkluderer Grad 1 eller ikke til å beregne andel
+  ## andelGradAlle  <- reactive({
 
-    dataIN <- regData()
+  ##   dataIN <- regData()
 
-    if (input$skadegrad1){
+  ##   if (input$skadegrad1){
 
-      andelG <- dataIN[, list(n = ifelse(
-        sum(grepl(".*[1-6]$", as.character(unlist(
-          strsplit(aisMix, split = ","))))) != 0, 1, 0)), by = ntrid]
+  ##     andelG <- dataIN[, list(n = ifelse(
+  ##       sum(grepl(".*[1-6]$", as.character(unlist(
+  ##         strsplit(aisMix, split = ",")))), na.rm=TRUE) != 0, 1, 0)), by = ntrid]
 
-    } else {
+  ##   } else {
 
-      andelG <- dataIN[, list(n = ifelse(
-        sum(grepl(".*[2-6]$", as.character(unlist(
-          strsplit(aisMix, split = ","))))) != 0, 1, 0)), by = ntrid]
+  ##     andelG <- dataIN[, list(n = ifelse(
+  ##       sum(grepl(".*[2-6]$", as.character(unlist(
+  ##         strsplit(aisMix, split = ",")))), na.rm=TRUE) != 0, 1, 0)), by = ntrid]
 
-    }
-    andelG[, sum(n, na.rm = TRUE)]
-  })
+  ##   }
+  ##   andelG[, sum(n, na.rm = TRUE)]
+  ## })
 
   ## Andell med grad 1 eller ikke for spesifiserte kroppsregion
   andelGradKropp <- reactive({
@@ -776,20 +781,21 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
       andelG <- dataIN[, list(n = ifelse(
         sum(grepl(paste0("^", valKropp(), ".*[1-6]$"),
-          as.character(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
+          as.character(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
         gender = gender, aisMix = aisMix), by = ntrid]
 
     } else {
 
       andelG <- dataIN[, list(n = ifelse(
         sum(grepl(paste0("^", valKropp(), ".*[2-6]$"),
-          as.character(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
+          as.character(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
         gender = gender, aisMix = aisMix), by = ntrid]
 
     }
 
-   andelG[, sum(n, na.rm = TRUE)]
+    andelG[, sum(n, na.rm = TRUE)]
   })
+
 
   ## Data Ut observe
   ###################
@@ -898,11 +904,25 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
   ## Tall som skal vises
   ######################
-
-  output$info_total <- renderText({
-    paste0("Total (spesifiserte ulykke): ", regData()[aisMix != "", .N])
+  output$info_antall <- renderText({
+    nn <- uniqueN(tabUT()$ntrid)
+    pro <- as.numeric(andelGradKropp())
+    pros <- format((nn / pro) * 100, digits = 1)
+    paste0("N(%) : ", nn, " (", pros, "%)")
   })
 
+  output$info_mann <- renderText({
+
+    nn <- tabUT()[gender == 1, .N]
+    paste0("Antall menn : ", nn)
+  })
+
+
+  output$info_kvinne <- renderText({
+
+    nn <- tabUT()[gender == 2, .N]
+    paste0("Antall kvinner : ", nn)
+  })
 
 
   ##################
@@ -917,10 +937,10 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   })
 
   output$test2 <- renderPrint({
-    str(andelGradAlle())
-    str(regData()[!duplicated(ntrid), ])
+    str(andelGradKropp())
+    ## str(regData()[!duplicated(ntrid), ])
     ## str(tilLowext())
-
+    andelGradKropp()[, .N, by = n]
   })
 
 }
