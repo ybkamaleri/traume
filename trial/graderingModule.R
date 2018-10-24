@@ -16,7 +16,7 @@ sapply(list.files('~/Git-work/traume/traumeApp/functions', full.names = TRUE), s
 dummy <- data.table(a = 1:10, b = 1:10)
 txt <- "Test tekst <br> test 0123"
 DT <- masterFile[sample(.N, 5000)]
-dataSelect <- list(data = DT, txt = txt, dum = dummy)
+dataSelect <- list(data = masterFile, txt = txt, dum = dummy)
 
 ############### Module UI #######################
 
@@ -231,10 +231,14 @@ skadeUI <- function(id){
     ),
 
     fluidRow(
-      tabBox(side = 'left', selected = "Figur", width = 12,
-        tabPanel("Figur", plotOutput(ns("fig"))),
-        tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
-    ),
+      box(width = 9,
+        tabBox(side = 'left', selected = "Figur", width = 12,
+          tabPanel("Figur", plotOutput(ns("fig"))),
+          tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
+      ),
+      box(width = 3,
+        textOutput(ns("info_total"))
+      )),
 
     fluidRow(
       verbatimTextOutput(ns("test"))
@@ -855,6 +859,8 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   })
 
 
+  ## Figur
+  ##########################
   ## Viser eller skjule plot
   gg <- reactiveValues(visPlot = FALSE)
 
@@ -890,6 +896,14 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
   })
 
+  ## Tall som skal vises
+  ######################
+
+  output$info_total <- renderText({
+    paste0("Total (spesifiserte ulykke): ", regData()[aisMix != "", .N])
+  })
+
+
 
   ##################
   ###### TEST ######
@@ -898,12 +912,13 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   output$test <- renderPrint({
     ## str(regData())
     str(tabUT())
+    regData()[aisMix == "", .N]
 
   })
 
   output$test2 <- renderPrint({
     str(andelGradAlle())
-    str(tilHud())
+    str(regData()[!duplicated(ntrid), ])
     ## str(tilLowext())
 
   })
