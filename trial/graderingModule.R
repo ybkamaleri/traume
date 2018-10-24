@@ -7,6 +7,9 @@ library(data.table)
 library(ggplot2)
 library(shinyBS)
 
+
+sapply(list.files('~/Git-work/traume/traumeApp/functions', full.names = TRUE), source)
+
 ## source("~/Git-work/traume/traumeApp/data2.R")
 
 ## lager tilfeldig utvalg
@@ -27,7 +30,7 @@ skadeUI <- function(id){
       #####################
       box(width = 3,
         htmlOutput(ns("txt")),
-        actionButton(ns("goButton"), "Hent data")
+        actionButton(ns("resetButton"), "reset")
       ),
 
       ## Ulykke typer
@@ -174,10 +177,10 @@ skadeUI <- function(id){
             ),
             selected = 1)),
         bsTooltip(id = ns("til_lumb"),
-            title = "Se på FAQ for mer info",
-            placement = "right",
-            trigger = "hover",
-            options = list(container = "body")),
+          title = "Se på FAQ for mer info",
+          placement = "right",
+          trigger = "hover",
+          options = list(container = "body")),
         ## Tillegg for Thoracalcolumna
         conditionalPanel(condition = paste0("input['", ns("til_rygg"),
           "'] == 4 && input['", ns("kropp"), "'] == 6"),
@@ -190,10 +193,10 @@ skadeUI <- function(id){
             ),
             selected = 1)),
         bsTooltip(id = ns("til_thor"),
-            title = "Se på FAQ for mer info",
-            placement = "right",
-            trigger = "hover",
-            options = list(container = "body"))
+          title = "Se på FAQ for mer info",
+          placement = "right",
+          trigger = "hover",
+          options = list(container = "body"))
       ),
 
       ## Skadegradering
@@ -223,6 +226,13 @@ skadeUI <- function(id){
         )
       )
     ),
+
+    fluidRow(
+      tabBox(side = 'left', selected = "Figur", width = 12,
+        tabPanel("Figur", plotOutput(ns("fig"))),
+        tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
+    ),
+
     fluidRow(
       verbatimTextOutput(ns("test"))
     ),
@@ -237,6 +247,24 @@ skadeUI <- function(id){
 ###################### SERVER ###############################
 
 skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
+
+  ## Reset
+  initialInputs <- isolate(reactiveValuesToList(input))
+
+  observe({
+    # OPTIONAL - save initial values of dynamic inputs
+    inputValues <- reactiveValuesToList(input)
+    initialInputs <<- utils::modifyList(inputValues, initialInputs)
+  })
+
+  observeEvent(input$resetButton, {
+    for (id in names(initialInputs)) {
+      value <- initialInputs[[id]]
+      # For empty checkboxGroupInputs
+      if (is.null(value)) value <- ""
+      session$sendInputMessage(id, list(value = value))
+    }
+  })
 
   ## Hend data button
   listNTR <- reactive({
@@ -823,6 +851,23 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   })
 
 
+
+  ## Plot alder og kjønn
+  output$fig <- renderPlot({
+
+    plot <- fun.plotAS(tabUT())
+    print(plot$plot)
+    ## plotUT <- dataUT()$plot
+    ## print(plotUT)
+  })
+
+  ## Tabell for alder og kjønn
+  output$tabell <- DT::renderDT({
+    plot <- fun.plotAS(tabUT())
+    plot$data
+
+    ## dataUT()$data
+  })
 
 
   ##################
