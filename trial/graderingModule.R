@@ -30,7 +30,10 @@ skadeUI <- function(id){
       #####################
       box(width = 3,
         htmlOutput(ns("txt")),
-        actionButton(ns("resetButton"), "reset")
+        column(width = 6,
+          actionButton(ns("regnButton"), "plot")),
+        column(width = 6,
+          actionButton(ns("resetButton"), "reset"))
       ),
 
       ## Ulykke typer
@@ -214,7 +217,7 @@ skadeUI <- function(id){
             "6" = 6),
           inline = TRUE,
           selected = list(2,3,4,5,6)
-        ),
+          ),
         checkboxInput(inputId = ns("skadegrad1"),
           label = "Andel inkluderer skadegrad 1",
           value = FALSE),
@@ -266,7 +269,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     }
   })
 
-  ## Hend data button
+  ## Filtert data
   listNTR <- reactive({
     req(input$ulykke)
     valgDT$data[, list(ntrid)]
@@ -732,64 +735,65 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
 
 
-  ## ## hvis tillegg !=1 så velge output fra tillegg input
-  ## ## ellers velger valgKropp
+  ## hvis tillegg !=1 så velge output fra tillegg input
+  ## ellers velger valgKropp
 
-  ## ###########
-  ## ## Andel ##
-  ## ###########
+  ###########
+  ## Andel ##
+  ###########
 
-  ## ## Inkluderer Grad 1 eller ikke til å beregne andel
-  ## andelGradAlle  <- reactive({
+  ## Inkluderer Grad 1 eller ikke til å beregne andel
+  andelGradAlle  <- reactive({
 
-  ##   dataIN <- regData()
+    dataIN <- regData()
 
-  ##   if (input$skadegrad1){
-  ##     andelG <- dataIN[, list(n = ifelse(
-  ##       sum(grepl(".*[2-6]$", as.character(unlist(
-  ##         strsplit(aisMix, split = ","))))) != 0, 1, 0)), by = ntrid]
+    if (input$skadegrad1){
 
-  ##   } else {
+      andelG <- dataIN[, list(n = ifelse(
+        sum(grepl(".*[1-6]$", as.character(unlist(
+          strsplit(aisMix, split = ","))))) != 0, 1, 0)), by = ntrid]
 
-  ##     andelG <- dataIN[, list(n = ifelse(
-  ##       sum(grepl(".*[1-6]$", as.character(unlist(
-  ##         strsplit(aisMix, split = ","))))) != 0, 1, 0)), by = ntrid]
-  ##   }
-  ##   andelG[, sum(n, na.rm = TRUE)]
-  ## })
+    } else {
 
-  ## ## Andell med grad 1 eller ikke for spesifiserte kroppsregion
-  ## andelGradKropp <- reactive({
+      andelG <- dataIN[, list(n = ifelse(
+        sum(grepl(".*[2-6]$", as.character(unlist(
+          strsplit(aisMix, split = ","))))) != 0, 1, 0)), by = ntrid]
 
-  ##   dataIN <- regData()
+    }
+    andelG[, sum(n, na.rm = TRUE)]
+  })
 
-  ##   if (input$skadegrad1){
+  ## Andell med grad 1 eller ikke for spesifiserte kroppsregion
+  andelGradKropp <- reactive({
 
-  ##     andelG <- dataIN[, list(n = ifelse(
-  ##       sum(grepl(paste0("^", valKropp(), ".*[2-6]$"),
-  ##         as.character(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
-  ##       gender = gender, aisMix = aisMix), by = ntrid]
+    dataIN <- regData()
 
-  ##   } else {
+    if (input$skadegrad1){
 
-  ##     andelG <- dataIN[, list(n = ifelse(
-  ##       sum(grepl(paste0("^", valKropp(), ".*[1-6]$"),
-  ##         as.character(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
-  ##       gender = gender, aisMix = aisMix), by = ntrid]
+      andelG <- dataIN[, list(n = ifelse(
+        sum(grepl(paste0("^", valKropp(), ".*[1-6]$"),
+          as.character(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
+        gender = gender, aisMix = aisMix), by = ntrid]
 
-  ##   }
+    } else {
 
-  ##   data <- andelG[, sum(n, na.rm = TRUE)]
-  ##   return(data)
-  ## })
+      andelG <- dataIN[, list(n = ifelse(
+        sum(grepl(paste0("^", valKropp(), ".*[2-6]$"),
+          as.character(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
+        gender = gender, aisMix = aisMix), by = ntrid]
 
-  ## ## Data Ut observe
-  ## ###################
+    }
 
-  ## ############
-  ## ## Tabell ##
-  ## ############
-  tabUT <- reactive({
+   andelG[, sum(n, na.rm = TRUE)]
+  })
+
+  ## Data Ut observe
+  ###################
+
+  ############
+  ## Tabell ##
+  ############
+  tabUT <- eventReactive(input$regnButton, {
 
     req(input$skadegrad) #vises ingen hvis NULL
 
@@ -851,22 +855,39 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   })
 
 
+  ## Viser eller skjule plot
+  gg <- reactiveValues(visPlot = FALSE)
+
+  observeEvent(input$regnButton, {
+    ## 0 = FALSE og 1 = TRUE
+    gg$visPlot <- input$regnButton
+  })
+
+  observeEvent(input$resetButton, {
+    gg$visPlot <- FALSE
+  })
 
   ## Plot alder og kjønn
   output$fig <- renderPlot({
 
-    plot <- fun.plotAS(tabUT())
-    print(plot$plot)
-    ## plotUT <- dataUT()$plot
-    ## print(plotUT)
+    if (gg$visPlot == FALSE) return()
+
+    isolate({
+      plot <- fun.plotAS(tabUT())
+      print(plot$plot)
+    })
   })
 
   ## Tabell for alder og kjønn
   output$tabell <- DT::renderDT({
-    plot <- fun.plotAS(tabUT())
-    plot$data
 
-    ## dataUT()$data
+    if (gg$visPlot == FALSE) return()
+
+    isolate({
+      plot <- fun.plotAS(tabUT())
+      plot$data
+    })
+
   })
 
 
@@ -881,7 +902,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   })
 
   output$test2 <- renderPrint({
-    str(valgKropp())
+    str(andelGradAlle())
     str(tilHud())
     ## str(tilLowext())
 
