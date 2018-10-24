@@ -14,3 +14,5 @@
 | pnr104   | Ulykke data ble konvertet til list | fixed  | Bruk ifelse er grunnen      |
 |          |                                    |        | og bruk av switch løsningen |
 |          |                                    |        |                             |
+| prob1012 | andelGradKropp gir inf nr          |        |                             |
+|          |                                    |        |                             |
