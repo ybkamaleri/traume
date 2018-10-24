@@ -15,13 +15,15 @@ source("data2.R")
 
 #Funksjoner
 ############
-source("./functions/byttNA.R") #bNA
-source("./functions/plotAgeSex.R") #fun.plotAS
+invisible(sapply(list.files('functions', full.names = TRUE), source))
+## source("./functions/byttNA.R") #bNA
+## source("./functions/plotAgeSex.R") #fun.plotAS
 
 
 ## modules
 ###########
-source("./modules/filterMod.R")
-source("./modules/virskomhetMod.R")
-source("./modules/ulykkeMod.R")
-source("./modules/skadeMod.R")
+invisible(sapply(list.files('modules', full.names = TRUE), source))
+## source("./modules/filterMod.R")
+## source("./modules/virskomhetMod.R")
+## source("./modules/ulykkeMod.R")
+## source("./modules/skadeMod.R")

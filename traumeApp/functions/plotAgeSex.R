@@ -56,11 +56,35 @@ fun.plotAS <- function(x, kat = FALSE, bykat = 5){
                     measure.vars=c("Menn","Kvinner","Alle"),
                     variable.name="gender", value.name="n")
 
+
+  ## Theme
+  pthemes <- theme(axis.text = element_text(size = 9, color = "black"), #text for x og y axis
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_line(size = 0.5),
+    axis.line.y = element_blank(),
+    axis.title.y = element_text(size = 11),
+    axis.title.x = element_text(size = 11),
+    panel.background = element_rect(fill = "white"),
+    panel.border = element_rect(linetype = 1, fill = NA, color = "white"),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_line(linetype = 2, color = "grey"),
+    legend.position = "bottom",
+    legend.justification = c(0,1), #legend bottom left
+    legend.title = element_blank(),
+    legend.text = element_text(size = 9),
+    legend.key = element_rect(fill = "white")
+  )
+
+  ## Farge
+  cols <- c("#084594","#6baed6", "#FF7260")
+
   ## plot with long data
   plotAT <- ggplot(dataLongAK, aes(Alder, n, group = gender, color = gender)) +
     geom_line() +
     xlab("Alder") +
-    ylab("Antall")
+    ylab("Antall") +
+    pthemes +
+    scale_colour_manual(values = cols)
 
   return(list(data = ageMK, plot = plotAT))
 
