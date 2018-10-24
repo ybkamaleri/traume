@@ -27,12 +27,23 @@ ageMK[, alle := mann + kvinne, by = age]
 ## konverterer data til long
 dataLongAK <-melt(ageMK, id.vars="age", measure.vars=c("mann","kvinne","alle"), variable.name="gender", value.name="n")
 
+dataLongAK2 <-melt(ageMK, id.vars="age", measure.vars=c("alle", "mann","kvinne"), variable.name="gender", value.name="n") # rekkefølge for alle, mann, kvinne for legend
+
 ## plot with long data
 ggplot(dataLongAK, aes(age, n, group = gender, color = gender)) +
   geom_line() +
   geom_point()
 
+ggplot(dataLongAK, aes(age, n, color = gender)) +
+  geom_line(size = 1) +
+  scale_color_manual(values = c("blue", "lightblue", "orange"))
+
+ggplot(dataLongAK2, aes(age, n, color = gender)) +
+  geom_line(size = 1) +
+  scale_color_manual(values = c("blue", "lightblue", "orange"))
+
 ## plot
+dev.new()
 library(ggplot2)
 plotAgeMK <- ggplot(ageMK, aes(x = age)) +
   geom_line(aes(y = mann, color = "Menn"), size = 1) +
