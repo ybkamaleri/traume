@@ -91,3 +91,6 @@ Dashboard som gir informasjon om:
 - [X] Tar bort NA i dataset i data.R
 - [ ] Text for hver tab hva dataene gjelder
 - [ ] For å bruke Shinyjs for Debian, = libv8-3.14-dev (formerly: libv8-dev)= må installeres
+* Forklaring for tall
+- Det er en del missing eller tom ais koder i.e "" som forklarer forskjellen i tallene.
+-
