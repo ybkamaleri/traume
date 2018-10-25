@@ -531,12 +531,21 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
     } else {
 
-      data <- valgKropp()[, list(n = ifelse(
-        sum(grepl(paste0("^", kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      data <- valgKropp()[, list(
+        n = ifelse(sum(grepl(paste0("^", kodeTillegg, ".*[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
+
+      ## data <- valgKropp()[, list(n = ifelse(
+      ##   sum(grepl(paste0("^", kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
+      ##     as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      ##   gender = gender,
+      ##   age = age,
+      ##   aisMix = aisMix), by = ntrid]
 
     }
 
@@ -565,12 +574,21 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
     } else {
 
-      data <- valgKropp()[, list(n = ifelse(
-        sum(grepl(paste0(spineValg, "[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      data <- valgKropp()[, list(
+        n = ifelse(sum(grepl(paste0(spineValg, "[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
+
+      ## data <- valgKropp()[, list(n = ifelse(
+      ##   sum(grepl(paste0(spineValg, "[", paste(valSkade(), collapse = ""), "]$"),
+      ##     as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      ##   gender = gender,
+      ##   age = age,
+      ##   aisMix = aisMix), by = ntrid]
 
     }
 
@@ -721,19 +739,37 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
     ## Kode om bekken og femu / tibiafrakturer
     if (as.numeric(input$til_lowext) != 1){
+
       data <- valgKropp()[, list(
-        bekken = ifelse(
-          sum(grepl(paste0(valgBekken, ".*[", paste(valSkade(), collapse = ""), "]$"),
-            as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
-        femur = ifelse(
-          sum(grepl(paste0(valgFemur, ".*[", paste(valSkade(), collapse = ""), "]$"),
-            as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
-        tibia = ifelse(
-          sum(grepl(paste0(valgTibia, ".*[", paste(valSkade(), collapse = ""), "]$"),
-            as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+        bekken = ifelse(sum(grepl(paste0(valgBekken, ".*[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
+        femur = ifelse(sum(grepl(paste0(valgFemur, ".*[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
+        tibia = ifelse(sum(grepl(paste0(valgTibia, ".*[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
+
+      ## data <- valgKropp()[, list(
+      ##   bekken = ifelse(
+      ##     sum(grepl(paste0(valgBekken, ".*[", paste(valSkade(), collapse = ""), "]$"),
+      ##       as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      ##   femur = ifelse(
+      ##     sum(grepl(paste0(valgFemur, ".*[", paste(valSkade(), collapse = ""), "]$"),
+      ##       as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      ##   tibia = ifelse(
+      ##     sum(grepl(paste0(valgTibia, ".*[", paste(valSkade(), collapse = ""), "]$"),
+      ##       as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      ##   gender = gender,
+      ##   age = age,
+      ##   aisMix = aisMix), by = ntrid]
 
       data[femur == 1 | tibia == 1 , femtib := 1]
 
@@ -767,12 +803,21 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
     } else {
 
-      data <- valgKropp()[, list(n = ifelse(
-        sum(grepl(paste0(kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      data <- valgKropp()[, list(
+        n = ifelse(sum(grepl(paste0("^", kodeTillegg, ".*[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
+
+      ## data <- valgKropp()[, list(n = ifelse(
+      ##   sum(grepl(paste0(kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
+      ##     as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      ##   gender = gender,
+      ##   age = age,
+      ##   aisMix = aisMix), by = ntrid]
 
     }
 
@@ -838,17 +883,33 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
     if (input$skadegrad1){
 
-      andelG <- dataIN[, list(n = ifelse(
-        sum(grepl(paste0(kroppReg, "[1-6]$"),
-          as.character(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
-        gender = gender, aisMix = aisMix), by = ntrid]
+      andelG <- dataIN[, list(
+        n = ifelse(sum(grepl(paste0(kroppReg, "[1-6]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
+        gender = gender,
+        aisMix = aisMix,
+        age = age), by = ntrid]
+
+      ## andelG <- dataIN[, list(n = ifelse(
+      ##   sum(grepl(paste0(kroppReg, "[1-6]$"),
+      ##     as.character(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
+      ##   gender = gender, aisMix = aisMix), by = ntrid]
 
     } else {
 
-      andelG <- dataIN[, list(n = ifelse(
-        sum(grepl(paste0(kroppReg, "[2-6]$"),
-          as.character(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
-        gender = gender, aisMix = aisMix), by = ntrid]
+      andelG <- dataIN[, list(
+        n = ifelse(sum(grepl(paste0(kroppReg, "[1-6]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
+        gender = gender,
+        aisMix = aisMix,
+        age = age), by = ntrid]
+
+      ## andelG <- dataIN[, list(n = ifelse(
+      ##   sum(grepl(paste0(kroppReg, "[2-6]$"),
+      ##     as.character(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
+      ##   gender = gender, aisMix = aisMix), by = ntrid]
 
     }
 
