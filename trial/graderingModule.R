@@ -13,7 +13,7 @@ invisible(sapply(list.files('~/Git-work/traume/traumeApp/functions', full.names 
 ## source("~/Git-work/traume/traumeApp/data2.R")
 
 ## lager tilfeldig utvalg
-dummy <- data.table(a = 1:10, b = 1:10)
+## dummy <- data.table(a = 1:10, b = 1:10)
 txt <- "Test tekst <br> test 0123 <br> bla bla bla"
 DT <- masterFile[sample(.N, 5000)]
 dataSelect <- list(data = masterFile, txt = txt)
@@ -26,15 +26,6 @@ skadeUI <- function(id){
 
   fluidPage(
     fluidRow(
-      ## Tekst valgte data
-      #####################
-      box(width = 3,
-        htmlOutput(ns("txt")),
-        column(width = 6,
-          actionButton(ns("regnButton"), "Beregn")),
-        column(width = 6,
-          actionButton(ns("resetButton"), "Reset"))
-      ),
 
       ## Ulykke typer
       ##################
@@ -227,6 +218,22 @@ skadeUI <- function(id){
           trigger = "focus",
           options = list(container = "body")
         )
+      ),
+
+      ## Tekst valgte data
+      #####################
+      box(
+        width = 3,
+        tags$head(tags$style(
+          "#Butang{padding:5px 30px; border: none; text-align: center; font-size:15px;}")),        htmlOutput(ns("txt")),
+        column(
+          id = "Butang",
+          width = 6,
+          actionButton(ns("regnButton"), "Beregn")),
+        column(
+          id = "Butang",
+          width = 6,
+          actionButton(ns("resetButton"), "Reset"))
       )
     ),
 
@@ -236,7 +243,14 @@ skadeUI <- function(id){
           tabPanel("Figur", plotOutput(ns("fig"))),
           tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
       ),
-      box(width = 3,
+      box(id = "InfoRef",
+        width = 3,
+        title = "Tall referanse",
+        solidHeader = TRUE,
+        status = "primary",
+        background = "light-blue",
+        tags$head(tags$style(
+          "#InfoRef{font-size: 16px; font-style: bold;}")),
         textOutput(ns("info_antall")),
         tags$br(),
         textOutput(ns("info_mann")),
@@ -435,35 +449,60 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     ## Alle kroppsregioner
     if (as.numeric(input$kropp) == 10) {
 
-      data <- dataIN[, list(n = ifelse(
-        sum(grepl(paste0(".[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      data <- dataIN[, list(
+        n = ifelse(sum(grepl(paste0(".*[", paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
+
+      ## data <- dataIN[, list(n = ifelse(
+      ##   sum(grepl(paste0(".[", paste(valSkade(), collapse = ""), "]$"),
+      ##     as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      ##   gender = gender,
+      ##   age = age,
+      ##   aisMix = aisMix), by = ntrid]
 
     }
 
     ## Valgte kroppsregion
     if (as.numeric(input$kropp) %in% 1:8) {
 
-      data <- dataIN[, list(n = ifelse(
-        sum(grepl(paste0("^", valKropp(), ".*[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      data <- dataIN[, list(
+        n = ifelse(sum(grepl(paste0("^", valKropp(), ".*[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
+
+      ## data <- dataIN[, list(n = ifelse(
+      ##   sum(grepl(paste0("^", valKropp(), ".*[", paste(valSkade(), collapse = ""), "]$"),
+      ##     as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      ##   gender = gender,
+      ##   age = age,
+      ##   aisMix = aisMix), by = ntrid]
     }
 
     ## Valg External and ogher (Hudskader og andre)
     if (as.numeric(input$kropp) == 9){
 
-      data <- dataIN[, list(n = ifelse(
-        sum(grepl(paste0("^[90].*[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      data <- dataIN[, list(
+        n = ifelse(sum(grepl(paste0("^[90].*[", paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
+
+      ## data <- dataIN[, list(n = ifelse(
+      ##   sum(grepl(paste0("^[90].*[", paste(valSkade(), collapse = ""), "]$"),
+      ##     as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      ##   gender = gender,
+      ##   age = age,
+      ##   aisMix = aisMix), by = ntrid]
 
     }
 
@@ -773,22 +812,29 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   ## })
 
   ## Andell med grad 1 eller ikke for spesifiserte kroppsregion
-  andelGradKropp <- eventReactive(input$regnButton, {
 
-    dataIN <- regData()
+  valgInfo <- eventReactive(input$regnButton, {
 
-    if (input$kropp == 10) {
+    if (as.numeric(input$kropp) == 10) {
       kroppReg <- ".*"
     }
 
-    if (input$kropp %in% 1:8) {
-      kroppReg <- paste0("^", valKropp(), ".*")
+    if (as.numeric(input$kropp) %in% 1:8) {
+      kroppReg <- paste0("^", input$kropp, ".*")
     }
 
-    if (input$kropp == 9) {
+    if (as.numeric(input$kropp) == 9) {
       kroppReg <- "^[90].*"
     }
 
+    kroppReg
+
+  })
+
+  andelGradKropp <- eventReactive(input$regnButton, {
+
+    dataIN <- regData()
+    kroppReg <- valgInfo()
 
     if (input$skadegrad1){
 
@@ -807,6 +853,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     }
 
     andelG[, sum(n, na.rm = TRUE)]
+    ## andelG
   })
 
 
@@ -917,11 +964,15 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
   ## Tall som skal vises
   ######################
+  prosInfo <- eventReactive(input$regnButton, {
+    no1 <- uniqueN(tabUT()$ntrid)
+    no2 <- andelGradKropp()
+    pros <- format(no1 / no2 * 100, digits = 1)
+    paste0("Total (%) : ", no1, " (", pros, "%)")
+  })
+
   output$info_antall <- renderText({
-    nn <- uniqueN(tabUT()$ntrid)
-    pro <- as.numeric(andelGradKropp())
-    pros <- format((nn / pro) * 100, digits = 1)
-    paste0("N(%) : ", nn, " (", pros, "%)")
+    prosInfo()
   })
 
   output$info_mann <- renderText({
@@ -945,7 +996,8 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   output$test <- renderPrint({
     ## str(regData())
     str(tabUT())
-    regData()[aisMix == "", .N]
+    ## regData()[aisMix == "", .N]
+    tabUT()[n == 1, ]
 
   })
 
@@ -953,6 +1005,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     str(andelGradKropp())
     ## str(regData()[!duplicated(ntrid), ])
     ## str(tilLowext())
+    str(valgKropp())
   })
 
 }
