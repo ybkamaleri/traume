@@ -8,15 +8,15 @@ library(ggplot2)
 library(shinyBS)
 
 
-sapply(list.files('~/Git-work/traume/traumeApp/functions', full.names = TRUE), source)
+invisible(sapply(list.files('~/Git-work/traume/traumeApp/functions', full.names = TRUE), source))
 
 ## source("~/Git-work/traume/traumeApp/data2.R")
 
 ## lager tilfeldig utvalg
 dummy <- data.table(a = 1:10, b = 1:10)
-txt <- "Test tekst <br> test 0123"
+txt <- "Test tekst <br> test 0123 <br> bla bla bla"
 DT <- masterFile[sample(.N, 5000)]
-dataSelect <- list(data = masterFile, txt = txt, dum = dummy)
+dataSelect <- list(data = masterFile, txt = txt)
 
 ############### Module UI #######################
 
@@ -459,7 +459,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     if (as.numeric(input$kropp) == 9){
 
       data <- dataIN[, list(n = ifelse(
-        sum(grepl(paste0("[90].*[", paste(valSkade(), collapse = ""), "]$"),
+        sum(grepl(paste0("^[90].*[", paste(valSkade(), collapse = ""), "]$"),
           as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
@@ -773,21 +773,34 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   ## })
 
   ## Andell med grad 1 eller ikke for spesifiserte kroppsregion
-  andelGradKropp <- reactive({
+  andelGradKropp <- eventReactive(input$regnButton, {
 
     dataIN <- regData()
+
+    if (input$kropp == 10) {
+      kroppReg <- ".*"
+    }
+
+    if (input$kropp %in% 1:8) {
+      kroppReg <- paste0("^", valKropp(), ".*")
+    }
+
+    if (input$kropp == 9) {
+      kroppReg <- "^[90].*"
+    }
+
 
     if (input$skadegrad1){
 
       andelG <- dataIN[, list(n = ifelse(
-        sum(grepl(paste0("^", valKropp(), ".*[1-6]$"),
+        sum(grepl(paste0(kroppReg, "[1-6]$"),
           as.character(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
         gender = gender, aisMix = aisMix), by = ntrid]
 
     } else {
 
       andelG <- dataIN[, list(n = ifelse(
-        sum(grepl(paste0("^", valKropp(), ".*[2-6]$"),
+        sum(grepl(paste0(kroppReg, "[2-6]$"),
           as.character(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
         gender = gender, aisMix = aisMix), by = ntrid]
 
@@ -940,7 +953,6 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     str(andelGradKropp())
     ## str(regData()[!duplicated(ntrid), ])
     ## str(tilLowext())
-    andelGradKropp()[, .N, by = n]
   })
 
 }
