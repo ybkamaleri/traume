@@ -60,21 +60,26 @@ filterUI <- function(id){
           tabPanel("Figur", plotOutput(ns("fig"))),
           tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
       ),
-      column(width = 3,
-        fluidRow(
-          box(width = 12,
-            background = "orange",
-            textOutput(ns("kilde")))),
-        fluidRow(
-          box(width = 12, background = "navy",
-            textOutput(ns("traume_info")))),
-        fluidRow(
-          box(width = 12, background = "navy",
-            textOutput(ns("mann_info")))),
-        fluidRow(
-          box(width = 12, background = "navy",
-            textOutput(ns("kvinne_info"))))
-      )
+      ## column(width = 3,
+      ##   fluidRow(
+      ##     box(width = 12,
+      ##       background = "orange",
+      ##       textOutput(ns("kilde")))),
+      ##   fluidRow(
+      ##     box(width = 12, background = "navy",
+      ##       textOutput(ns("traume_info")))),
+      ##   fluidRow(
+      ##     box(width = 12, background = "navy",
+      ##       textOutput(ns("mann_info")))),
+      ##   fluidRow(
+      ##     box(width = 12, background = "navy",
+      ##       textOutput(ns("kvinne_info"))))
+      ## ),
+      box(id = "filtInfo", width = 3,
+        textOutput(ns("kilde")),
+        textOutput(ns("traume_info")),
+        textOutput(ns("mann_info")),
+        textOutput(ns("kvinne_info")))
     )
 
     ## fluidRow(

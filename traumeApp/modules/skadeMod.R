@@ -6,12 +6,6 @@ skadeUI <- function(id){
 
   fluidPage(
     fluidRow(
-      ## Tekst valgte data
-      #####################
-      box(width = 3,
-        htmlOutput(ns("txt")),
-        actionButton(ns("goButton"), "Hent data")
-      ),
 
       ## Ulykke typer
       ##################
@@ -70,6 +64,7 @@ skadeUI <- function(id){
           ),
           selected = 10
         ),
+
         ## Tillegg abdomen
         conditionalPanel(condition = 'input.kropp==5', ns = ns,
           selectInput(inputId = ns("til_abdomen"),
@@ -81,7 +76,42 @@ skadeUI <- function(id){
             ),
             selected = 1
           )),
-        ## Deler for Ryggsøyle
+
+        ## Tillegg lower extremity (Ben)
+        conditionalPanel(condition = 'input.kropp==8', ns = ns,
+          selectInput(inputId = ns("til_lowext"),
+            label = "Tilleggsuttrekk:",
+            choices = list(
+              "Alle" = 1,
+              "Bekken" = 2,
+              "Femur og tibiafrakturer" = 3
+            ),
+            selected = 1
+          )),
+        shinyBS::bsTooltip(ns("til_lowext"),
+          title = "Referer kodelisten",
+          placement = "right",
+          trigger = "hover",
+          options = list(container = "body")),
+
+        ## Tillegg external and other (Hudskader og andre skader)
+        conditionalPanel(condition = 'input.kropp==9', ns = ns,
+          selectInput(inputId = ns("til_hud"),
+            label = "Tilleggsuttrekk:",
+            choices = list(
+              "Alle" = 1,
+              "Brannskader" = 2,
+              "Hypotermi" = 3
+            ),
+            selected = 1
+          )),
+        shinyBS::bsTooltip(ns("til_hud"),
+          title = "Referer kodelisten",
+          placement = "right",
+          trigger = "hover",
+          options = list(container = "body")),
+
+        ## Deler for Ryggsøyle (Spine)
         conditionalPanel(condition = paste0("input['", ns("kropp"), "'] == 6"),
           selectInput(inputId = ns("til_rygg"),
             label = "Spesifisert deler:",
@@ -103,42 +133,45 @@ skadeUI <- function(id){
               "Isolerte skjelettskader" = 2,
               "Ryggmargsskade" = 3
             ),
-            selected = 1),
-          bsTooltip(id = ns("til_cerv"),
-            title = "Se på 'FAQ' for mer info",
-            placement = "right",
-            trigger = "hover",
-            options = list(container = "body"))),
+            selected = 1)),
+        shinyBS::bsTooltip(id = ns("til_cerv"),
+          title = "Se på FAQ for mer info",
+          placement = "right",
+          trigger = "hover",
+          options = list(container = "body")),
         ## Tillegg for Lumbalcolumna
         conditionalPanel(condition = paste0("input['", ns("til_rygg"),
           "'] == 3 && input['", ns("kropp"), "'] == 6"),
           selectInput(inputId = ns("til_lumb"),
             label = "Tilleggsuttrekk (korsrygg):",
-            choices = list("Alle" = 1,
+            choices = list(
+              "Alle" = 1,
               "Isolerte skjelettskader" = 2,
               "Ryggmargsskade" = 3
             ),
-            selected = 1),
-          bsTooltip(id = ns("til_lumb"),
-            title = "Se på 'FAQ' for mer info",
-            placement = "right",
-            trigger = "hover",
-            options = list(container = "body"))),
+            selected = 1)),
+        bsTooltip(id = ns("til_lumb"),
+          title = "Se på FAQ for mer info",
+          placement = "right",
+          trigger = "hover",
+          options = list(container = "body")),
         ## Tillegg for Thoracalcolumna
         conditionalPanel(condition = paste0("input['", ns("til_rygg"),
           "'] == 4 && input['", ns("kropp"), "'] == 6"),
           selectInput(inputId = ns("til_thor"),
             label = "Tilleggsuttrekk (thorax):",
-            choices = list("Alle" = 1,
+            choices = list(
+              "Alle" = 1,
               "Isolerte skjelettskader" = 2,
               "Ryggmargsskade" = 3
             ),
-            selected = 1),
-          bsTooltip(id = ns("til_thor"),
-            title = "Se på 'FAQ' for mer info",
-            placement = "right",
-            trigger = "hover",
-            options = list(container = "body")))),
+            selected = 1)),
+        bsTooltip(id = ns("til_thor"),
+          title = "Se på FAQ for mer info",
+          placement = "right",
+          trigger = "hover",
+          options = list(container = "body"))
+      ),
 
       ## Skadegradering
       #######################
@@ -165,14 +198,53 @@ skadeUI <- function(id){
           trigger = "focus",
           options = list(container = "body")
         )
+      ),
+
+      ## Tekst valgte data
+      #####################
+      box(
+        width = 3,
+        ## tags$head(tags$style(
+        ##   "#Butang{padding:5px 30px; border: none; text-align: center; font-size:15px;}")),
+        htmlOutput(ns("txt")),
+        column(
+          id = "Butang",
+          width = 6,
+          actionButton(ns("regnButton"), "Beregn")),
+        column(
+          id = "Butang",
+          width = 6,
+          actionButton(ns("resetButton"), "Reset"))
       )
     ),
+
     fluidRow(
-      verbatimTextOutput(ns("test"))
-    ),
-    fluidRow(
-      verbatimTextOutput(ns("test2"))
-    )
+      box(width = 9,
+        tabBox(side = 'left', selected = "Figur", width = 12,
+          tabPanel("Figur", plotOutput(ns("fig"))),
+          tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
+      ),
+      box(id = "InfoRef",
+        width = 3,
+        title = "Tall referanse",
+        solidHeader = TRUE,
+        status = "primary",
+        background = "light-blue",
+        ## tags$head(tags$style(
+        ##   "#InfoRef{font-size: 16px; font-style: bold;}")),
+        textOutput(ns("info_antall")),
+        tags$br(),
+        textOutput(ns("info_mann")),
+        tags$br(),
+        textOutput(ns("info_kvinne"))
+      ))
+
+    ## fluidRow(
+    ##   verbatimTextOutput(ns("test"))
+    ## ),
+    ## fluidRow(
+    ##   verbatimTextOutput(ns("test2"))
+    ## )
   )
 }
 
@@ -182,11 +254,23 @@ skadeUI <- function(id){
 
 skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
-  ## Hend data button
-  listNTR <- eventReactive(input$goButton, {
-    req(input$ulykke)
-    dataIN <- as.data.table(valgDT$data)
-    dataIN[, list(ntrid)]
+  ## Reset
+  ## ======
+  initialInputs <- isolate(reactiveValuesToList(input))
+
+  observe({
+    # OPTIONAL - save initial values of dynamic inputs
+    inputValues <- reactiveValuesToList(input)
+    initialInputs <<- utils::modifyList(inputValues, initialInputs)
+  })
+
+  observeEvent(input$resetButton, {
+    for (id in names(initialInputs)) {
+      value <- initialInputs[[id]]
+      # For empty checkboxGroupInputs
+      if (is.null(value)) value <- ""
+      session$sendInputMessage(id, list(value = value))
+    }
   })
 
 
@@ -195,29 +279,37 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     HTML(valgDT$txt)
   })
 
+  ## Filtert data
+  ## ============
+
+  ## ## for test uten module
+  ## listNTR <- reactive({
+  ##   req(input$ulykke)
+  ##   valgDT$data[, list(ntrid)]
+
+  ## })
 
   ## filtert data for å velge ntrid valgDT henter data fra filterModule. Bruk is.null
   ## hvis ingen data ikke er filtert enda
-  ## listNTR <- reactive({
+  listNTR <- reactive({
 
-  ##   req(input$ulykke)
+    req(input$ulykke)
 
-  ##   if (is.null(valgDT$data)){
-  ##     dataIN <- data.table(ntrid = 0)
-  ##   } else {
-  ##     dataIN <- as.data.table(valgDT$data)
-  ##   }
+    if (is.null(valgDT$data)){
+      dataIN <- data.table(ntrid = 0)
+    } else {
+      dataIN <- as.data.table(valgDT$data)
+    }
 
-  ##   valgNTR <- dataIN[, list(ntrid)]
-  ##   valgNTR
-  ## })
+   dataIN[, list(ntrid)]
+
+  })
 
 
-  ## data som skal brukes
+  ## Ullyke data
   dataMod <- reactive({
-    dataDT <- dataUK #ulykke data
-    ntrNR <- listNTR()
-    dataDT[ntrNR, on = c(ntrid = "ntrid")]
+    data <- dataUK[listNTR(), on = c(ntrid = "ntrid")]
+    data[!is.na(ntrid) & !duplicated(ntrid), ]
   })
 
   ## Liste av variablenavn i ullyke datasett som skal plukkes ut
@@ -273,7 +365,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
 
   ## Filtert data for ulykke typer
-  filDataUlykke <- eventReactive(input$ulykke, {
+  filDataUlykke <- reactive({
     colValg <- ulykkeCol()
     regDataUK()[get(colValg) == 1, list(valgCol = get(colValg)),
       keyby = ntrid]
@@ -283,14 +375,14 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   ## Transport data
   ## Filtert data for transport typer
   ## problem å bruker !is.na(ntrid)
-  filDataTrans <- eventReactive(input$transport, {
+  filDataTrans <- reactive({
     transVar <- "acc_trsp_rd_type"
     alleTrans <-  c(1:7, 99, 999)
 
     if (as.numeric(input$transport) == 9){
-      data <- regDataUK()[get(transVar) %in% alleTrans, list(valgCol = acc_trsp_rd_type), keyby = ntrid]
+      data <- regDataUK()[get(transVar) %in% alleTrans, list(valgCol = get(transVar)), keyby = ntrid]
     } else {
-      data <- regDataUK()[get(transVar) == as.numeric(input$transport), list(valgCol = acc_trsp_rd_type), keyby = ntrid]
+      data <- regDataUK()[get(transVar) == as.numeric(input$transport), list(valgCol = get(transVar)), keyby = ntrid]
     }
     data
   })
@@ -299,13 +391,13 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   dataUlykke <- reactiveVal()
 
   observe({
-      selTall <- ifelse(as.numeric(input$ulykke) != 1, 1, 2)
-      inDataUK <- switch(as.character(selTall),
-        "1" = filDataUlykke(),
-        "2" = filDataTrans()
-      )
+    selTall <- ifelse(as.numeric(input$ulykke) != 1, 1, 2)
+    inDataUK <- switch(selTall,
+      filDataUlykke(),
+      filDataTrans()
+    )
 
-      dataUlykke(inDataUK)
+    dataUlykke(inDataUK)
   })
 
 
@@ -315,13 +407,14 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   ## OBS!! bruk 'aisMix' for å velge skade gradering
   regData <- reactive({
     #her skal det merge med valg ie. filtertdata
-    listNTR <- as.data.table(dataUlykke())
-    setnames(listNTR, 1, "V1") #gir colname for å sikre riktig kolonnevalg
-    dataRaw <- dataSK[listNTR, on = c(ntrid = "V1")]
+    listNTR <- dataUlykke()
+    ## setnames(listNTR, 1, "V1") #gir colname for å sikre riktig kolonnevalg
+    dataRaw <- dataSK[listNTR, on = c(ntrid = "ntrid")]
     dataRaw[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
 
     dataMix <- dataRaw[!duplicated(ntrid)]
     dataMix[, ais := NULL] #slett ais siden aisMix inneholder alle ais koder
+    dataMix
   })
 
 
@@ -340,27 +433,45 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     ## Alle kroppsregioner
     if (as.numeric(input$kropp) == 10) {
 
-      data <- dataIN[, list(n = ifelse(
-        sum(grepl(paste0(".[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ","))))))) != 0, 1, 0),
-        gender = gender,
-        age = age,
-        aisMix = aisMix), by = ntrid]
-
-    } else {
-
-      ## Valgte kroppsregion
-      data <- dataIN[, list(n = ifelse(
-        sum(grepl(paste0("^", valKropp(), ".*[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ","))))))) != 0, 1, 0),
+      data <- dataIN[, list(
+        n = ifelse(sum(grepl(paste0(".*[", paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
     }
 
-    dataUT <- data[n == 1]
-    return(dataUT)
+    ## Valgte kroppsregion
+    if (as.numeric(input$kropp) %in% 1:8) {
+
+      data <- dataIN[, list(
+        n = ifelse(sum(grepl(paste0("^", valKropp(), ".*[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
+        gender = gender,
+        age = age,
+        aisMix = aisMix), by = ntrid]
+    }
+
+    ## Valg External and ogher (Hudskader og andre)
+    if (as.numeric(input$kropp) == 9){
+
+      data <- dataIN[, list(
+        n = ifelse(sum(grepl(paste0("^[90].*[", paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
+        gender = gender,
+        age = age,
+        aisMix = aisMix), by = ntrid]
+
+    }
+
+    data[n == 1, ]
+
   })
+
 
   ## Tilleggsuttrekk Abdomen
   ##########################
@@ -381,21 +492,19 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
       data <- valgKropp()
 
     } else {
-      ## tar bort kolonn "n"
-      data <- valgKropp()[, list(valg = ifelse(
-        sum(grepl(paste0("^", kodeTillegg, ".*[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ","))))))) != 0, 1, 0),
+
+      data <- valgKropp()[, list(
+        n = ifelse(sum(grepl(paste0("^", kodeTillegg, ".*[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
-
-      data[, n := valg]
-
     }
 
+    data[n == 1, ]
 
-    dataUT <- data[n == 1]
-    return(dataUT)
   })
 
 
@@ -407,9 +516,9 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     req(input$skadegrad) #vises ingen hvis NULL
 
     spineValg <- switch(as.character(input$til_rygg),
-      '2' = "^6\\d{2}2.*",
-      "3" = "^6\\d{2}6.*",
-      "4" = "^6\\d{2}4.*"
+      '2' = {"^6\\d{2}2.*"},
+      '3' = {"^6\\d{2}6.*"},
+      '4' = {"^6\\d{2}4.*"}
     )
 
 
@@ -419,19 +528,18 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
     } else {
 
-      data <- valgKropp()[, list(valg = ifelse(
-        sum(grepl(paste0(spineValg, "[", paste(valSkade(), collapse = ""), "]$"),
-          as.character(toString(trimws(unlist(strsplit(aisMix, split = ",")))))), na.rm = TRUE) != 0, 1, 0),
+      data <- valgKropp()[, list(
+        n = ifelse(sum(grepl(paste0(spineValg, "[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
         gender = gender,
         age = age,
         aisMix = aisMix), by = ntrid]
-
-      data[, n := valg]
-
     }
 
-    dataUT <- data[n == 1]
-    return(dataUT)
+    data[n == 1, ]
+
   })
 
 
@@ -441,22 +549,17 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   #####################################################
 
   ## Spine Tilleggsuttrekk - Cervicalcolumna
-  tilCerv <- eventReactive(input$til_cerv, {
+  tilCerv <- reactive({
 
     dataIN <- tilSpine()
 
-    kode_skjelett <- "^6502[1-3][024678].*[23]$"
-    kode_rygg <- "^6402.*[3-6]$"
-
-    ## Lager subset data
-    ## kode er skjelettskader og kode2 ryggmargsskade
-
+    ## kode å velge
     kode_skjelett <- "^6502[1-3][024678].*[23]$"
     kode_rygg <- "^6402.*[3-6]$"
 
     ## Lager subset data
     ## kode er skjelettskader og kode1 ryggmargsskade
-    dataSK <- dataIN[, list(
+    dataValg <- dataIN[, list(
       kode = ifelse(
         sum(grepl(kode_skjelett,
           trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
@@ -468,7 +571,9 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
       age = age), by = ntrid]
 
     ## kode1 == 1 hvis begge skjelettskader og ryggmargsskade
-    dataSK[, kode2 := ifelse(kode == 1 & kode1 == 1, 1, 0), by = ntrid]
+    dataSK <- dataValg[, list(kode2 = ifelse(kode == 1 & kode1 == 1, 1, 0),
+      gender = gender, age = age, kode = kode, kode1 = kode1), by = ntrid]
+
 
     if (as.numeric(input$til_cerv) == 1){
       data <- dataIN
@@ -480,25 +585,24 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
       data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
     }
 
-
-    dataUT <- data[n == 1]
-    return(dataUT)
+    data[n == 1, ]
 
   })
 
 
   ## Spine tilleggsuttrekk - Lumbalcolumna
-  tilLumb <- eventReactive(input$til_lumb, {
+  tilLumb <- reactive({
 
     dataIN <- tilSpine()
 
+    ## kode å velge
     kode_skjelett <- "^6506[1-3][024678].*[23]$"
     kode_rygg <- "^6406.*[3-5]$"
 
 
     ## Lager subset data
     ## kode er skjelettskader og kode1 ryggmargsskade
-    dataSK <- dataIN[, list(
+    dataValg <- dataIN[, list(
       kode = ifelse(
         sum(grepl(kode_skjelett,
           trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
@@ -511,77 +615,150 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
 
     ## kode1 == 1 hvis begge skjelettskader og ryggmargsskade
-    dataSK[, kode2 := ifelse(kode == 1 & kode1 == 1, 1, 0), by = ntrid]
+    dataSK <- dataValg[, list(kode2 = ifelse(kode == 1 & kode1 == 1, 1, 0),
+      gender = gender, age = age, kode = kode, kode1 = kode1), by = ntrid]
 
     data <- switch(as.character(input$til_lumb),
-      "1" = dataIN,
-      "2" = dataSK[kode == 1 & kode2 == 0,
+      "1" = {dataIN},
+      "2" = {dataSK[kode == 1 & kode2 == 0,
         list(n = 1, gender = gender, age = age),
-        by = ntrid],
-      "3" = dataSK[kode1 == 1,
+        by = ntrid]},
+      "3" = {dataSK[kode1 == 1,
         list(n = 1, gender = gender, age = age),
-        by = ntrid]
+        by = ntrid]}
     )
 
+    data[n == 1, ]
 
-    ## if (as.numeric(input$til_lumb) == 1){
-    ##   data <- dataIN
-    ## } else if (as.numeric(input$til_lumb) == 2){
-    ##   ## bare de med skjelettskader uten rygmargsskade
-    ##   data <- dataSK[kode == 1 & kode2 == 0,
-    ##     list(n = 1, gender = gender, age = age), by = ntrid]
-    ## } else {
-    ##   data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
-    ## }
-
-    dataUT <- data[n == 1]
-    return(dataUT)
   })
 
 
-  ## ## Spine tilleggsuttrekk - Thoracalcolumna
-  ## tilThor <- eventReactive(input$til_thor, {
+  ## Spine tilleggsuttrekk - Thoracalcolumna
+  tilThor <- reactive({
 
-  ##   dataIN <- regData()
+    dataIN <- tilSpine()
 
-  ##   kode_skjelett <- "^6504[1-3][024678].*[23]$"
-  ##   kode_rygg <- "^6404.*[3-5]$"
+    ## kode å velge
+    kode_skjelett <- "^6504[1-3][024678].*[23]$"
+    kode_rygg <- "^6404.*[3-5]$"
 
-  ##   ## kode er skjelettskader og kode2 ryggmargsskade
-  ##   dataSK <- dataIN[, list(
-  ##     kode = ifelse(
-  ##       sum(grepl(kode_skjelett,
-  ##         trimws(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
-  ##     kode2 = ifelse(
-  ##       sum(grepl(kode_rygg,
-  ##         trimws(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
-  ##     ntrid = ntrid,
-  ##     gender = gender,
-  ##     age = age), by = ntrid]
+    ## Lager subset data
+    ## kode er skjelettskader og kode1 ryggmargsskade
+    dataValg <- dataIN[, list(
+      kode = ifelse(
+        sum(grepl(kode_skjelett,
+          trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
+      kode1 = ifelse(
+        sum(grepl(kode_rygg,
+          trimws(unlist(strsplit(aisMix, split = ",")))), na.rm = TRUE) != 0, 1, 0),
+      ntrid = ntrid,
+      gender = gender,
+      age = age), by = ntrid]
 
-  ##   #kode1 0 hvis begge skjelettskader og ryggmargsskade
-  ##   dataSK[, kode1 := kode, by = ntrid]
-  ##   dataSK[, kode1 := ifelse(kode == 1 && kode2 == 1, 0, kode), by = ntrid]
+    ## kode1 == 1 hvis begge skjelettskader og ryggmargsskade
+    dataSK <- dataValg[, list(kode2 = ifelse(kode == 1 & kode1 == 1, 1, 0),
+      gender = gender, age = age, kode = kode, kode1 = kode1), by = ntrid]
 
-  ##   if (as.numeric(input$til_thor) == 1){
-  ##     data <- tilSpine()
-  ##   } else if (as.numeric(input$til_thor) == 2){
-  ##     data <- dataSK[kode1 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
-  ##   } else {
-  ##     data <- dataSK[kode2 == 1, list(n = 1, gender = gender, age = age), by = ntrid]
-  ##   }
+    data <- switch(as.character(input$til_thor),
+      "1" = {dataIN},
+      "2" = {dataSK[kode == 1 & kode2 == 0,
+        list(n = 1, gender = gender, age = age), by = ntrid]},
+      "3" = {dataSK[kode1 == 1,
+        list(n = 1, gender = gender, age = age), by = ntrid]}
+    )
 
-  ##   dataUT <- data[n == 1]
-  ##   return(dataUT)
-  ## })
+    data[n == 1, ]
+
+  })
 
 
-  ## ## hvis tillegg !=1 så velge output fra tillegg input
-  ## ## ellers velger valgKropp
+  ## Lower Extremities
+  ## =========================
+  tilLowext <- reactive({
 
-  ## ###########
-  ## ## Andel ##
-  ## ###########
+    req(input$skadegrad) #vises ingen hvis NULL
+
+    ## Tilleggkoder
+    valgBekken <- "^856"
+    valgFemur <- "^853"
+    valgTibia <- "^854[0-3]"
+
+    ## Kode om bekken og femu / tibiafrakturer
+    if (as.numeric(input$til_lowext) != 1){
+
+      data <- valgKropp()[, list(
+        bekken = ifelse(sum(grepl(paste0(valgBekken, ".*[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
+        femur = ifelse(sum(grepl(paste0(valgFemur, ".*[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
+        tibia = ifelse(sum(grepl(paste0(valgTibia, ".*[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
+        gender = gender,
+        age = age,
+        aisMix = aisMix), by = ntrid]
+
+      data[femur == 1 | tibia == 1 , femtib := 1]
+
+    }
+
+    data <- switch(input$til_lowext,
+      "1" = { valgKropp() },
+      "2" = { data[, list(n = bekken, gender = gender, age = age, aisMix = aisMix)]},
+      "3" = { data[, list(n = femtib, gender = gender, age = age, aisMix = aisMix)]}
+    )
+
+    data[n == 1, ]
+
+  })
+
+
+  ## External and other
+  ## ======================
+  tilHud <- reactive({
+
+    req(input$skadegrad)
+
+    valgBrann <- "^9120"
+    valgHypo <- "^01"
+
+    kodeTillegg <- ifelse(as.numeric(input$til_hud) == 2, valgBrann, valgHypo)
+
+    if (as.numeric(input$til_hud) == 1){
+
+      data <- valgKropp()
+
+    } else {
+
+      data <- valgKropp()[, list(
+        n = ifelse(sum(grepl(paste0("^", kodeTillegg, ".*[",
+          paste(valSkade(), collapse = ""), "]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
+        gender = gender,
+        age = age,
+        aisMix = aisMix), by = ntrid]
+
+    }
+
+    data[n == 1, ]
+
+
+  })
+
+
+
+  ## hvis tillegg !=1 så velge output fra tillegg input
+  ## ellers velger valgKropp
+
+  ###########
+  ## Andel ##
+  ###########
 
   ## ## Inkluderer Grad 1 eller ikke til å beregne andel
   ## andelGradAlle  <- reactive({
@@ -589,51 +766,80 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   ##   dataIN <- regData()
 
   ##   if (input$skadegrad1){
+
   ##     andelG <- dataIN[, list(n = ifelse(
-  ##       sum(grepl(".*[2-6]$", as.character(unlist(
-  ##         strsplit(aisMix, split = ","))))) != 0, 1, 0)), by = ntrid]
+  ##       sum(grepl(".*[1-6]$", as.character(unlist(
+  ##         strsplit(aisMix, split = ",")))), na.rm=TRUE) != 0, 1, 0)), by = ntrid]
 
   ##   } else {
 
   ##     andelG <- dataIN[, list(n = ifelse(
-  ##       sum(grepl(".*[1-6]$", as.character(unlist(
-  ##         strsplit(aisMix, split = ","))))) != 0, 1, 0)), by = ntrid]
+  ##       sum(grepl(".*[2-6]$", as.character(unlist(
+  ##         strsplit(aisMix, split = ",")))), na.rm=TRUE) != 0, 1, 0)), by = ntrid]
+
   ##   }
   ##   andelG[, sum(n, na.rm = TRUE)]
   ## })
 
-  ## ## Andell med grad 1 eller ikke for spesifiserte kroppsregion
-  ## andelGradKropp <- reactive({
+  ## Andell med grad 1 eller ikke for spesifiserte kroppsregion
 
-  ##   dataIN <- regData()
+  valgInfo <- eventReactive(input$regnButton, {
 
-  ##   if (input$skadegrad1){
+    if (as.numeric(input$kropp) == 10) {
+      kroppReg <- ".*"
+    }
 
-  ##     andelG <- dataIN[, list(n = ifelse(
-  ##       sum(grepl(paste0("^", valKropp(), ".*[2-6]$"),
-  ##         as.character(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
-  ##       gender = gender, aisMix = aisMix), by = ntrid]
+    if (as.numeric(input$kropp) %in% 1:8) {
+      kroppReg <- paste0("^", input$kropp, ".*")
+    }
 
-  ##   } else {
+    if (as.numeric(input$kropp) == 9) {
+      kroppReg <- "^[90].*"
+    }
 
-  ##     andelG <- dataIN[, list(n = ifelse(
-  ##       sum(grepl(paste0("^", valKropp(), ".*[1-6]$"),
-  ##         as.character(unlist(strsplit(aisMix, split = ","))))) != 0, 1, 0),
-  ##       gender = gender, aisMix = aisMix), by = ntrid]
+    kroppReg
 
-  ##   }
+  })
 
-  ##   data <- andelG[, sum(n, na.rm = TRUE)]
-  ##   return(data)
-  ## })
+  andelGradKropp <- eventReactive(input$regnButton, {
 
-  ## ## Data Ut observe
-  ## ###################
+    dataIN <- regData()
+    kroppReg <- valgInfo()
 
-  ## ############
-  ## ## Tabell ##
-  ## ############
-  tabUT <- reactive({
+    if (input$skadegrad1){
+
+      andelG <- dataIN[, list(
+        n = ifelse(sum(grepl(paste0(kroppReg, "[1-6]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
+        gender = gender,
+        aisMix = aisMix,
+        age = age), by = ntrid]
+
+    } else {
+
+      andelG <- dataIN[, list(
+        n = ifelse(sum(grepl(paste0(kroppReg, "[1-6]$"),
+          as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+          na.rm = TRUE) != 0, 1, 0),
+        gender = gender,
+        aisMix = aisMix,
+        age = age), by = ntrid]
+
+    }
+
+    andelG[, sum(n, na.rm = TRUE)]
+    ## andelG
+  })
+
+
+  ## Data Ut observe
+  ###################
+
+  ############
+  ## Tabell ##
+  ############
+  tabUT <- eventReactive(input$regnButton, {
 
     req(input$skadegrad) #vises ingen hvis NULL
 
@@ -649,66 +855,133 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
       Sys.sleep(0.5)
     }
 
-    ##   ## Valg data
-    ##   ## if (as.numeric(input$kropp) %in% c(1:4, 10)){
-    ##   ##   dataUT <- valgKropp()
-    ##   ## } else if (as.numeric(input$kropp) == 5 & as.numeric(input$til_abdomen) %in% 1:3){
-    ##   ##   dataUT <- tilAbdomen()
-    ##   ## } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) %in% 1:4) {
-    ##   ##   dataUT <- tilSpine()
-    ##   ## } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 2 & as.numeric(input$til_cerv) %in% 1:3){
-    ##   ##   dataUT <- tilCerv()
-    ##   ## } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 3 & as.numeric(input$til_lumb) %in% 1:3){
-    ##   ##   dataUT <- tilLumb()
-    ##   ## } else if (as.numeric(input$kropp) == 6 & as.numeric(input$til_rygg) == 4 & as.numeric(input$til_thor) %in% 1:3){
-    ##   ##   dataUT <- tilThor()
-    ##   ## }
-
 
     ## Valg data
-    if (as.numeric(input$kropp) %in% c(1:4, 10)){
+    ## ===============================
+    ## Head, Face, Neck, Thorax, Upper extremities
+    if (as.numeric(input$kropp) %in% c(1:4, 7, 10)){
       dataUT <- valgKropp()
     }
 
+    ## Abdomen
     if (as.numeric(input$kropp) == 5 && as.numeric(input$til_abdomen) %in% 1:3){
       dataUT <- tilAbdomen()
     }
 
+    ## Spine
     if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) %in% 1:4) {
       dataUT <- tilSpine()
     }
-
+    ## Tillegg Spine - Cervicalcolumna
     if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 2 && as.numeric(input$til_cerv) %in% 1:3){
       dataUT <- tilCerv()
     }
-
+    ## Tillegg Spine - Lumbalcolumna
     if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 3 && as.numeric(input$til_lumb) %in% 1:3){
       dataUT <- tilLumb()
     }
-
+    ## Tillegg Spine - Thoracalcolumna
     if (as.numeric(input$kropp) == 6 && as.numeric(input$til_rygg) == 4 && as.numeric(input$til_thor) %in% 1:3){
       dataUT <- tilThor()
     }
 
-    return(dataUT)
+    ## Lower extremities (Ben)
+    if (as.numeric(input$kropp) == 8 && as.numeric(input$til_lowext) %in% 1:3){
+      dataUT <- tilLowext()
+    }
+
+
+    ## External and others (Hud)
+    if (as.numeric(input$kropp) == 9 && as.numeric(input$til_hud) %in% 1:3){
+      dataUT <- tilHud()
+    }
+
+    dataUT
 
   })
 
 
-  ##################
-  ###### TEST ######
-  ##################
+  ## Figur
+  ##########################
+  ## Viser eller skjule plot
+  gg <- reactiveValues(visPlot = FALSE)
 
-  output$test <- renderPrint({
-    ## str(regData())
-    str(tabUT())
+  observeEvent(input$regnButton, {
+    ## 0 = FALSE og 1 = TRUE
+    gg$visPlot <- input$regnButton
+  })
+
+  observeEvent(input$resetButton, {
+    gg$visPlot <- FALSE
+  })
+
+  ## Plot alder og kjønn
+  output$fig <- renderPlot({
+
+    if (gg$visPlot == FALSE) return()
+
+    isolate({
+      plot <- fun.plotAS(tabUT())
+      print(plot$plot)
+    })
+  })
+
+  ## Tabell for alder og kjønn
+  output$tabell <- DT::renderDT({
+
+    if (gg$visPlot == FALSE) return()
+
+    isolate({
+      plot <- fun.plotAS(tabUT())
+      plot$data
+    })
 
   })
 
-  output$test2 <- renderPrint({
-    ## str(valgKropp())
-    str(dataUlykke())
-
+  ## Tall som skal vises
+  ######################
+  prosInfo <- eventReactive(input$regnButton, {
+    no1 <- uniqueN(tabUT()$ntrid)
+    no2 <- andelGradKropp()
+    pros <- format(no1 / no2 * 100, digits = 1)
+    paste0("Total (%) : ", no1, " (", pros, "%) av valgt kroppsregion")
   })
+
+  output$info_antall <- renderText({
+    prosInfo()
+  })
+
+  output$info_mann <- renderText({
+
+    nn <- tabUT()[gender == 1, .N]
+    paste0("Antall menn : ", nn)
+  })
+
+
+  output$info_kvinne <- renderText({
+
+    nn <- tabUT()[gender == 2, .N]
+    paste0("Antall kvinner : ", nn)
+  })
+
+
+  ## ##################
+  ## ###### TEST ######
+  ## ##################
+
+  ## output$test <- renderPrint({
+  ##   ## str(regData())
+  ##   str(tabUT())
+  ##   ## regData()[aisMix == "", .N]
+  ##   tabUT()[n == 1, ]
+
+  ## })
+
+  ## output$test2 <- renderPrint({
+  ##   str(andelGradKropp())
+  ##   ## str(regData()[!duplicated(ntrid), ])
+  ##   ## str(tilLowext())
+  ##   str(valgKropp())
+  ## })
 
 }

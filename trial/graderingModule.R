@@ -1029,7 +1029,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     no1 <- uniqueN(tabUT()$ntrid)
     no2 <- andelGradKropp()
     pros <- format(no1 / no2 * 100, digits = 1)
-    paste0("Total (%) : ", no1, " (", pros, "%)")
+    paste0("Total (%) : ", no1, " (", pros, "%) av valgt kroppregion")
   })
 
   output$info_antall <- renderText({
