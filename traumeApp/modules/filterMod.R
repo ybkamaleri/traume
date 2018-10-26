@@ -238,7 +238,7 @@ filterSV <- function(input, output, session, resh, data){
 
 
   ## Bruk funksjon fra fil plotAgeSex
-  dataUT <- eventReactive(input$runButton, {
+  dataUT <- reactive({
 
     if (input$alder_kat){
       valgUT <- fun.plotAS(dataFil(), TRUE)
@@ -251,7 +251,7 @@ filterSV <- function(input, output, session, resh, data){
   ## Info
   ###################
   ## Data kilder som brukes
-  outKilde <- eventReactive(input$runButton, {
+  outKilde <- reactive({
     if (input$valgLevel01 == 1){
       valgUnit <-  paste0("Tall for hele landet")
     }else{
