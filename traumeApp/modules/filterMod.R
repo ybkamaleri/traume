@@ -248,6 +248,19 @@ filterSV <- function(input, output, session, resh, data){
     valgUT
   })
 
+  ## Viser eller skjulder figur og tekst
+  ## ===================================
+  gg <- reactiveValues(visPlot = FALSE)
+
+  observeEvent(input$runButton, {
+    gg$visPlot <- input$runButton
+  })
+
+  observeEvent(input$resetButton, {
+    gg$visPlot <- FALSE
+  })
+
+
   ## Info
   ###################
   ## Data kilder som brukes
@@ -260,23 +273,59 @@ filterSV <- function(input, output, session, resh, data){
   })
 
   output$kilde <- renderText({
-    outKilde()
 
+    if (gg$visPlot == FALSE) return()
+
+    isolate({
+      outKilde()
+    })
   })
+
+  ## output$kilde <- renderText({
+  ##   outKilde()
+
+  ## })
 
   output$traume_info <- renderText({
-    paste0("Antall traume: ", uniqueN(dataFil()$ntrid))
+
+    if (gg$visPlot == FALSE) return()
+    isolate({
+      paste0("Antall traume: ", uniqueN(dataFil()$ntrid))
+    })
   })
+
+  ## output$traume_info <- renderText({
+  ##   paste0("Antall traume: ", uniqueN(dataFil()$ntrid))
+  ## })
 
   output$mann_info <- renderText({
-    data <- dataFil()[!duplicated(ntrid) & gender == 1, .N]
-    paste0("Antall menn: ", data)
+
+    if (gg$visPlot == FALSE) return()
+
+    isolate({
+      data <- dataFil()[!duplicated(ntrid) & gender == 1, .N]
+      paste0("Antall menn: ", data)
+    })
   })
 
+  ## output$mann_info <- renderText({
+  ##   data <- dataFil()[!duplicated(ntrid) & gender == 1, .N]
+  ##   paste0("Antall menn: ", data)
+  ## })
+
   output$kvinne_info <- renderText({
-    data <- dataFil()[!duplicated(ntrid) & gender == 2, .N]
-    paste0("Antall kvinner: ", data)
+
+    if (gg$visPlot == FALSE) return()
+    isolate({
+      data <- dataFil()[!duplicated(ntrid) & gender == 2, .N]
+      paste0("Antall kvinner: ", data)
+    })
   })
+
+  ## output$kvinne_info <- renderText({
+  ##   data <- dataFil()[!duplicated(ntrid) & gender == 2, .N]
+  ##   paste0("Antall kvinner: ", data)
+  ## })
 
   
   ## Plot alder og kjønn
