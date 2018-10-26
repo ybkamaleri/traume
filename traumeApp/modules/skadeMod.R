@@ -237,14 +237,15 @@ skadeUI <- function(id){
         textOutput(ns("info_mann")),
         tags$br(),
         textOutput(ns("info_kvinne"))
-      ))
+      )),
 
-    ## fluidRow(
-    ##   verbatimTextOutput(ns("test"))
-    ## ),
-    ## fluidRow(
-    ##   verbatimTextOutput(ns("test2"))
-    ## )
+    fluidRow(
+      verbatimTextOutput(ns("test"))
+    ),
+
+    fluidRow(
+      verbatimTextOutput(ns("test2"))
+    )
   )
 }
 
@@ -339,6 +340,9 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   regDataUK <- reactive({
 
     regDT = dataMod()[!duplicated(ntrid) & !is.na(ntrid), valgCol, with = FALSE]
+
+    ## For testing
+    ## regDT[, alleUT := 1]
 
     ## Legg alle type ulykke - alleUT : alle ulykke typer
     #######################################################
@@ -970,19 +974,13 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   ## ###### TEST ######
   ## ##################
 
-  ## output$test <- renderPrint({
-  ##   ## str(regData())
-  ##   str(tabUT())
-  ##   ## regData()[aisMix == "", .N]
-  ##   tabUT()[n == 1, ]
+  output$test <- renderPrint({
+    regDataUK()
 
-  ## })
+     })
 
-  ## output$test2 <- renderPrint({
-  ##   str(andelGradKropp())
-  ##   ## str(regData()[!duplicated(ntrid), ])
-  ##   ## str(tilLowext())
-  ##   str(valgKropp())
-  ## })
+  output$test2 <- renderPrint({
+    dataMod()
+  })
 
 }

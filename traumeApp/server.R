@@ -95,7 +95,7 @@ function(input, output, session){
   ##################
   callModule(module = skadeSV,
     id = "skade",
-    valgDT = dataClean,
+    valgDT = dataClean, # masterFile for TEST DATA!!!
     dataUK = ulykke,
     dataSK = skade)
 
@@ -117,7 +117,7 @@ function(input, output, session){
   ## ====================
   output$test <- renderPrint({
     str(dataClean$data)
-    length(ulykkeDT$data)
+    dataClean$data
   })
 
   session$onSessionEnded(stopApp)
