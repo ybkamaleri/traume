@@ -249,8 +249,9 @@ skadeUI <- function(id){
 }
 
 
-
-###################### SERVER ###############################
+#####################
+###    SERVER     ###
+#####################
 
 skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 

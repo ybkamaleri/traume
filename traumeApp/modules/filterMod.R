@@ -48,8 +48,19 @@ filterUI <- function(id){
 
       box(width = 3, height = 165, background = "light-blue",
         tags$h4("Bruk valgte spesifikasjoner?"),
-        actionButton(ns("runButton"), label = "OK",
-          style = 'padding:5px 30px; border: none; text-align: center; font-size:15px;' ),
+        column(
+          id = "Butang",
+          width = 6,
+          actionButton(ns("runButton"), label = "OK")
+        ),
+        column(
+          id = "Butang",
+          width = 6,
+          actionButton(ns("resetButton"), label = "Reset")
+        ),
+
+        ## actionButton(ns("runButton"), label = "OK",
+        ##   style = 'padding:5px 30px; border: none; text-align: center; font-size:15px;' ),
         htmlOutput(ns("txtList"))
       )
     ),
@@ -90,13 +101,18 @@ filterUI <- function(id){
   )
 }
 
-
+########################
 ####### SERVER #########
+########################
 
 filterSV <- function(input, output, session, resh, data){
 
   ns <- session$ns
 
+
+
+  ## Dynamisk input
+  ## ==============
   navnLevel <- reactive({
     switch(as.character(input$valgLevel01),
       '2' = unique(resh$RHF),
@@ -114,10 +130,13 @@ filterSV <- function(input, output, session, resh, data){
 
   ## oppdaterer liste over RHF, HF eller Sykehus
   observeEvent(input$valgLevel01, {
+
+    unitLength <- navnLevel()
+    valgUnit <- unitLength[sample(1:length(unitLength), 1)]
     updateSelectInput(session, "valgLevel02",
       label = valgNavn(),
       choices = sort(navnLevel()),
-      selected = "")
+      selected = valgUnit)
   })
 
   ## Tekst for utvalg filter
@@ -144,6 +163,8 @@ filterSV <- function(input, output, session, resh, data){
 
 
   })
+
+
 
   ## text til videre visning
   ## =======================
@@ -255,6 +276,26 @@ filterSV <- function(input, output, session, resh, data){
   observeEvent(input$runButton,{
     var$data <- dataFil()
     var$txt <- txt()
+  })
+
+
+  ## Reset
+  ## ======
+  initialInputs <- isolate(reactiveValuesToList(input))
+
+  observe({
+    # OPTIONAL - save initial values of dynamic inputs
+    inputValues <- reactiveValuesToList(input)
+    initialInputs <<- utils::modifyList(inputValues, initialInputs)
+  })
+
+  observeEvent(input$resetButton, {
+    for (id in names(initialInputs)) {
+      value <- initialInputs[[id]]
+      # For empty checkboxGroupInputs
+      if (is.null(value)) value <- ""
+      session$sendInputMessage(id, list(value = value))
+    }
   })
 
   return(var)

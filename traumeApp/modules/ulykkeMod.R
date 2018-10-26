@@ -42,8 +42,32 @@ ulykkeUI <- function(id){
   )
 }
 
+#####################
+###    SERVER     ###
+#####################
 
 ulykkeSV <- function(input, output, session, valgDT, data){
+
+
+  ## Reset
+  ## ======
+  initialInputs <- isolate(reactiveValuesToList(input))
+
+  observe({
+    # OPTIONAL - save initial values of dynamic inputs
+    inputValues <- reactiveValuesToList(input)
+    initialInputs <<- utils::modifyList(inputValues, initialInputs)
+  })
+
+  observeEvent(input$resetButton, {
+    for (id in names(initialInputs)) {
+      value <- initialInputs[[id]]
+      # For empty checkboxGroupInputs
+      if (is.null(value)) value <- ""
+      session$sendInputMessage(id, list(value = value))
+    }
+  })
+
 
   ## filtert data for å velge ntrid valgDT henter data fra filterModule. Bruk is.null
   ## hvis ingen data ikke er filtert enda
