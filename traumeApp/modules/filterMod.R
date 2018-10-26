@@ -24,7 +24,7 @@ filterUI <- function(id){
       box(width = 3, height = 165, status = "info",
         dateRangeInput(inputId = ns("tidsrom_in"),
           label = "Valg dato fra og til",
-          start = Sys.Date() - 175, #alt. min date
+          start = Sys.Date() - 360, #alt. min date
           end = Sys.Date(),
           separator = "til",
           format = "dd.mm.yyyy",

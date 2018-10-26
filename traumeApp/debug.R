@@ -5,6 +5,7 @@ runApp(appDir)
 
 
 ## Testing
+runApp(appDir, display.mode = "showcase")
 
 ## Hvis ikke allerede installert
 library(devtools)

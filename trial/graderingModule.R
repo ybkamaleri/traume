@@ -15,8 +15,8 @@ invisible(sapply(list.files('~/Git-work/traume/traumeApp/functions', full.names 
 ## lager tilfeldig utvalg
 ## dummy <- data.table(a = 1:10, b = 1:10)
 txt <- "Test tekst <br> test 0123 <br> bla bla bla"
-DT <- masterFile[sample(.N, 5000)]
-dataSelect <- list(data = masterFile, txt = txt)
+DT <- masterFile[sample(.N, 0)] ## empty data
+dataSelect <- list(data = DT, txt = txt)
 
 ############### Module UI #######################
 
@@ -352,6 +352,9 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
   ## Valg relevant kolonner og bort med duplicated id og NA
   regDataUK <- reactive({
+    validate(
+      need(nrow(valgDT$data) != 0, "Det ikke finnes data for utvalgte parameter")
+    )
 
     regDT = dataMod()[!duplicated(ntrid) & !is.na(ntrid), valgCol, with = FALSE]
 

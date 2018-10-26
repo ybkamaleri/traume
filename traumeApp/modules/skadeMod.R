@@ -303,7 +303,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
       dataIN <- as.data.table(valgDT$data)
     }
 
-   dataIN[, list(ntrid)]
+    dataIN[, list(ntrid)]
 
   })
 
@@ -338,6 +338,10 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
   ## Valg relevant kolonner og bort med duplicated id og NA
   regDataUK <- reactive({
+
+    validate(
+      need(nrow(valgDT$data) != 0, "Det ikke finnes data for utvalgte parameter")
+    )
 
     regDT = dataMod()[!duplicated(ntrid) & !is.na(ntrid), valgCol, with = FALSE]
 
@@ -926,6 +930,10 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     if (gg$visPlot == FALSE) return()
 
     isolate({
+      validate(
+        need(nrow(valgDT$data) != 0, "Det finnes ikke data for utvalgte parameter")
+      )
+
       plot <- fun.plotAS(tabUT())
       print(plot$plot)
     })
@@ -937,6 +945,10 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     if (gg$visPlot == FALSE) return()
 
     isolate({
+      validate(
+        need(nrow(valgDT$data) != 0, "Det finnes ikke data for utvalgte parameter")
+      )
+
       plot <- fun.plotAS(tabUT())
       plot$data
     })
@@ -953,6 +965,9 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   })
 
   output$info_antall <- renderText({
+    validate(
+      need(nrow(valgDT$data) != 0, "Ingen data!")
+    )
     prosInfo()
   })
 
