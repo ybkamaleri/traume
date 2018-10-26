@@ -327,17 +327,34 @@ filterSV <- function(input, output, session, resh, data){
   ##   paste0("Antall kvinner: ", data)
   ## })
 
-  
+
   ## Plot alder og kjønn
   output$fig <- renderPlot({
-    plotUT <- dataUT()$plot
-    print(plotUT)
+    if (gg$visPlot == FALSE) return()
+
+    isolate({
+      plotUT <- dataUT()$plot
+      print(plotUT)
+    })
+
   })
+
+  ## output$fig <- renderPlot({
+  ##   plotUT <- dataUT()$plot
+  ##   print(plotUT)
+  ## })
 
   ## Tabell for alder og kjønn
   output$tabell <- DT::renderDT({
-    dataUT()$data
+    if (gg$visPlot == FALSE) return()
+    isolate({
+      dataUT()$data
+    })
   })
+
+  ## output$tabell <- DT::renderDT({
+  ##   dataUT()$data
+  ## })
 
   ## return data
   var <- reactiveValues()
@@ -346,8 +363,6 @@ filterSV <- function(input, output, session, resh, data){
     var$data <- dataFil()
     var$txt <- txt()
   })
-
-
 
   return(var)
   ## return(reactive({data <- dataFil()}))
