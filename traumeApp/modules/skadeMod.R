@@ -237,15 +237,15 @@ skadeUI <- function(id){
         textOutput(ns("info_mann")),
         tags$br(),
         textOutput(ns("info_kvinne"))
-      )),
+      ))
 
-    fluidRow(
-      verbatimTextOutput(ns("test"))
-    ),
+    ## fluidRow(
+    ##   verbatimTextOutput(ns("test"))
+    ## ),
 
-    fluidRow(
-      verbatimTextOutput(ns("test2"))
-    )
+    ## fluidRow(
+    ##   verbatimTextOutput(ns("test2"))
+    ## )
   )
 }
 
@@ -989,13 +989,13 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   ## ###### TEST ######
   ## ##################
 
-  output$test <- renderPrint({
-    regDataUK()
+  ## output$test <- renderPrint({
+  ##   regDataUK()
 
-     })
+  ##    })
 
-  output$test2 <- renderPrint({
-    dataMod()
-  })
+  ## output$test2 <- renderPrint({
+  ##   dataMod()
+  ## })
 
 }

@@ -71,33 +71,14 @@ filterUI <- function(id){
           tabPanel("Figur", plotOutput(ns("fig"))),
           tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
       ),
-      ## column(width = 3,
-      ##   fluidRow(
-      ##     box(width = 12,
-      ##       background = "orange",
-      ##       textOutput(ns("kilde")))),
-      ##   fluidRow(
-      ##     box(width = 12, background = "navy",
-      ##       textOutput(ns("traume_info")))),
-      ##   fluidRow(
-      ##     box(width = 12, background = "navy",
-      ##       textOutput(ns("mann_info")))),
-      ##   fluidRow(
-      ##     box(width = 12, background = "navy",
-      ##       textOutput(ns("kvinne_info"))))
-      ## ),
+
+      ## Tall Info
       box(id = "filtInfo", width = 3,
         textOutput(ns("kilde")),
         textOutput(ns("traume_info")),
         textOutput(ns("mann_info")),
         textOutput(ns("kvinne_info")))
     )
-
-    ## fluidRow(
-    ##   infoBoxOutput(ns("traume_info")),
-    ##   infoBoxOutput(ns("mann_info")),
-    ##   infoBoxOutput(ns("kvinne_info"))
-    ## )
   )
 }
 
@@ -160,7 +141,6 @@ filterSV <- function(input, output, session, resh, data){
       input$alder_in[2], " år")
 
     HTML(paste0(valgUnit, br(), valgTid, br(), valgAge))
-
 
   })
 
@@ -263,7 +243,7 @@ filterSV <- function(input, output, session, resh, data){
 
   ## Info
   ###################
-  ## Data kilder som brukes
+  ## Data kilder som brukes og vises
   outKilde <- reactive({
     if (input$valgLevel01 == 1){
       valgUnit <-  paste0("Tall for hele landet")
@@ -281,11 +261,6 @@ filterSV <- function(input, output, session, resh, data){
     })
   })
 
-  ## output$kilde <- renderText({
-  ##   outKilde()
-
-  ## })
-
   output$traume_info <- renderText({
 
     if (gg$visPlot == FALSE) return()
@@ -293,10 +268,6 @@ filterSV <- function(input, output, session, resh, data){
       paste0("Antall traume: ", uniqueN(dataFil()$ntrid))
     })
   })
-
-  ## output$traume_info <- renderText({
-  ##   paste0("Antall traume: ", uniqueN(dataFil()$ntrid))
-  ## })
 
   output$mann_info <- renderText({
 
@@ -308,11 +279,6 @@ filterSV <- function(input, output, session, resh, data){
     })
   })
 
-  ## output$mann_info <- renderText({
-  ##   data <- dataFil()[!duplicated(ntrid) & gender == 1, .N]
-  ##   paste0("Antall menn: ", data)
-  ## })
-
   output$kvinne_info <- renderText({
 
     if (gg$visPlot == FALSE) return()
@@ -321,12 +287,6 @@ filterSV <- function(input, output, session, resh, data){
       paste0("Antall kvinner: ", data)
     })
   })
-
-  ## output$kvinne_info <- renderText({
-  ##   data <- dataFil()[!duplicated(ntrid) & gender == 2, .N]
-  ##   paste0("Antall kvinner: ", data)
-  ## })
-
 
   ## Plot alder og kjønn
   output$fig <- renderPlot({
@@ -339,11 +299,6 @@ filterSV <- function(input, output, session, resh, data){
 
   })
 
-  ## output$fig <- renderPlot({
-  ##   plotUT <- dataUT()$plot
-  ##   print(plotUT)
-  ## })
-
   ## Tabell for alder og kjønn
   output$tabell <- DT::renderDT({
     if (gg$visPlot == FALSE) return()
@@ -351,10 +306,6 @@ filterSV <- function(input, output, session, resh, data){
       dataUT()$data
     })
   })
-
-  ## output$tabell <- DT::renderDT({
-  ##   dataUT()$data
-  ## })
 
   ## return data
   var <- reactiveValues()
