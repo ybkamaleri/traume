@@ -277,6 +277,10 @@ filterSV <- function(input, output, session, resh, data){
     if (gg$visPlot == FALSE) return()
 
     isolate({
+      validate(
+        need(nrow(dataFil()) != 0, "Ingen data!")
+      )
+
       plotUT <- dataUT()$plot
       print(plotUT)
     })
@@ -287,6 +291,10 @@ filterSV <- function(input, output, session, resh, data){
   output$tabell <- DT::renderDT({
     if (gg$visPlot == FALSE) return()
     isolate({
+      validate(
+        need(nrow(dataFil()) != 0, "Ingen data!")
+      )
+
       dataUT()$data
     })
   })
