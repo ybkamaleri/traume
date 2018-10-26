@@ -204,8 +204,7 @@ skadeUI <- function(id){
       #####################
       box(
         width = 3,
-        ## tags$head(tags$style(
-        ##   "#Butang{padding:5px 30px; border: none; text-align: center; font-size:15px;}")),
+        background = "light-blue",
         htmlOutput(ns("txt")),
         column(
           id = "Butang",
@@ -224,19 +223,9 @@ skadeUI <- function(id){
           tabPanel("Figur", plotOutput(ns("fig"))),
           tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
       ),
-      box(id = "InfoRef",
+      box(id = "Info",
         width = 3,
-        title = "Tall referanse",
-        solidHeader = TRUE,
-        status = "primary",
-        background = "light-blue",
-        ## tags$head(tags$style(
-        ##   "#InfoRef{font-size: 16px; font-style: bold;}")),
-        textOutput(ns("info_antall")),
-        tags$br(),
-        textOutput(ns("info_mann")),
-        tags$br(),
-        textOutput(ns("info_kvinne"))
+        htmlOutput(ns("traumeInfo"))
       ))
 
     ## fluidRow(
@@ -964,24 +953,28 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     paste0("Total (%) : ", no1, " (", pros, "%) av valgt kroppsregion")
   })
 
-  output$info_antall <- renderText({
-    validate(
-      need(nrow(valgDT$data) != 0, "Ingen data!")
-    )
-    prosInfo()
-  })
+  ## Tekst Info
+  output$traumeInfo <- renderUI({
 
-  output$info_mann <- renderText({
+    if (gg$visPlot == FALSE) return()
 
-    nn <- tabUT()[gender == 1, .N]
-    paste0("Antall menn : ", nn)
-  })
+    isolate({
 
+      validate(
+        need(nrow(valgDT$data) != 0, "Ingen data!")
+      )
 
-  output$info_kvinne <- renderText({
+      dataMann <- tabUT()[gender == 1, .N]
+      dataKvinne <- tabUT()[gender == 2, .N]
 
-    nn <- tabUT()[gender == 2, .N]
-    paste0("Antall kvinner : ", nn)
+      kilde <- paste0("<h3>", "Tall referanse:", "</h3>")
+      ## nrTraume <- paste0("<h4>", prosInfo(), "</h4>")
+      nrMenn <- paste0("Antall menn: ", dataMann)
+      nrKvinner <- paste0("Antall kvinner: ", dataKvinne)
+
+      HTML(paste0(kilde, br(), prosInfo(), br(), nrMenn, br(), nrKvinner))
+    })
+
   })
 
 

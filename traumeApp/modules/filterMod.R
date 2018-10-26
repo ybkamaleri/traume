@@ -73,11 +73,13 @@ filterUI <- function(id){
       ),
 
       ## Tall Info
-      box(id = "filtInfo", width = 3,
-        textOutput(ns("kilde")),
-        textOutput(ns("traume_info")),
-        textOutput(ns("mann_info")),
-        textOutput(ns("kvinne_info")))
+      ## box(id = "filtInfo", width = 3,
+      ##   textOutput(ns("kilde")),
+      ##   textOutput(ns("traume_info")),
+      ##   textOutput(ns("mann_info")),
+      ##   textOutput(ns("kvinne_info"))),
+      box(id = "Info", width = 3,
+        htmlOutput(ns("traumeInfo")))
     )
   )
 }
@@ -252,40 +254,22 @@ filterSV <- function(input, output, session, resh, data){
     }
   })
 
-  output$kilde <- renderText({
+  output$traumeInfo <- renderUI({
 
     if (gg$visPlot == FALSE) return()
 
     isolate({
-      outKilde()
+      dataMann <- dataFil()[!duplicated(ntrid) & gender == 1, .N]
+      dataKvinne <- dataFil()[!duplicated(ntrid) & gender == 2, .N]
+
+      kilde <- paste0("<h3>", outKilde(), "</h3>")
+      nrTraume <- paste0("Antall traume: ", uniqueN(dataFil()$ntrid))
+      nrMenn <- paste0("Antall menn: ", dataMann)
+      nrKvinner <- paste0("Antall kvinner: ", dataKvinne)
+
+      HTML(paste0(kilde, br(), nrTraume, br(), nrMenn, br(), nrKvinner))
     })
-  })
 
-  output$traume_info <- renderText({
-
-    if (gg$visPlot == FALSE) return()
-    isolate({
-      paste0("Antall traume: ", uniqueN(dataFil()$ntrid))
-    })
-  })
-
-  output$mann_info <- renderText({
-
-    if (gg$visPlot == FALSE) return()
-
-    isolate({
-      data <- dataFil()[!duplicated(ntrid) & gender == 1, .N]
-      paste0("Antall menn: ", data)
-    })
-  })
-
-  output$kvinne_info <- renderText({
-
-    if (gg$visPlot == FALSE) return()
-    isolate({
-      data <- dataFil()[!duplicated(ntrid) & gender == 2, .N]
-      paste0("Antall kvinner: ", data)
-    })
   })
 
   ## Plot alder og kjønn
