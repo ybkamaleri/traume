@@ -217,6 +217,26 @@ filterSV <- function(input, output, session, resh, data){
     dataSub
   })
 
+  ## Reset Button
+  ## =============
+  initialInputs <- isolate(reactiveValuesToList(input))
+
+  observe({
+    # OPTIONAL - save initial values of dynamic inputs
+    inputValues <- reactiveValuesToList(input)
+    initialInputs <<- utils::modifyList(inputValues, initialInputs)
+  })
+
+  observeEvent(input$resetButton, {
+    for (id in names(initialInputs)) {
+      value <- initialInputs[[id]]
+      # For empty checkboxGroupInputs
+      if (is.null(value)) value <- ""
+      session$sendInputMessage(id, list(value = value))
+    }
+  })
+
+
   ## Bruk funksjon fra fil plotAgeSex
   dataUT <- eventReactive(input$runButton, {
 
@@ -279,24 +299,6 @@ filterSV <- function(input, output, session, resh, data){
   })
 
 
-  ## Reset
-  ## ======
-  initialInputs <- isolate(reactiveValuesToList(input))
-
-  observe({
-    # OPTIONAL - save initial values of dynamic inputs
-    inputValues <- reactiveValuesToList(input)
-    initialInputs <<- utils::modifyList(inputValues, initialInputs)
-  })
-
-  observeEvent(input$resetButton, {
-    for (id in names(initialInputs)) {
-      value <- initialInputs[[id]]
-      # For empty checkboxGroupInputs
-      if (is.null(value)) value <- ""
-      session$sendInputMessage(id, list(value = value))
-    }
-  })
 
   return(var)
   ## return(reactive({data <- dataFil()}))
