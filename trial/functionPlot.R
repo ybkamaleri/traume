@@ -1,3 +1,6 @@
+library(plotly)
+source("../traumeApp/functions/byttNA.R")
+
 ## for å lage plot
 
 plotreg <- function(x, kat = FALSE, bykat = 5){
@@ -85,7 +88,9 @@ plotreg <- function(x, kat = FALSE, bykat = 5){
     pthemes +
     scale_colour_manual(values = cols)
 
-  return(list(data = ageMK, plot = plotAT))
+  plotUT <- plotly::ggplotly(plotAT, tooltip = c("Alder", "n", "group"))
+
+  return(list(data = ageMK, plot = plotUT))
 
 }
 

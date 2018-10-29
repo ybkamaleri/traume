@@ -220,7 +220,7 @@ skadeUI <- function(id){
     fluidRow(
       box(width = 9,
         tabBox(side = 'left', selected = "Figur", width = 12,
-          tabPanel("Figur", plotOutput(ns("fig"))),
+          tabPanel("Figur", plotlyOutput(ns("fig"))),
           tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
       ),
       box(id = "Info",
@@ -914,7 +914,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   })
 
   ## Plot alder og kjønn
-  output$fig <- renderPlot({
+  output$fig <- renderPlotly({
 
     if (gg$visPlot == FALSE) return()
 
@@ -924,7 +924,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
       )
 
       plot <- fun.plotAS(tabUT())
-      print(plot$plot)
+      plot$plot
     })
   })
 

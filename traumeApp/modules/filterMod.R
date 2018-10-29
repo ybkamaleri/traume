@@ -48,6 +48,7 @@ filterUI <- function(id){
 
       box(width = 3, height = 165, background = "light-blue",
         tags$h4("Bruk valgte spesifikasjoner?"),
+        htmlOutput(ns("txtList")),
         column(
           id = "Butang",
           width = 6,
@@ -57,18 +58,14 @@ filterUI <- function(id){
           id = "Butang",
           width = 6,
           actionButton(ns("resetButton"), label = "Reset")
-        ),
-
-        ## actionButton(ns("runButton"), label = "OK",
-        ##   style = 'padding:5px 30px; border: none; text-align: center; font-size:15px;' ),
-        htmlOutput(ns("txtList"))
+        )
       )
     ),
 
     fluidRow(
       box(width = 9,
         tabBox(side = 'left', selected = "Figur", width = 12,
-          tabPanel("Figur", plotOutput(ns("fig"))),
+          tabPanel("Figur", plotlyOutput(ns("fig"))),
           tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
       ),
 
@@ -273,7 +270,7 @@ filterSV <- function(input, output, session, resh, data){
   })
 
   ## Plot alder og kjønn
-  output$fig <- renderPlot({
+  output$fig <- renderPlotly({
     if (gg$visPlot == FALSE) return()
 
     isolate({
@@ -281,8 +278,9 @@ filterSV <- function(input, output, session, resh, data){
         need(nrow(dataFil()) != 0, "Ingen data!")
       )
 
-      plotUT <- dataUT()$plot
-      print(plotUT)
+      ## plotUT <- dataUT()$plot
+      ## print(plotUT)
+      dataUT()$plot
     })
 
   })

@@ -21,7 +21,7 @@ fun.plotAS <- function(x, kat = FALSE, bykat = 5){
       labs <- paste0(c(paste(seq(lower, upper - by, by = by),
                              seq(lower + by - 1, upper - 1, by = by),
                              sep = sep),
-                       paste(top + 1, "+", sep = "")), " år")
+                       paste(top + 1, "+", sep = "")))
       cut(floor(x), breaks = c(seq(lower, upper, by = by), Inf),
           include.lowest = TRUE, right = FALSE, labels = labs)}
 
@@ -86,6 +86,8 @@ fun.plotAS <- function(x, kat = FALSE, bykat = 5){
     pthemes +
     scale_colour_manual(values = cols)
 
-  return(list(data = ageMK, plot = plotAT))
+  plotUT <- plotly::ggplotly(plotAT, tooltip = c("Alder", "n", "group"))
+
+  return(list(data = ageMK, plot = plotUT))
 
 }
