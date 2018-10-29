@@ -129,7 +129,7 @@ masterFile[, `:=` (timeSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S
 
 ## merge selected variables from masterFile to all files
 ##################################
-newName <- c("pt_id_ntr","ntrid","gender","age","dateAll","dateSykehus", "timeSykehus")
+newName <- c("pt_id_ntr","ntrid","gender","age","dateAll","dateSykehus", "timeSykehus", "hosp_serial_num")
 akutt[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
 intensiv[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
 prehosp[masterFile, on = .(HovedskjemaGUID), (newName) := mget(paste0("i.", newName))]
