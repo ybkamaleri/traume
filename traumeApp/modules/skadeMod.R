@@ -235,7 +235,7 @@ skadeUI <- function(id){
     ## fluidRow(
     ##   verbatimTextOutput(ns("test2"))
     ## )
-  )
+    )
 }
 
 
@@ -920,7 +920,8 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
     isolate({
       validate(
-        need(nrow(valgDT$data) != 0, "Det finnes ikke data for utvalgte parameter")
+        need(nrow(valgDT$data) != 0, "Det finnes ikke data for utvalgte parameter"),
+        need(nrow(tabUT()) != 0, "Det finnes ikke data for utvalgte parameter")
       )
 
       plot <- fun.plotAS(tabUT())
@@ -935,7 +936,8 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
     isolate({
       validate(
-        need(nrow(valgDT$data) != 0, "Det finnes ikke data for utvalgte parameter")
+        need(nrow(valgDT$data) != 0, "Det finnes ikke data for utvalgte parameter"),
+        need(nrow(tabUT()) != 0, "Det finnes ikke data for utvalgte parameter")
       )
 
       plot <- fun.plotAS(tabUT())
@@ -961,7 +963,8 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
     isolate({
 
       validate(
-        need(nrow(valgDT$data) != 0, "Ingen data!")
+        need(nrow(valgDT$data) != 0, "Ingen data!"),
+        need(nrow(tabUT()) != 0, "Ingen data!")
       )
 
       dataMann <- tabUT()[gender == 1, .N]
@@ -988,7 +991,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   ##    })
 
   ## output$test2 <- renderPrint({
-  ##   dataMod()
+  ##   tabUT()
   ## })
 
 }
