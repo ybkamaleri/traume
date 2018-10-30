@@ -1,0 +1,100 @@
+#+Title: NTR til Kvalitetsforbedringskonferansen 2018
+
+#+options: toc:nil author:nil
+
+* Filter
+Alle pasienter vi ønsker å rapportere på skal være tatt i mot med traumeteam; akuttmottaksskjema: «ed_tta =1»
+* Analyser
+
+1.Akuttmottaksskjema og traumeskjema.
+Røntgen thorax «xray_chst =1» utført ved første sykehus «hosp_serial_num = 1».
+Andel fordelt på HF /sykehus
+#+BEGIN_EXAMPLE
+  Spørsmål: Skal ukjent=3 og ikke valg=0 tas bort når summen skal telles. Dvs. bare
+  Ja=1 og Nei=2 som skal brukes til å regne andel. Ellers kan man overestimere eller
+  underestimere tallene iallefall hvis ukjent er regnes med.
+#+END_EXAMPLE
+
+
+2.Akuttmottaksskjema og traumeskjema.  Røntgen thorax «xray_chst =1» utført ved første
+sykehus «hosp_serial_num = 1», barn «Patient_Age <6 år» sammenlignet med de som ikke
+har fått rtg thorax«xray_chst =2». Andel fordelt på HF /sykehus
+#+BEGIN_EXAMPLE
+  Spørsmål: Er det å sammenligne barn < 6år som har xray_chst=1 mot barn som har
+  xray_chst=2? Dvs. subset data er barn < 6år. Det blir sikkrt få når det i tillegg
+  skal deles per HF og sykehus. Ellers hvordan ville du ha gjort skulle du gjøre
+  syntaxen i SPSS?
+#+END_EXAMPLE
+
+3.Akuttmottaksskjema, skadegraderingsskjema og traumeskjema.
+Røntgen thorax «xray_chst =1», utført på første sykehus «hosp_serial_num = 1» med ISS >15.
+Andel fordelt på HF /sykehus
+#+BEGIN_EXAMPLE
+  Gjelder samme spørsmål som i analyse 1
+#+END_EXAMPLE
+
+4.Akuttmottaksskjema og traumeskjema.
+Røntgen bekken «xray_pelv =1» utført ved første sykehus «hosp_serial_num» = 1.
+Andel fordelt på HF /sykehus
+#+BEGIN_EXAMPLE
+  Her er også samme spørsmål hvordan behandler vi ukjent og ikke valgt.
+#+END_EXAMPLE
+
+
+5.Akuttmottaksskjema, skadegraderingsskjema og traumeskjema.
+Røntgen bekken «xray_pelv =1» utført på første sykehus «hosp_serial_num = 1», ISS >15.
+Andel fordelt på HF /sykehus
+
+6.Akuttmottaksskjema og traumeskjema.
+Utført CT «ed_ct =1», på første sykehus «hosp_serial_num = 1».
+Andel fordelt på HF
+
+7.Akuttmottaksskjema, skadegraderingsskjema og traumeskjema.
+Utført CT «ed_ct =1», på første sykehus «hosp_serial_num = 1, ISS >15.
+Andel fordelt på sykehus/HF
+
+8.Akuttmottaksskjema, skadegraderingsskjema og traumeskjema.
+Utført CT «ed_ct =1», på første sykehus «hosp_serial_num = 1», ISS <4.
+Andel fordelt på sykehus/HF
+
+9.Intensivskjema, skadegraderingsskjema og traumeskjema.
+30 dagers mortalitet «res_survival» alene og kombinert med ISS >15 og <15
+For hele landet og fordelt på HF/regioner
+Traumeskjema og prehospital skjema.
+Antall pasienter med prehospital GCS <9 «pre_gcs_sum <9» som ikke har fått utført luftveistiltak prehospitalt «pre_intubated =2»
+Andel fordelt på sykehus/HF/regioner
+
+
+Traumeskjema, skadegraderingsskjema, prehospitalt skjema og akuttmottaksskjema.
+Totalt antall pasienter med hodeskader, AIS head >2 og GCS <9 «pre_gcs_sum»
+Andel fordelt på sykehus/HF/regioner
+
+Traumeskjema og akuttmottaksskjema.
+Andel pasienter med GCS <9 «ed_gcs_sum <9», som blir intubert i akuttmottak «ed_intubated =2» og ekskludert pasienter med «ed_intubated =1».
+Andel fordelt på sykehus/HF/regioner
+
+Traumeskjema, akuttmottaksskjema og skadegraderingsskjema.
+Andel pasienter med GCS <9 «ed_gcs_sum <9» kombinert med ISS >15 som blir intubert i akuttmottak «ed_intubated =2» og ekskludert pasienter med «ed_intubated =1».
+Andel fordelt på sykehus/HF/regioner
+
+Traumeskjema og prehospitalt skjema.
+Tid fra AMK varslet til ressurs er på skadested: «dt_alarm_scene» automatisk felt. Denne indikatoren måler tiden det tar fra AMK-sentralen mottar en 113-oppringning til første ambulanse er fremme på hendelsesstedet. Eller antall minutter fra: «pre_alarm_dtg» til «pre_scene_dtg»
+Fordelt på HF/regioner
+
+Traumeskjema, prehospitalt skjema og akuttmottaksskjema.
+Prehospitalt tidsintervall – tid fra meldt ulykke til ankomst sykehus: «pre_alarm_dtg» til «ed_arrival_dtg»
+Fordelt på HF/regioner
+
+Traumeskjema og prehospitalt skjema. Tidsintervall- tid på skadested:
+Start: Ressurs ankommet pasient «pre_scene_dtg» (dd.mm.åååå hh:mm)
+Slutt: Ressurs forlater skadested «pre_scene_depart_dtg» (dd.mm.åååå hh:mm)
+«dt_scene_depart» (automatisk felt)
+Fordelt på HF/regioner
+
+Sammenligne med 2016 (ha med antallet pasienter)
+Andel <12 min, 12-24 min, 25 – 44 min, 45 – 89 min og ≥90 min – 1 døgn for de fire helseregionene.
+
+
+
+Skadegraderingsskjema, prehospitalt skjema og traumeskjema. Ekskludere nord som region.
+Andel pasienter med ISS >15 som ankommer direkte til traumesenter. Må regnes ut i to steg: Antall pasienter med ISS>15 som ankommer direkte til dedikert traumesykehus «pre_transport_traumacentre_direct =1» og regionale forskjeller. Ta ut pasienter med ISS>15 for de tre traumesentrene (Ullevål, Haukeland, St Olav) som har kategori «1». Andel pasienter direkte til traumesenter i hver region: totalt antall pasienter med ISS>15 innlagt på traumesentrene delt på totalt antall i regionen med ISS>15.
