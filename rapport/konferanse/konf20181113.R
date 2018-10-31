@@ -48,7 +48,7 @@ cleanDT <- akutt17[hosp_serial_num == 1 & !duplicated(ntrid), ]
 
 ## Antall all relevante per HF ie. Ukjent og ikke valgt tas bort
 sp1a <- contabel(cleanDT, "xray_chst", 1, 1:2, "HF")
-conbar(sp1a, HF, pros, N, "Hele", num = N)
+fig1 <- conbar(sp1a, HF, pros, ynum = ylab, "Hele", num = N, ylab = "prosent")
 
 
 fig1 <- rreg::regbar(sp1a, HF, pros, num = n, comp = "Hele", ylab = "prosent")
@@ -66,9 +66,7 @@ fig1 <- NULL
 ### Hospital
 ## Antall all relevante per HF ie. Ukjent og ikke valgt tas bort
 sp1b <- contabel(cleanDT, "xray_chst", 1, 1:2, "Hospital")
-conbar(sp1b, Hospital, pros, ylab, "Hele", num = N)
-
-fig1 <- rreg::regbar(sp1b, Hospital, pros, num = n, comp = "Hele", ylab = "prosent")
+fig1 <- conbar(sp1b, Hospital, pros, ylab, "Hele", num = N, ylab = "prosent")
 
 title <- "Rontgen_sykehus"
 fig1a <- fig1
@@ -83,9 +81,20 @@ fig1 <- NULL
 ## Akuttmottaksskjema og traumeskjema.  Røntgen thorax «xray_chst =1» utført ved
 ## første sykehus «hosp_serial_num = 1», barn «Patient_Age <6 år» sammenlignet med de
 ## som ikke har fått rtg thorax«xray_chst =2». Andel fordelt på HF /sykehus
+data6 <- cleanDT[age < 6, ]
+sp2a <- contabel(data6, "xray_chst", 1, 1:2, "RHF")
 
-fig1 <- akutt2[hosp_serial_num == 1 & !duplicated(ntrid) & age < 6, .N]
+fig1 <- conbar(sp2a, RHF, pros, ylab, "Hele", num = N, ylab = "prosent", title = "Røntgen thorax for barn under 6 år")
 
+title <- "Rontgen_6aar"
+fig1a <- fig1
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
 
 
 
