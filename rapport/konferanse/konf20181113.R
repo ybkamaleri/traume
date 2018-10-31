@@ -4,15 +4,33 @@ pkg <- c("data.table", "ggplot2", "directlabels", "cowplot", "gridExtra", "grid"
 
 sapply(pkg, require, character.only = TRUE)
 
-source("/home/ybk/Git-work/traume/traumeApp/data2.R")
+source("~/Git-work/traume/traumeApp/data2.R")
 
-source("/home/ybk/Git-work/traume/rapport/annualrap/2018/rapbar.R")
+source("~/Git-work/traume/rapport/annualrap/2018/rapbar.R")
 savefig <- "~/Temp/plot"
+
+## Function for tabell
+contabel <- function(data, var, select, include, by, pros.digit = 1){
+
+  DT <- copy(data)
+
+  all <- DT[get(var) %in% include, .(N = .N), by = by]
+  sub <- DT[get(var) == select, .(n = .N), by = by]
+  mix <- merge(sub, all, by = by, all.y = TRUE)
+  ##rekkefølgen for kolonne n og N må samsvær med når data er merge dvs. som i mix
+  mixTot <- rbindlist(list(mix, list("Hele landet", sum(mix$n, na.rm = TRUE), sum(mix$N, na.rm = TRUE))))
+  mixTot[, pros := round(n / N * 100, digits = pros.digit), by = by]
+
+}
+
+## Data for akutt
+
+
 
 ## Akuttmottaksskjema og traumeskjema.
 ## Røntgen thorax «xray_chst =1» utført ved første sykehus «hosp_serial_num = 1».
 ## Andel fordelt på HF /sykehus
-dtHosp <- copy(akutt2)
+
 
 ## Antall all relevante per HF ie. Ukjent og ikke valgt tas bort
 all <- dtHosp[hosp_serial_num == 1 & !duplicated(ntrid) & xray_chst %in% 1:2, .(N = .N), by = HF]
@@ -23,6 +41,9 @@ mix <- valg[all, on = c(HF = "HF")]
 mixTotal <- rbindlist(list(mix, list("Hele landet", sum(mix$n), sum(mix$N)))) #tallet for hele landet
 mixTotal[, pros := round(n / N * 100, digits = 1), by = HF]
 mixTotal
+
+cleanDT <- akutt2[hosp_serial_num == 1 & !duplicated(ntrid), ]
+funTot <- contabel(cleanDT, "xray_chst", 1, 1:2, "HF")
 
 fig1 <- rreg::regbar(mixTotal, HF, pros, num = n, comp = "Hele", ylab = "prosent")
 title <- "rontgen_HF"
@@ -58,7 +79,6 @@ dev.off()
 
 ## reset fig1 - to avoid wrong figure
 fig1 <- NULL
-
 
 ## Akuttmottaksskjema og traumeskjema.  Røntgen thorax «xray_chst =1» utført ved
 ## første sykehus «hosp_serial_num = 1», barn «Patient_Age <6 år» sammenlignet med de
