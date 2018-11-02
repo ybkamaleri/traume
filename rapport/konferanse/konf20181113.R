@@ -48,7 +48,7 @@ cleanDT <- akutt17[hosp_serial_num == 1 & !duplicated(ntrid), ]
 skade17 <- skade[dateAll >= as.POSIXct("2017-01-01", format = "%Y-%m-%d") &
                    dateAll <= as.POSIXct("2017-12-31", format = "%Y-%m-%d"),]
 
-cleanSkade <- skade17[hosp_serial_num == 1 & !duplicated(ntrid), .(ntrid, UnitId, inj_iss)]
+cleanSkade <- skade17[hosp_serial_num == 1 & !duplicated(ntrid), .(ntrid, UnitId, inj_iss, ais)]
 
 ## Skade og akutt data merge
 mixData <- cleanDT[cleanSkade, on = c(ntrid = "ntrid")]
@@ -437,8 +437,7 @@ fig1 <- NULL
 ## Spørsmål 9b
 #############################
 ## pre_gcs_sum < 9 og pre_intubated = 2
-
-DTpre <- cleanPre[resh, on = c(UnitId = "reshid")]
+DTpre <- merge(cleanPre, resh, by.x = "UnitId", by.y = "reshid", all = TRUE)
 
 ## HF
 sp9b1 <- contabel(DTpre, "pre_intubated", 2, 1:2, "HF")
@@ -509,6 +508,110 @@ dev.off()
 
 ## reset fig1 - to avoid wrong figure
 fig1 <- NULL
+
+
+#############################
+## Spørsmål 11
+#############################
+## data: cleanSkade. condition: Hodeskade, ais > 2 and pre_gcs_sum < 9
+
+cleanSkade[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
+
+headDT <- cleanSkade[, list(n = ifelse(
+  sum(grepl("^1.*[3-6]$", as.character(trimws(unlist(strsplit(aisMix, split = ","))))), na.rm = TRUE )!= 0,
+  1, 0)), by = ntrid]
+
+mixHead <- DTpre[headDT, on = c(ntrid = "ntrid")] #DTpre har HF, RHF og Hospital
+
+hgcsUT <- mixHead[pre_gcs_sum < 9, ]
+
+
+## HF
+sp11a <- contabel(hgcsUT, "n", 2, 1:2, "HF")
+fig1 <- conbar(sp11a, HF, pros, ylab, "Hele", num = N, ylab = "prosent",
+  title = "Hodeskade, AIS >2 og GCS < 9")
+
+title <- "head_gcs_HF"
+fig1a <- fig1
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+## RHF
+sp11b <- contabel(hgcsUT, "n", 2, 1:2, "RHF")
+fig1 <- conbar(sp11b, RHF, pros, ylab, "Hele", num = N, ylab = "prosent",
+  title = "Hodeskade, AIS >2 og GCS < 9")
+
+title <- "head_gcs_RHF"
+fig1a <- fig1
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+#############################
+## Spørsmål 11b
+#############################
+## data: cleanSkade. condition: Hodeskade, ais > 2
+
+cleanSkade[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
+
+headDT <- cleanSkade[, list(n = ifelse(
+  sum(grepl("^1.*[3-6]$", as.character(trimws(unlist(strsplit(aisMix, split = ","))))), na.rm = TRUE )!= 0,
+  1, 0)), by = ntrid]
+
+mixHead <- DTpre[headDT, on = c(ntrid = "ntrid")] #DTpre har HF, RHF og Hospital
+
+
+## HF
+sp11a1 <- contabel(mixHead, "n", 2, 1:2, "HF")
+fig1 <- conbar(sp11a1, HF, pros, ylab, "Hele", num = N, ylab = "prosent",
+  title = "Hodeskade og AIS >2")
+
+title <- "head_HF"
+fig1a <- fig1
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+## RHF
+sp11b1 <- contabel(mixHead, "n", 2, 1:2, "RHF")
+fig1 <- conbar(sp11b1, RHF, pros, ylab, "Hele", num = N, ylab = "prosent",
+  title = "Hodeskade og AIS >2")
+
+title <- "head_RHF"
+fig1a <- fig1
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+
+
+
+
+
+
+
+
 
 
 
