@@ -85,8 +85,6 @@ sp1a <- contabel(cleanDT, "xray_chst", 1, 1:2, "HF")
 fig1 <- conbar(sp1a, HF, pros, ynum = ylab, "Hele", num = N, ylab = "prosent",
   title = "Røntgen thorax")
 
-
-fig1 <- rreg::regbar(sp1a, HF, pros, num = n, comp = "Hele", ylab = "prosent")
 title <- "rontgen_thor_HF"
 fig1a <- fig1
 cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
