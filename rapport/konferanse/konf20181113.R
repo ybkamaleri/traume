@@ -33,6 +33,9 @@ contabel <- function(data, var, select, include, by, pros.digit = 1){
 
 }
 
+##=================
+## DATA utvalg
+##=================
 
 ## Data for akutt for bare 2017
 akutt17 <- akutt2[dateAll >= as.POSIXct("2017-01-01", format = "%Y-%m-%d") &
@@ -41,6 +44,37 @@ akutt17 <- akutt2[dateAll >= as.POSIXct("2017-01-01", format = "%Y-%m-%d") &
 ## Bort med duplikate og valg bare hosp_serial_num == !
 cleanDT <- akutt17[hosp_serial_num == 1 & !duplicated(ntrid), ]
 
+## Skade data for 2017
+skade17 <- skade[dateAll >= as.POSIXct("2017-01-01", format = "%Y-%m-%d") &
+                   dateAll <= as.POSIXct("2017-12-31", format = "%Y-%m-%d"),]
+
+cleanSkade <- skade17[hosp_serial_num == 1 & !duplicated(ntrid), .(ntrid, UnitId, inj_iss)]
+
+## Skade og akutt data merge
+mixData <- cleanDT[cleanSkade, on = c(ntrid = "ntrid")]
+
+## Intensiv data for 2017
+int17 <- intensiv[dateAll >= as.POSIXct("2017-01-01", format = "%Y-%m-%d") &
+                    dateAll <= as.POSIXct("2017-12-31", format = "%Y-%m-%d"),]
+
+cleanInt <- int17[hosp_serial_num == 1 & !duplicated(ntrid), .(ntrid, res_survival)]
+
+
+## Prehospital data for 2017
+pre17 <- prehosp[dateAll >= as.POSIXct("2017-01-01", format = "%Y-%m-%d") &
+                   dateAll <= as.POSIXct("2017-12-31", format = "%Y-%m-%d"),]
+
+cleanPre <- pre17[hosp_serial_num == 1 & !duplicated(ntrid),
+  .(ntrid, UnitId, pre_intubated, pre_gcs_sum)]
+
+
+
+
+
+
+##================
+## Analyse
+##================
 
 ## Akuttmottaksskjema og traumeskjema.
 ## Røntgen thorax «xray_chst =1» utført ved første sykehus «hosp_serial_num = 1».
@@ -121,12 +155,7 @@ fig1 <- NULL
 ## Spørsmål 3
 #################################
 ## xray_chst = 1, inj_iss > 15, hosp_serial_num = 1
-skade17 <- skade[dateAll >= as.POSIXct("2017-01-01", format = "%Y-%m-%d") &
-                   dateAll <= as.POSIXct("2017-12-31", format = "%Y-%m-%d"),]
 
-
-cleanSkade <- skade17[hosp_serial_num == 1 & !duplicated(ntrid), .(ntrid, inj_iss)]
-mixData <- cleanDT[cleanSkade, on = c(ntrid = "ntrid")]
 
 dataISS15 <- mixData[inj_iss > 15, ] #bare for ISS > 15
 
@@ -213,7 +242,7 @@ sp5a <- contabel(dataISS15, "xray_pelv", 1, 1:2, "HF")
 fig1 <- conbar(sp5a, HF, pros, ylab, "Hele", num = N, ylab = "prosent",
   title = "Røntgen bekken for ISS > 15")
 
-title <- "Rontgen_pelv_HF"
+title <- "Rontgen_pelv_ISS_HF"
 fig1a <- fig1
 cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
 cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
@@ -230,7 +259,7 @@ sp5b <- contabel(dataISS15, "xray_pelv", 1, 1:2, "Hospital")
 fig1 <- conbar(sp5b, Hospital, pros, ylab, "Hele", num = N, ylab = "prosent",
   title = "Røntgen bekken for ISS > 15")
 
-title <- "Rontgen_pelv_Sykehus"
+title <- "Rontgen_pelv_ISS_Sykehus"
 fig1a <- fig1
 cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
 cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
@@ -361,8 +390,127 @@ dev.off()
 fig1 <- NULL
 
 
+####################################
+## Spørsmål 9a
+####################################
+## res_survival = 1 og ISS under og over 15
+mixSI <- cleanSkade[cleanInt, on = c(ntrid = "ntrid")]
+## legge RHF, HF og Hospital
+mixSkadInt <- mixSI[resh, on = c(UnitId = "reshid")]
+
+mixSIover15 <- mixSkadInt[inj_iss > 15 & !duplicated(ntrid), ]
+mixSIunder15 <- mixSkadInt[inj_iss < 15 & !duplicated(ntrid), ]
+
+## HF ISS > 15
+sp9a <- contabel(mixSIover15, "res_survival", 1, 1:2, "HF")
+
+fig1 <- conbar(sp9a, HF, pros, ylab, "Hele", num = N, ylab = "prosent",
+  title = "30 dagers mortalitet og ISS > 15")
+
+title <- "mortaliet_over15_HF"
+fig1a <- fig1
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
 
 
+## HF ISS < 15
+sp9b <- contabel(mixSIunder15, "res_survival", 1, 1:2, "HF")
+
+fig1 <- conbar(sp9b, HF, pros, ylab, "Hele", num = N, ylab = "prosent",
+  title = "30 dagers mortalitet og ISS < 15")
+
+title <- "mortaliet_under15_HF"
+fig1a <- fig1
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+#############################
+## Spørsmål 9b
+#############################
+## pre_gcs_sum < 9 og pre_intubated = 2
+
+DTpre <- cleanPre[resh, on = c(UnitId = "reshid")]
+
+## HF
+sp9b1 <- contabel(DTpre, "pre_intubated", 2, 1:2, "HF")
+fig1 <- conbar(sp9b1, HF, pros, ylab, "Hele", num = N, ylab = "prosent",
+  title = "Har ikke utført luftveistiltak")
+
+title <- "intubated_HF"
+fig1a <- fig1
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+## Hospital
+sp9b2 <- contabel(DTpre, "pre_intubated", 2, 1:2, "Hospital")
+fig1 <- conbar(sp9b2, Hospital, pros, ylab, "Hele", num = N, ylab = "prosent",
+  title = "Har ikke utført luftveistiltak")
+
+title <- "intubated_Hospital"
+fig1a <- fig1
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+####################################
+## Spørsmål 9c
+####################################
+
+gcs9 <- DTpre[pre_gcs_sum < 9, ]
+
+
+## HF
+sp9c1 <- contabel(gcs9, "pre_intubated", 2, 1:2, "HF")
+fig1 <- conbar(sp9c1, HF, pros, ylab, "Hele", num = N, ylab = "prosent",
+  title = "Har ikke utført luftveistiltak med GCS < 9")
+
+title <- "intubated_gcs_HF"
+fig1a <- fig1
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
+
+
+## Hospital
+sp9c2 <- contabel(gcs9, "pre_intubated", 2, 1:2, "Hospital")
+fig1 <- conbar(sp9c2, Hospital, pros, ylab, "Hele", num = N, ylab = "prosent",
+  title = "Har ikke utført luftveistiltak med GCS < 9")
+
+title <- "intubated_gcs_Hospital"
+fig1a <- fig1
+cowplot::save_plot(paste0(savefig, "/", title, ".jpg"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".png"), fig1a, base_height = 7, base_width = 7)
+cowplot::save_plot(paste0(savefig, "/", title, ".pdf"), fig1a, base_height = 7, base_width = 7)
+dev.off()
+
+## reset fig1 - to avoid wrong figure
+fig1 <- NULL
 
 
 
