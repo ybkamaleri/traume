@@ -1,5 +1,3 @@
-
-
 %% Lage section deling
 \makeatletter
 \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
