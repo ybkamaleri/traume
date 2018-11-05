@@ -10,6 +10,9 @@ source("~/Git-work/traume/rapport/annualrap/2018/rapbar.R")
 source("conbar.R")
 savefig <- "~/Temp/plot"
 
+
+################ Function #############
+
 ## Function for tabell
 contabel <- function(data, var, select, include, by, pros.digit = 1){
   library(data.table)
@@ -19,7 +22,9 @@ contabel <- function(data, var, select, include, by, pros.digit = 1){
   sub <- DT[get(var) == select, .(n = .N), by = by]
   mix <- merge(sub, all, by = by, all.y = TRUE)
   ##rekkefølgen for kolonne n og N må samsvær med når data er merge dvs. som i mix
-  mixTot <- rbindlist(list(mix, list("Hele landet", sum(mix$n, na.rm = TRUE), sum(mix$N, na.rm = TRUE))))
+  mixTot <- rbindlist(list(mix, list("Hele landet",
+    sum(mix$n, na.rm = TRUE),
+    sum(mix$N, na.rm = TRUE))))
 
   ## bytt NA til 0
   for (j in seq_len(ncol(mixTot))) set(mixTot, which(is.na(mixTot[[j]])), j, 0)
@@ -65,11 +70,7 @@ pre17 <- prehosp[dateAll >= as.POSIXct("2017-01-01", format = "%Y-%m-%d") &
                    dateAll <= as.POSIXct("2017-12-31", format = "%Y-%m-%d"),]
 
 cleanPre <- pre17[hosp_serial_num == 1 & !duplicated(ntrid),
-  .(ntrid, UnitId, pre_intubated, pre_gcs_sum)]
-
-
-
-
+  .(ntrid, UnitId, pre_intubated, pre_gcs_sum, Skjematype)]
 
 
 ##================
@@ -519,16 +520,16 @@ fig1 <- NULL
 cleanSkade[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
 
 headDT <- cleanSkade[, list(n = ifelse(
-  sum(grepl("^1.*[3-6]$", as.character(trimws(unlist(strsplit(aisMix, split = ","))))), na.rm = TRUE )!= 0,
-  1, 0)), by = ntrid]
+  sum(grepl("^1.*[3-6]$", as.character(trimws(unlist(strsplit(aisMix, split = ","))))),
+    na.rm = TRUE )!= 0, 1, 0)), by = ntrid]
 
 mixHead <- DTpre[headDT, on = c(ntrid = "ntrid")] #DTpre har HF, RHF og Hospital
 
-hgcsUT <- mixHead[pre_gcs_sum < 9, ]
+hgcsUT <- mixHead[!is.na(Skjematype) & pre_gcs_sum < 9, ] #GSS < 9
 
 
 ## HF
-sp11a <- contabel(hgcsUT, "n", 2, 1:2, "HF")
+sp11a <- contabel(hgcsUT, "n", 1, 0:1, "HF")
 fig1 <- conbar(sp11a, HF, pros, ylab, "Hele", num = N, ylab = "prosent",
   title = "Hodeskade, AIS >2 og GCS < 9")
 
@@ -544,7 +545,7 @@ fig1 <- NULL
 
 
 ## RHF
-sp11b <- contabel(hgcsUT, "n", 2, 1:2, "RHF")
+sp11b <- contabel(hgcsUT, "n", 1, 0:1, "RHF")
 fig1 <- conbar(sp11b, RHF, pros, ylab, "Hele", num = N, ylab = "prosent",
   title = "Hodeskade, AIS >2 og GCS < 9")
 
@@ -564,17 +565,10 @@ fig1 <- NULL
 #############################
 ## data: cleanSkade. condition: Hodeskade, ais > 2
 
-cleanSkade[, aisMix := toString(unlist(strsplit(ais, split = ","))), by = ntrid]
-
-headDT <- cleanSkade[, list(n = ifelse(
-  sum(grepl("^1.*[3-6]$", as.character(trimws(unlist(strsplit(aisMix, split = ","))))), na.rm = TRUE )!= 0,
-  1, 0)), by = ntrid]
-
-mixHead <- DTpre[headDT, on = c(ntrid = "ntrid")] #DTpre har HF, RHF og Hospital
-
+perOnly <- mixHead[!is.na(Skjematype), ]
 
 ## HF
-sp11a1 <- contabel(mixHead, "n", 2, 1:2, "HF")
+sp11a1 <- contabel(perOnly, "n", 1, 0:1, by = "HF")
 fig1 <- conbar(sp11a1, HF, pros, ylab, "Hele", num = N, ylab = "prosent",
   title = "Hodeskade og AIS >2")
 
@@ -590,7 +584,7 @@ fig1 <- NULL
 
 
 ## RHF
-sp11b1 <- contabel(mixHead, "n", 2, 1:2, "RHF")
+sp11b1 <- contabel(perOnly, "n", 1, 0:1, "RHF")
 fig1 <- conbar(sp11b1, RHF, pros, ylab, "Hele", num = N, ylab = "prosent",
   title = "Hodeskade og AIS >2")
 
@@ -616,25 +610,25 @@ fig1 <- NULL
 
 
 
-#####################################
-################ TEST ###############
-#####################################
+## #####################################
+## ################ TEST ###############
+## #####################################
 
-all <- akutt17[hosp_serial_num == 1 & !duplicated(ntrid) & xray_chst %in% 1:2, .(N = .N), by = HF]
-## antall utvalgte per HF
-valg <- akutt17[hosp_serial_num == 1 & !duplicated(ntrid) & xray_chst == 1, .(n = .N), by = HF]
+## all <- akutt17[hosp_serial_num == 1 & !duplicated(ntrid) & xray_chst %in% 1:2, .(N = .N), by = HF]
+## ## antall utvalgte per HF
+## valg <- akutt17[hosp_serial_num == 1 & !duplicated(ntrid) & xray_chst == 1, .(n = .N), by = HF]
 
-mix <- valg[all, on = c(HF = "HF")]
-mixTotal <- rbindlist(list(mix, list("Hele landet", sum(mix$n), sum(mix$N)))) #tallet for hele landet
-mixTotal[, pros := round(n / N * 100, digits = 1), by = HF]
-mixTotal
+## mix <- valg[all, on = c(HF = "HF")]
+## mixTotal <- rbindlist(list(mix, list("Hele landet", sum(mix$n), sum(mix$N)))) #tallet for hele landet
+## mixTotal[, pros := round(n / N * 100, digits = 1), by = HF]
+## mixTotal
 
-## Antall all relevante per Sykehus ie. Ukjent og ikke valgt tas bort
-allhos <- akutt17[hosp_serial_num == 1 & !duplicated(ntrid) & xray_chst %in% 1:2, .(N = .N), by = Hospital]
-## antall utvalgte per HF
-valghos <- akutt2[hosp_serial_num == 1 & !duplicated(ntrid) & xray_chst == 1, .(n = .N), by = Hospital]
+## ## Antall all relevante per Sykehus ie. Ukjent og ikke valgt tas bort
+## allhos <- akutt17[hosp_serial_num == 1 & !duplicated(ntrid) & xray_chst %in% 1:2, .(N = .N), by = Hospital]
+## ## antall utvalgte per HF
+## valghos <- akutt2[hosp_serial_num == 1 & !duplicated(ntrid) & xray_chst == 1, .(n = .N), by = Hospital]
 
-mixhos <- valghos[allhos, on = c(Hospital = "Hospital")]
-mixTotalhos <- rbindlist(list(mixhos, list("Hele landet", sum(mixhos$n), sum(mixhos$N)))) #tallet for hele landet
-mixTotalhos[, pros := round(n / N * 100, digits = 1), by = Hospital]
-mixTotalhos
+## mixhos <- valghos[allhos, on = c(Hospital = "Hospital")]
+## mixTotalhos <- rbindlist(list(mixhos, list("Hele landet", sum(mixhos$n), sum(mixhos$N)))) #tallet for hele landet
+## mixTotalhos[, pros := round(n / N * 100, digits = 1), by = Hospital]
+## mixTotalhos
