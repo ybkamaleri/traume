@@ -439,7 +439,8 @@ fig1 <- NULL
 #############################
 ## pre_gcs_sum < 9 og pre_intubated = 2
 ## DTpre <- merge(cleanPre, resh, by.x = "UnitId", by.y = "reshid", all = TRUE) #her finnes det reshid som ikke har navn
-DTpre <- cleanPre[resh, on = c(UnitId = "reshid")]
+DTpre0 <- cleanPre[resh, on = c(UnitId = "reshid")]
+DTpre <- DTpre0[!is.na(ntrid), ]
 
 ## HF
 sp9b1 <- contabel(DTpre, "pre_intubated", 2, 1:2, "HF")
