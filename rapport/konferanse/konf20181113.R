@@ -560,6 +560,7 @@ dev.off()
 fig1 <- NULL
 
 
+
 #############################
 ## Spørsmål 11b
 #############################
@@ -597,6 +598,10 @@ dev.off()
 
 ## reset fig1 - to avoid wrong figure
 fig1 <- NULL
+
+
+
+
 
 
 
