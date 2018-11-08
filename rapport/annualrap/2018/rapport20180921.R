@@ -51,7 +51,7 @@ source("K:/Sensitivt/kvalitetsregistre/2013-9541_Nasjonalt_traumeregister/Yusman
 data[, agekat := alder.kat(age, min(age, na.rm = T), max(age, na.rm = T), by=5)] #lage alderkategorier
 ageMan <- data[gender == 1, list(mann = .N), by = list(RHF, age)]
 ageKvinne <- data[gender == 2, list(kvinne = .N), by = list(RHF, age)]
-ageMK <- merge(ageMan, ageKvinne, all = TRUE)
+ageMK <- merge(ageMan, ageKvinne, by = "age", all = TRUE)
 
 ## bytt NA med 0
 byttNA(ageMK)
