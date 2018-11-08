@@ -10,11 +10,13 @@ pakke <- c("shiny",
   "xts",
   "zoo",
   "knitr",
+  "kableExtra",
   "DT")
 
 sapply(pakke, require, character.only = TRUE)
 
 source("~/Git-work/traume/ntrApp/data2.R")
+source("~/Git-work/traume/traumeApp/functions/byttNA.R") #bNA()
 
 ## ====
 ## UI
