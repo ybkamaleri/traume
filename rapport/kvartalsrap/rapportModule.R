@@ -32,7 +32,7 @@ rapportUI <- function(id){
       ),
 
       box(width = 4,
-        dateRangeInput(inputId = ns("dato"),
+        dateRangeInput(inputId = ns("dato_rapport"),
           label = NULL,
           start = Sys.Date() - 360,
           end = Sys.Date(),
@@ -63,7 +63,7 @@ rapportSV <- function(input, output, session, resh, data){
   hospRan <- sample(1:length(hospValg), 1)
 
   output$hosp <- renderUI({
-    selectInput(ns("hosp_valg"),
+    selectInput(ns("hosp_rapport"),
       label = NULL,
       choices = hospValg,
       selected = hospValg[hospRan]
