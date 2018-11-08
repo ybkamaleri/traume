@@ -9,11 +9,15 @@ library(data.table)
 ## DATA
 #########
 filDir <- "~/avid/ntr/data/"
-sr01 <- paste0(filDir, "datakilder1.R")
-sr02 <- paste0(filDir, "datakilder2.R")
-##ifelse(file.exists(sr01), source(sr01), source(sr02))
-data <- ifelse(file.exists(sr01), sr01, sr02)
-source(data)
+
+## sr01 <- paste0(filDir, "datakilder1.R")
+## sr02 <- paste0(filDir, "datakilder2.R")
+## ##ifelse(file.exists(sr01), source(sr01), source(sr02))
+## data <- ifelse(file.exists(sr01), sr01, sr02)
+
+kilde <- "~/avid/ntr/data/datakilder1.R"
+
+source(kilde)
 
 ## lager index
 ###########################
