@@ -55,6 +55,9 @@ rapportUI <- function(id){
         title = "Rapport",
         downloadButton(ns("rapport"), label = "Last ned")
       )
+    ),
+    fluidRow(
+      includeMarkdown("rapport.md")
     )
   )
 
