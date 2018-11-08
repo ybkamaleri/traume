@@ -107,11 +107,17 @@ function(input, output, session){
 
   ## HTML side
   ## ==================
-  htmlSide <- function(){
-    return(includeHTML("./index.html"))
-  }
+  ## htmlSide <- function(){
+  ##   return(includeHTML("./index.html"))
+  ## }
 
-  output$txtSide <- renderUI({htmlSide()})
+  output$txtSide <- renderUI({
+
+    traumeSide <- "https://ybkamaleri.github.io/traume/"
+    htmlSide <- tags$iframe(src = traumeSide, height = "600", width = "100%")
+    print(htmlSide)
+    htmlSide
+  })
 
   ## Test
   ## ====================
