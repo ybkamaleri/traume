@@ -30,8 +30,13 @@ sidebar <- dashboardSidebar(width = 250, #tilpase title tekst
     tags$hr(), #linje
 
     menuItem("Virksomhetsrapport",
-      tabName = "tab_virk",
-      icon = icon("h-square")),
+      tabName = NULL,
+      icon = icon("h-square"),
+      menuSubItem("Uke dager",
+        tabName = "tab_virk"),
+      menuSubItem("Standard rapport",
+        tabName = "tab_rap")
+    ),
 
     menuItem("FAQ",
       tabName = "tab_manual",

@@ -1,0 +1,96 @@
+
+\documentclass[11pt, a4paper]{article}
+
+% !Rnw weave = knitr
+
+<<setup, echo = FALSE, message = FALSE, warning = FALSE, include = FALSE>>=
+
+#############
+## Knitr opt
+#############
+knitr::opts_chunk$set(
+  ## fig.path = paste0('figures/ntr-', Hospital), #mappe for figurer
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  include = TRUE)
+@
+
+
+%% kableExtra packages
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+
+%% margin
+\usepackage{geometry}
+\geometry{
+  verbose,
+  tmargin=2.5cm,
+  bmargin=2.5cm,
+  lmargin=2.5cm,
+  rmargin=2.5cm
+}
+
+%% for norske bokstaver
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+
+
+<<data, warning=TRUE>>=
+ns <- session$ns
+hospValg <- input$hosp_rapport
+datoFra <- input$dato_rapport[1]
+datoTil <- input$dato_rapport[2]
+
+dataDT <- akutt2[!duplicated(ntrid) &
+                    Hospital == (hospValg) &
+                      dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"), ]
+
+antallNTR <- dim(dataDT)[1]
+@
+
+%% Tittle
+\begingroup
+ \centering
+ \huge\textbf{NTR rapport for \Sexpr{hospValg}}
+ \par\vspace{5mm}\large\textbf{\Sexpr{format(Sys.Date(), "%d %b %Y")}}
+     \par\vspace{2mm}\small\textit{Rapporten inneholder data fra
+       \Sexpr{format(as.Date(datoFra), '%d.%m.%Y')} til
+         \Sexpr{format(as.Date(datoTil), '%d.%m.%Y')}}
+ \par\noindent\rule{\textwidth}{0.4pt}
+\endgroup
+
+\section{Antall traume}
+\label{sec:antall traume}
+
+Det er \Sexpr{antallNTR} traume fra \Sexpr{format(as.Date(datoFra), '%d.%m.%Y')} til
+  \Sexpr{format(as.Date(datoTil), '%d.%m.%Y')}.\newline
+
+\subsection{Kjønn}
+\label{subsec:gender}
+
+Antall menn og kvinner.\\
+
+<<traume01, result='asis'>>=
+
+dataTab <- dataDT[!is.na(gender), .N, by = gender]
+dataTab[, gender := as.character(gender)]
+dataTab[.(gender = c("1", "2"), to = c("Menn", "Kvinner")), on = "gender", gender := i.to]
+data.table::setnames(dataTab, "gender", " ")
+
+kable(dataTab, 'latex', booktabs = TRUE)
+@
+
+\end{document}

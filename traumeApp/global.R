@@ -6,6 +6,8 @@ pakke <- c("shiny",
   "ggplot2",
   "plotly",
   "dygraphs",
+  "knitr",
+  "kableExtra",
   "xts",
   "zoo",
   "DT")

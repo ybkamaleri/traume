@@ -56,6 +56,10 @@ body <- dashboardBody(
         )
       )),
 
+    tabItem(tabName = "tab_rap",
+      rapportUI("rapport")
+      ),
+
     tabItem(tabName = "tab_manual",
       htmlOutput("txtSide")
     ),
