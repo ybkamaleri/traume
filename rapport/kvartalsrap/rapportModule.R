@@ -1,4 +1,3 @@
-
 ## DATA
 ##========
 
@@ -28,10 +27,18 @@ rapportUI <- function(id){
   fluidPage(
     fluidRow(
       box(width = 4,
+        height = 100,
+        solidHeader = TRUE,
+        status = "primary",
+        title = "Valg sykehus:",
         uiOutput(ns("hosp"))
       ),
 
       box(width = 4,
+        height = 100,
+        solidHeader = TRUE,
+        status = "primary",
+        title = "Valg periode:",
         dateRangeInput(inputId = ns("dato_rapport"),
           label = NULL,
           start = Sys.Date() - 360,
@@ -44,6 +51,8 @@ rapportUI <- function(id){
       ),
 
       box(width = 4,
+        height = 100,
+        title = "Rapport",
         downloadButton(ns("rapport"), label = "Last ned")
       )
     )
