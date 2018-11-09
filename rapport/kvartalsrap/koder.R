@@ -14,30 +14,47 @@ pakke <- c("shiny",
 
 sapply(pakke, require, character.only = TRUE)
 
-source("~/Git-work/traume/ntrApp/data2.R")
+source("~/Git-work/traume/traumeApp/data2.R")
 source("~/Git-work/traume/traumeApp/functions/byttNA.R") #bNA()
+
+## ==============
+## Function
+## ==============
+
+fun.tab <- function(data, var, include){
+  DT <- data[!is.na(get(var)) & get(var) %in% include, ]
+  all <- DT[, .(N = .N)]
+  sub <- DT[, .(n = .N), by = get(var)]
+
+}
+
 
 ## ===============
 ## Data valg
 ## ===============
 
 valgSyk <- "Drammen"
-datoFra <- "2017-01-01"
+datoFra <- "2016-01-01"
 datoTil <- "2017-12-31"
 
 dataDT <- akutt2[!duplicated(ntrid) &
+                   !is.na(ntrid) &
                    Hospital == (valgSyk) &
                     dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
                        dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"), ]
 
 
 
-## Antall traume
 
+
+
+## Antall traume
+## ===========================
 dataDT[!duplicated(ntrid), .N]
 
 
 ## Antall traume, alder og kjønn
+## =============================
 trman <- dataDT[gender == 1, .(Menn = .N), by = age]
 trwoman <- dataDT[gender == 2, .(Kvinner = .N), by = age]
 trMW <- merge(trman, trwoman, by = "age", all = TRUE)
@@ -85,3 +102,80 @@ antallTraume <- ggplot(dataLong) +
   scale_x_continuous(breaks = seq(0,110,10)) +
   geom_hline(yintercept = 0, size = 1, color = "black", linetype = "solid") +
   labs(x = "Alder", y = "Antall traume")
+
+## Traume med eller uten alarm
+## ===========================
+
+dataDT[, .N, by = ed_tta]
+
+
+## Patient age <18
+## ===============
+
+dataDT[age < 18, .N]
+
+
+## Andel NISS > 15 og < 15
+## =================
+
+skadeDT <- skade2[!duplicated(ntrid) &
+                    !is.na(ntrid) &
+                   Hospital == (valgSyk) &
+                    dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
+
+nissSum <- skadeDT[, .(niss = ifelse(inj_niss < 15, 1, 2))]
+
+nissTab <- nissSum[, .N, by = niss]
+nissTab[, niss := as.character(niss)]
+nissTab[.(niss = c("1", "2"), to = c("Ja", "Nei")), on = "niss", niss := i.to]
+
+nisTot <- nrow(nissSum)
+
+nissUT <- rbindlist(list(nissTab, list("Total", nisTot)))
+nissUT[, Andel := round(N / nisTot * 100, digits = 1), by = niss]
+data.table::setnames(nissUT, c("niss", "N"), c("NISS < 15", "Antall"))
+
+## ISS > 15
+## ========
+issSum <- skadeDT[, .(iss = ifelse(inj_iss < 15, 1, 2))]
+
+issTab <- issSum[, .N, by = iss]
+issTab[, iss := as.character(iss)]
+issTab[.(iss = c("1", "2"), to = c("Ja", "Nei")), on = "iss", iss := i.to]
+
+issTot <- nrow(issSum)
+issUT <- rbindlist(list(issTab, list("Total", issTot)))
+issUT[, Andel := round(N / issTot * 100, digits = 1), by = iss]
+
+data.table::setnames(issUT, c("iss", "N"), c("ISS < 15", "Antall"))
+
+## ISS og tatt i mot med traumeteam
+## ================================
+issTTA <- dataDT[, list(ntrid, ed_tta)]
+ttaISS <- skadeDT[, list(ntrid, inj_iss)]
+
+issttaDT <- merge(issTTA, ttaISS, by = "ntrid", all = TRUE)
+
+## tatt imot iss < 15
+under15iss <- issttaDT[inj_iss < 15 & ed_tta == 1, .N]
+
+## tatt imot iss > 15
+over15iss <- issttaDT[inj_iss > 15 & ed_tta == 1, .N]
+
+tot15iss <- under15iss + over15iss
+
+issTraTab <- data.table(ISS = c("ISS < 15", "ISS > 15", "Total"),
+  n = c(under15iss, over15iss, tot15iss))
+
+issTraTab[, pros := round(n / tot15iss * 100, digits = 1), by = ISS]
+
+
+## TESTING
+issttaDT[inj_iss < 15, iss15under := as.numeric(ifelse(ed_tta == 1, 1, 0)), by = ntrid]
+issttaDT[, .N, by = iss15under]
+
+issttaDT[inj_iss > 15, iss15over := as.numeric(ifelse(ed_tta == 1, 1, 0)), by = ntrid]
+issttaDT[, .N, by = iss15over]
+
+issttaDT[, .N, by = ed_tta]

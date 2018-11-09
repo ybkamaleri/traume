@@ -78,6 +78,17 @@ antallNTR <- dim(dataDT)[1]
 Det er \Sexpr{antallNTR} traume fra \Sexpr{format(as.Date(datoFra), '%d.%m.%Y')} til
   \Sexpr{format(as.Date(datoTil), '%d.%m.%Y')}.\newline
 
+\subsection{Alarm}
+\label{subsec:alarm}
+
+Antall traume med eller uten alarm
+
+<<alarm, result='asis'>>=
+alarmTab <- dataDT[, .N, by = ed_tta]
+alarmTab[, ]
+
+@
+
 \subsection{Kjønn}
 \label{subsec:gender}
 
