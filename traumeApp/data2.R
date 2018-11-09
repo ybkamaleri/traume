@@ -148,3 +148,5 @@ setkey(masterFile, ntrid)
 ## akutt med HF, RHF, Hospital
 ##############################
 akutt2 <- akutt[resh, on = c(UnitId = "reshid")]
+skade2 <- skade[resh, on = c(UnitId = "reshid")]
+prehosp2 <- prehosp[resh, on = c(UnitId = "reshid")]
