@@ -178,4 +178,34 @@ data.table::setnames(issUT, c("iss", "N"), c("ISS < 15", "Antall"))
 kable(issUT, 'latex', booktabs = TRUE)
 @
 
+\subsection{ISS og traumeteam}
+\label{subsec:isstraume}
+
+<<isstrauma, result='asis'>>=
+## ISS og tatt i mot med traumeteam
+## ================================
+issTTA <- dataDT[, list(ntrid, ed_tta)]
+ttaISS <- skadeDT[, list(ntrid, inj_iss)]
+
+issttaDT <- merge(issTTA, ttaISS, by = "ntrid", all = TRUE)
+
+## tatt imot iss < 15
+under15iss <- issttaDT[inj_iss < 15 & ed_tta == 1, .N]
+
+## tatt imot iss > 15
+over15iss <- issttaDT[inj_iss > 15 & ed_tta == 1, .N]
+
+tot15iss <- under15iss + over15iss
+
+issTraTab <- data.table(ISS = c("ISS < 15", "ISS > 15", "Total"),
+  n = c(under15iss, over15iss, tot15iss))
+
+issTraTab[, pros := round(n / tot15iss * 100, digits = 1), by = ISS]
+
+data.table::setnames(issTraTab, c("n", "pros"), c("Antall", "Andel"))
+
+kable(issTraTab, 'latex', booktabs = TRUE)
+@
+
+
 \end{document}
