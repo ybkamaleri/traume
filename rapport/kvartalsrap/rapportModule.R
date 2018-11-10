@@ -115,7 +115,7 @@ ui <- dashboardPage(
 
 
 server <- function(input, output, session){
-  callModule(rapportSV, "rapport", resh, akutt2)
+  callModule(rapportSV, "rapport", resh, akutt)
 
   session$onSessionEnded(stopApp)
 }
