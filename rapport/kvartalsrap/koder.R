@@ -37,7 +37,7 @@ valgSyk <- "Drammen"
 datoFra <- "2016-01-01"
 datoTil <- "2017-12-31"
 
-dataDT <- akutt2[!duplicated(ntrid) &
+dataDT <- akutt[!duplicated(ntrid) &
                    !is.na(ntrid) &
                    Hospital == (valgSyk) &
                     dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
@@ -118,7 +118,7 @@ dataDT[age < 18, .N]
 ## Andel NISS > 15 og < 15
 ## =================
 
-skadeDT <- skade2[!duplicated(ntrid) &
+skadeDT <- skade[!duplicated(ntrid) &
                     !is.na(ntrid) &
                    Hospital == (valgSyk) &
                     dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
@@ -179,3 +179,44 @@ issttaDT[inj_iss > 15, iss15over := as.numeric(ifelse(ed_tta == 1, 1, 0)), by = 
 issttaDT[, .N, by = iss15over]
 
 issttaDT[, .N, by = ed_tta]
+
+
+############################
+## Skade mekanismen
+############################
+
+injInd <- c(1:11, 88)
+## bruk ";" for å dele tekst til 2 linjer når lager plot
+injNavn <- c("Trafikk: ulykke med motorkjøretøy; – ikke motorsykkel",
+             "Trafikk: motorsykkelulykke",
+             "Trafikk: sykkelulykke",
+             "Trafikk: fotgjenger",
+             "Trafikk: annet",
+             "Skutt av håndvåpen: hagle, rifle; eller annen type skytevåpen",
+             "Stukket av kniv, sverd, dolk,; andre skarpe eller spisse objekter",
+             "Truffet av eller slått; med stumpe objekt",
+             "Lavenergi fall",
+             "Høyenergi fall",
+             "Eksplosjonsskade",
+             "Annet"
+)
+
+#2017
+dataUL[inj_mechanism %in% c(99,999), inj_mechanism := 88] #Ukjent og Annet til 88
+injSum <- dataUL[, .N, by=inj_mechanism]
+injSum[, pros := round(N / sum(injSum$N) * 100, digits = 1), by=inj_mechanism]
+#2016
+dataUL16[inj_mechanism %in% c(99,999), inj_mechanism := 88] #Ukjent og Annet til 88
+injSum16 <- dataUL16[, .N, by=inj_mechanism]
+injSum16[, pros := round(N / sum(injSum16$N) * 100, digits = 1), by=inj_mechanism]
+
+injMix <- injSum[injSum16, on=c(inj_mechanism = "inj_mechanism")]
+injMix[, navn := factor(inj_mechanism,
+                        levels = injInd,
+                        labels = injNavn)]
+
+# plotting
+## bruk funksjon rapbar
+#########################
+
+fig1 <- rapbar(injMix, navn, N, i.N, pros, i.pros, line2 = TRUE, lpos=0.96)
