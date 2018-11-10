@@ -14,7 +14,7 @@ pakke <- c("shiny",
 
 sapply(pakke, require, character.only = TRUE)
 
-source("~/Git-work/traume/traumeApp/data2.R")
+source("~/Git-work/traume/traumeApp/setup20181110.R")
 source("~/Git-work/traume/traumeApp/functions/byttNA.R") #bNA()
 
 ## ==============
