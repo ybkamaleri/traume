@@ -59,6 +59,32 @@ dataDT <- akutt[!duplicated(ntrid) &
                        dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"), ]
 
 antallNTR <- dim(dataDT)[1]
+
+
+## Skadeskjema
+skadeDT <- skade[!duplicated(ntrid) &
+                    !is.na(ntrid) &
+                   Hospital == (hospValg) &
+                    dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
+
+
+## Ulykkeskjema
+ulykkeDT <- ulykke[!duplicated(ntrid) &
+                    !is.na(ntrid) &
+                   Hospital == (hospValg) &
+                    dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
+
+
+## prehospitalskjema
+prehospDT <- prehosp[!duplicated(ntrid) &
+                    !is.na(ntrid) &
+                   Hospital == (hospValg) &
+                    dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
+
+
 @
 
 %% Tittle
@@ -106,6 +132,50 @@ dataTab[.(gender = c("1", "2"), to = c("Menn", "Kvinner")), on = "gender", gende
 data.table::setnames(dataTab, "gender", " ")
 
 kable(dataTab, 'latex', booktabs = TRUE)
+@
+
+\subsection{NISS}
+\label{subsec:niss}
+
+<<niss, result='asis'>>=
+## Andel NISS > 15 og < 15
+## =================
+## Bruk skade dataset
+
+nissSum <- skadeDT[, .(niss = ifelse(inj_niss < 15, 1, 2))]
+
+nissTab <- nissSum[, .N, by = niss]
+nissTab[, niss := as.character(niss)]
+nissTab[.(niss = c("1", "2"), to = c("Ja", "Nei")), on = "niss", niss := i.to]
+
+nisTot <- nrow(nissSum)
+
+nissUT <- rbindlist(list(nissTab, list("Total", nisTot)))
+nissUT[, Andel := round(N / nisTot * 100, digits = 1), by = niss]
+data.table::setnames(nissUT, c("niss", "N"), c("NISS < 15", "Antall"))
+
+kable(nissUT, 'latex', booktabs = TRUE)
+@
+
+\subsection{ISS}
+\label{subsec:iss}
+
+<<iss, result='asis'>>=
+## ISS > 15
+## ========
+issSum <- skadeDT[, .(iss = ifelse(inj_iss < 15, 1, 2))]
+
+issTab <- issSum[, .N, by = iss]
+issTab[, iss := as.character(iss)]
+issTab[.(iss = c("1", "2"), to = c("Ja", "Nei")), on = "iss", iss := i.to]
+
+issTot <- nrow(issSum)
+issUT <- rbindlist(list(issTab, list("Total", issTot)))
+issUT[, Andel := round(N / issTot * 100, digits = 1), by = iss]
+
+data.table::setnames(issUT, c("iss", "N"), c("ISS < 15", "Antall"))
+
+kable(issUT, 'latex', booktabs = TRUE)
 @
 
 \end{document}
