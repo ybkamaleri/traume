@@ -1,4 +1,3 @@
-
 ## Dato with as.POSIXct
 
 ## laste opp data
@@ -150,3 +149,4 @@ setkey(masterFile, ntrid)
 akutt2 <- akutt[resh, on = c(UnitId = "reshid")]
 skade2 <- skade[resh, on = c(UnitId = "reshid")]
 prehosp2 <- prehosp[resh, on = c(UnitId = "reshid")]
+ulykke2 <- ulykke[resh, on = c(UnitId = "reshid")]
