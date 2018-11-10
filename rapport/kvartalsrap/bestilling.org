@@ -1,11 +1,10 @@
-
 Bestilling analyser:
 (flere på listen må gi mer detaljert informasjon f.eks variablenavn og hva må gjøres)
 
     1. Antall traumer med og uten alarm. Akuttmottaksskjema: «ed_tta =1 og 2»
     2. Antall kvinner og menn. Traumeskjema «patientGender».
     3. Antall pasienter < 18 år. Traumeskjema «Patient_age»
-    4. Skademekanismer og skadet kroppsregion «skadegraderingsskjema»
+    4. Skademekanismer (ulykkeskjema) og skadet kroppsregion «skadegraderingsskjema»
        + Hvilken variabler og hva skal gjøres??
     5. Andel pasienter med NISS> og <15. «NISS» i «Skadegraderingsskjema»
        + Hvilken variabler??
