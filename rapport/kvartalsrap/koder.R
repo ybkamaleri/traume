@@ -33,16 +33,39 @@ fun.tab <- function(data, var, include){
 ## Data valg
 ## ===============
 
-valgSyk <- "Drammen"
+hospValg <- "Drammen"
 datoFra <- "2016-01-01"
-datoTil <- "2017-12-31"
+qdatoTil <- "2017-12-31"
 
+## Traumeskjema
 dataDT <- akutt[!duplicated(ntrid) &
                    !is.na(ntrid) &
-                   Hospital == (valgSyk) &
+                   Hospital == (hospValg) &
                     dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
                        dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"), ]
 
+## Skadeskjema
+skadeDT <- skade[!duplicated(ntrid) &
+                    !is.na(ntrid) &
+                   Hospital == (hospValg) &
+                    dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
+
+
+## Ulykkeskjema
+ulykkeDT <- ulykke[!duplicated(ntrid) &
+                    !is.na(ntrid) &
+                   Hospital == (hospValg) &
+                    dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
+
+
+## prehospitalskjema
+prehospDT <- prehosp[!duplicated(ntrid) &
+                    !is.na(ntrid) &
+                   Hospital == (hospValg) &
+                    dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
 
 
 
@@ -117,12 +140,7 @@ dataDT[age < 18, .N]
 
 ## Andel NISS > 15 og < 15
 ## =================
-
-skadeDT <- skade[!duplicated(ntrid) &
-                    !is.na(ntrid) &
-                   Hospital == (valgSyk) &
-                    dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
-                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
+## Bruk skade dataset
 
 nissSum <- skadeDT[, .(niss = ifelse(inj_niss < 15, 1, 2))]
 
@@ -184,6 +202,7 @@ issttaDT[, .N, by = ed_tta]
 ############################
 ## Skade mekanismen
 ############################
+## Bruker ulykkedataset og skadedataset
 
 injInd <- c(1:11, 88)
 ## bruk ";" for å dele tekst til 2 linjer når lager plot
@@ -198,25 +217,21 @@ injNavn <- c("Trafikk: ulykke med motorkjøretøy; – ikke motorsykkel",
              "Lavenergi fall",
              "Høyenergi fall",
              "Eksplosjonsskade",
-             "Annet"
-)
+             "Annet")
 
-#2017
-dataUL[inj_mechanism %in% c(99,999), inj_mechanism := 88] #Ukjent og Annet til 88
-injSum <- dataUL[, .N, by=inj_mechanism]
+
+ulykkeDT[inj_mechanism %in% c(99,999), inj_mechanism := 88] #Ukjent og Annet til 88
+injSum <- ulykkeDT[, .N, by=inj_mechanism]
 injSum[, pros := round(N / sum(injSum$N) * 100, digits = 1), by=inj_mechanism]
-#2016
-dataUL16[inj_mechanism %in% c(99,999), inj_mechanism := 88] #Ukjent og Annet til 88
-injSum16 <- dataUL16[, .N, by=inj_mechanism]
-injSum16[, pros := round(N / sum(injSum16$N) * 100, digits = 1), by=inj_mechanism]
 
 injMix <- injSum[injSum16, on=c(inj_mechanism = "inj_mechanism")]
 injMix[, navn := factor(inj_mechanism,
                         levels = injInd,
                         labels = injNavn)]
 
-# plotting
-## bruk funksjon rapbar
-#########################
 
-fig1 <- rapbar(injMix, navn, N, i.N, pros, i.pros, line2 = TRUE, lpos=0.96)
+## Transport til sykehus
+## =====================
+## Prehospital skjema
+
+prehospTab <- prehospDT[, .N, by = pre_transport]
