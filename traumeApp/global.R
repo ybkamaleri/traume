@@ -14,7 +14,8 @@ pakke <- c("shiny",
 
 sapply(pakke, require, character.only = TRUE)
 
-source("data2.R")
+## source("data2.R")
+source("setup20181110.R")
 
 #Funksjoner
 ############

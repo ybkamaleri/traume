@@ -102,11 +102,11 @@ function(input, output, session){
   ## Virksomhetsdata på sykehus
   ###############################
   valgHosp <- callModule(virkDataSV, "virkData", resh)
-  callModule(virkPlotSV, "virkPlot", valg = valgHosp, data = akutt2)
+  callModule(virkPlotSV, "virkPlot", valg = valgHosp, data = akutt)
 
   ## Standard Rapport
   #######################
-  callModule(rapportSV, "rapport", resh, data = akutt2)
+  callModule(rapportSV, "rapport", resh, data = akutt)
 
   ## HTML side
   ## ==================
