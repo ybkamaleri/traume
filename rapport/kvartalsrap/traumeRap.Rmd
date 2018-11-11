@@ -1,0 +1,27 @@
+---
+params:
+  dynamictitle: !r "My report"
+  reportdate: !r Sys.Date()
+title: "`r params$dynamictitle`"
+date: "`r params$reportdate`"
+---
+
+```{r setup, include=FALSE, message=TRUE, warning=TRUE }
+
+## DATA
+##========
+
+source("~/Git-work/traume/traumeApp/setup20181110.R")
+source("~/Git-work/traume/traumeApp/functions/byttNA.R") #bNA()
+
+```
+# Traume
+
+Antall traume
+
+```{r traume, echo=TRUE}
+dim(masterFile)
+```
+
+
+
