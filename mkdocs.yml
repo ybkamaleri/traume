@@ -10,7 +10,10 @@ nav:
   - Hjem: index.md
   - Om: about.md
 
-theme: readthedocs
+theme:
+  name: 'readthedocs'
+  logo: 'img/traume.png'
+  favicon: 'img/traume.ico'
 
 extra_javascript:
   - js/gitlink.js
