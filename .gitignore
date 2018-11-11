@@ -20,3 +20,6 @@
 /rapport/konferanse/ntrkonferansen.docx
 /rapport/kvartalsrap/NTRrapport.pdf
 /traumeApp/NTRrapport.pdf
+
+# mkdocs for gh-pages
+site/

@@ -1,0 +1,5 @@
+site_name: NTR resultat
+nav:
+  - Hjem: index.md
+  - Om: about.md
+theme: readthedocs
