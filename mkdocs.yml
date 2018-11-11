@@ -1,5 +1,8 @@
+site_url: https://github.com/ybkamaleri/traume
 site_name: NTR resultat
 nav:
   - Hjem: index.md
   - Om: about.md
 theme: readthedocs
+extra_javascript:
+  - js/gitlink.js
