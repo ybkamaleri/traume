@@ -79,6 +79,7 @@ rapportSV <- function(input, output, session, resh, data){
   output$hosp <- renderUI({
     selectInput(ns("hosp_rapport"),
       label = NULL,
+      ## choices = resh %>% .$Hospital %>% unique(), #utvalget er usortert
       choices = hospValg,
       selected = hospValg[hospRan]
     )

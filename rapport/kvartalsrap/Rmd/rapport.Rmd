@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 ## ======
 ## DATA
 ## ======
-ns <- session$ns
+
 hospValg <- input$hosp_valg
 ## datoFra <- input$dato_rapport[1]
 ## datoTil <- input$dato_rapport[2]
