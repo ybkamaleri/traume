@@ -252,4 +252,35 @@ injMix[, navn := factor(inj_mechanism,
 ## =====================
 ## Prehospital skjema
 
-prehospTab <- prehospDT[, .N, by = pre_transport]
+preTransInd <- c(1:6, 99, 999)
+preTransNavn <- c(
+  "Bilambulanse",
+  "Ambulansehelikopter",
+  "Ambulansefly",
+  "Fraktet inn av publikum",
+  "Til sykehus selv",
+  "Politi",
+  "Annet",
+  "Ukjent"
+  )
+
+prehospTab <- prehospDT[, .N, by = pre_transport][order(-N)]
+prehospTab[, `:=` (
+  pros = round(N / sum(N, na.rm = TRUE) * 100, digits = 1),
+  trans = factor(pre_transport,
+    levels = preTransInd,
+    labels = preTransNavn))]
+
+
+preTransTab <- prehospTab[, .(Transport = trans, Antall = N, Andell = pros)]
+
+preTTot <- preTransTab[, .(Transport = "Total", Antall = sum(Antall, na.rm = T))][,
+  Andell := round(Antall / sum(Antall, na.rm = TRUE) * 100, digits = 1)]
+
+preTUT <- rbindlist(list(preTransTab, preTTot))
+
+lastRow <- nrow(preTUT)
+
+kable(preTUT, 'latex', booktabs = TRUE) %>%
+  kable_styling(latex_options = "striped") %>%
+  row_spec(lastRow, bold = TRUE)

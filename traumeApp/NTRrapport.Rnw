@@ -124,7 +124,7 @@ at det ikke finnes data som er tilgjengelige i databasen for den valgte tidsperi
 Antall traume med eller uten alarm.\\
 
 <<alarm, result='asis'>>=
-alarmTab <- dataDT[, .N, by = ed_tta]
+alarmTab <- dataDT[ed_tta %in% 1:2, .N, by = ed_tta]
 alarmTab[, ed_tta := as.character(ed_tta)]
 alarmTab[.(ed_tta = c("1", "2"), to = c("Ja", "Nei")), on = "ed_tta", ed_tta := i.to]
 data.table::setnames(alarmTab, c("ed_tta", "N"), c("Alarm", "Antall"))
@@ -238,6 +238,52 @@ issTraTab[, pros := round(n / tot15iss * 100, digits = 1), by = ISS]
 data.table::setnames(issTraTab, c("n", "pros"), c("Antall", "Andel"))
 
 kable(issTraTab, 'latex', booktabs = TRUE)
+@
+
+\section{Transport}
+\label{sec:transport}
+
+Tabellen viser fordellingen av typer transport ble brukt til sykehus.\\
+
+<<trans, resultat='asis'>>=
+
+## Transport til sykehus
+## =====================
+## Prehospital skjema
+
+preTransInd <- c(1:6, 99, 999)
+preTransNavn <- c(
+  "Bilambulanse",
+  "Ambulansehelikopter",
+  "Ambulansefly",
+  "Fraktet inn av publikum",
+  "Til sykehus selv",
+  "Politi",
+  "Annet",
+  "Ukjent"
+  )
+
+prehospTab <- prehospDT[, .N, by = pre_transport][order(-N)]
+prehospTab[, `:=` (
+  pros = round(N / sum(N, na.rm = TRUE) * 100, digits = 1),
+  trans = factor(pre_transport,
+    levels = preTransInd,
+    labels = preTransNavn))]
+
+
+preTransTab <- prehospTab[, .(Transport = trans, Antall = N, Andell = pros)]
+
+preTTot <- preTransTab[, .(Transport = "Total", Antall = sum(Antall, na.rm = T))][,
+  Andell := round(Antall / sum(Antall, na.rm = TRUE) * 100, digits = 1)]
+
+preTUT <- rbindlist(list(preTransTab, preTTot))
+
+lastRow <- nrow(preTUT)
+
+kable(preTUT, 'latex', booktabs = TRUE) %>%
+  kable_styling(latex_options = "striped", position = "left") %>%
+  row_spec(lastRow, bold = TRUE)
+
 @
 
 
