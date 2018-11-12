@@ -184,7 +184,11 @@ nissUT <- rbindlist(list(nissTab, list("Total", nisTot)))
 nissUT[, Andel := round(N / nisTot * 100, digits = 1), by = niss]
 data.table::setnames(nissUT, c("niss", "N"), c("NISS < 15", "Antall"))
 
-kable(nissUT, 'latex', booktabs = TRUE)
+lastRowNISS <- nrow(nissUT)
+
+kable(nissUT, 'latex', booktabs = TRUE) %>%
+   kable_styling(position = "left") %>%
+  row_spec(lastRowNISS, bold = TRUE)
 @
 
 \section{ISS}
@@ -205,7 +209,11 @@ issUT[, Andel := round(N / issTot * 100, digits = 1), by = iss]
 
 data.table::setnames(issUT, c("iss", "N"), c("ISS < 15", "Antall"))
 
-kable(issUT, 'latex', booktabs = TRUE)
+lastRowISS <- nrow(issUT)
+
+kable(issUT, 'latex', booktabs = TRUE) %>%
+  kable_styling(position = "left") %>%
+  row_spec(lastRowISS, bold = TRUE)
 @
 
 \section{ISS og traumeteam}
@@ -237,13 +245,17 @@ issTraTab[, pros := round(n / tot15iss * 100, digits = 1), by = ISS]
 
 data.table::setnames(issTraTab, c("n", "pros"), c("Antall", "Andel"))
 
-kable(issTraTab, 'latex', booktabs = TRUE)
+lastRowISSTra <- nrow(issTraTab)
+
+kable(issTraTab, 'latex', booktabs = TRUE) %>%
+  kable_styling(position = "left") %>%
+  row_spec(lastRowISSTra, bold = TRUE)
 @
 
-\section{Transport}
+\section{Transport til sykehus}
 \label{sec:transport}
 
-Tabellen viser fordellingen av typer transport ble brukt til sykehus.\\
+Tabellen viser fordelingen av transporttyper som ble brukt til sykehus.\\
 
 <<trans, resultat='asis'>>=
 
@@ -278,11 +290,11 @@ preTTot <- preTransTab[, .(Transport = "Total", Antall = sum(Antall, na.rm = T))
 
 preTUT <- rbindlist(list(preTransTab, preTTot))
 
-lastRow <- nrow(preTUT)
+lastRowTrans <- nrow(preTUT)
 
 kable(preTUT, 'latex', booktabs = TRUE) %>%
   kable_styling(latex_options = "striped", position = "left") %>%
-  row_spec(lastRow, bold = TRUE)
+  row_spec(lastRowTrans, bold = TRUE)
 
 @
 
