@@ -84,6 +84,9 @@ prehospDT <- prehosp[!duplicated(ntrid) &
                     dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
                        dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
 
+## Tilgjengelige data
+minDato <- min(as.POSIXct(dataDT$dateSykehus, format = "%Y-%m-%d"))
+maxDato <- max(as.POSIXct(dataDT$dateSykehus, format = "%Y-%m-%d"))
 
 @
 
@@ -92,7 +95,7 @@ prehospDT <- prehosp[!duplicated(ntrid) &
  \centering
  \huge\textbf{NTR rapport for \Sexpr{hospValg}}
  \par\vspace{5mm}\large\textbf{\Sexpr{format(Sys.Date(), "%d %b %Y")}}
-     \par\vspace{2mm}\small\textit{Rapporten inneholder data fra
+     \par\vspace{2mm}\small\textit{Valgte perioden for rapporten er fra
        \Sexpr{format(as.Date(datoFra), '%d.%m.%Y')} til
          \Sexpr{format(as.Date(datoTil), '%d.%m.%Y')}}
  \par\noindent\rule{\textwidth}{0.4pt}
@@ -101,11 +104,11 @@ prehospDT <- prehosp[!duplicated(ntrid) &
 \section{Antall traume}
 \label{sec:antall traume}
 
-Det er \Sexpr{antallNTR} traume fra \Sexpr{format(as.Date(datoFra), '%d.%m.%Y')} til
-  \Sexpr{format(as.Date(datoTil), '%d.%m.%Y')}.\newline
+Det er \Sexpr{antallNTR} traume og gyldig data er fra \Sexpr{format(as.Date(minDato), '%d.%m.%Y')} til
+  \Sexpr{format(as.Date(maxDato), '%d.%m.%Y')}.\newline
 
-\subsection{Alarm}
-\label{subsec:alarm}
+\section{Alarm}
+\label{sec:alarm}
 
 Antall traume med eller uten alarm.\\
 
@@ -119,8 +122,8 @@ kable(alarmTab, 'latex', booktabs = TRUE)
 @
 
 
-\subsection{Kjønn}
-\label{subsec:gender}
+\section{Kjønn}
+\label{sec:gender}
 
 Antall menn og kvinner.\\
 
@@ -134,8 +137,8 @@ data.table::setnames(dataTab, "gender", " ")
 kable(dataTab, 'latex', booktabs = TRUE)
 @
 
-\subsection{NISS}
-\label{subsec:niss}
+\section{NISS}
+\label{sec:niss}
 
 <<niss, result='asis'>>=
 ## Andel NISS > 15 og < 15
@@ -157,8 +160,8 @@ data.table::setnames(nissUT, c("niss", "N"), c("NISS < 15", "Antall"))
 kable(nissUT, 'latex', booktabs = TRUE)
 @
 
-\subsection{ISS}
-\label{subsec:iss}
+\section{ISS}
+\label{sec:iss}
 
 <<iss, result='asis'>>=
 ## ISS > 15
@@ -178,8 +181,8 @@ data.table::setnames(issUT, c("iss", "N"), c("ISS < 15", "Antall"))
 kable(issUT, 'latex', booktabs = TRUE)
 @
 
-\subsection{ISS og traumeteam}
-\label{subsec:isstraume}
+\section{ISS og traumeteam}
+\label{sec:isstraume}
 
 <<isstrauma, result='asis'>>=
 ## ISS og tatt i mot med traumeteam
