@@ -10,6 +10,7 @@ pakke <- c("shiny",
   "xts",
   "zoo",
   "knitr",
+  "kableExtra",
   "DT")
 
 sapply(pakke, require, character.only = TRUE)
@@ -284,3 +285,44 @@ lastRow <- nrow(preTUT)
 kable(preTUT, 'latex', booktabs = TRUE) %>%
   kable_styling(latex_options = "striped") %>%
   row_spec(lastRow, bold = TRUE)
+
+
+## Ukedager
+## ============
+## pass på riktig rekkefølge
+ukeDagInd <- 1:7
+ukeDagNavn <- c("mandag","tirsdag","onsdag","torsdag","fredag","lørdag","søndag")
+
+ukeDag <- dataDT[!is.na(ed_arrival_weekday) & ed_arrival_weekday %in% 1:7,
+  .N, by = ed_arrival_weekday]
+
+ukeDag[, `:=` (
+  pros = round(N / sum(N, na.rm = TRUE) * 100, digits = 1),
+  dag = factor(ed_arrival_weekday, levels = ukeDagInd, labels = ukeDagNavn)
+)][, name := sprintf("%s \n (N=%s)", dag, N)]
+
+ukeDag$name <- with(ukeDag, factor(name, levels = name[order(ed_arrival_weekday)]))
+
+col <- '#2171b5'
+
+barTheme <- theme(axis.text = element_text(size = 9, color = "black"), #text for x og y axis
+                  axis.ticks.y = element_blank(),
+                  axis.ticks.x = element_blank(),
+                  axis.line.x = element_line(size = 0.5),
+                  axis.line.y = element_blank(),
+                  axis.title.y = element_text(size = 11),
+                  axis.title.x = element_blank(),
+                  panel.background = element_rect(fill = "white"),
+                  panel.border = element_rect(linetype = 1, fill = NA, color = "white"),
+                  panel.grid.minor.x = element_blank(),
+                  panel.grid.major.y = element_line(linetype = 2, color = "grey"),
+                  legend.position = "none"
+                  )
+
+traumeUke <- ggplot(ukeDag, aes(name, pros)) +
+  geom_bar(stat = "identity", fill = col, width = .80) +
+  scale_y_continuous(expand = expand_scale(mult = c(0, .05))) + #5% space on top
+  geom_text(aes(label = pros), vjust = -0.5, position = position_dodge(width = .80)) +
+  ylab("prosent") +
+  ## geom_text(aes(y = 0.5, label = paste0("N=", n))) +
+  barTheme
