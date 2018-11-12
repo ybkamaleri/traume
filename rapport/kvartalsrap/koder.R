@@ -35,7 +35,16 @@ fun.tab <- function(data, var, include){
 
 hospValg <- "Drammen"
 datoFra <- "2016-01-01"
-qdatoTil <- "2017-12-31"
+datoTil <- "2017-12-31"
+
+
+## Traumeskjema
+masterDT <- masterFile[!duplicated(ntrid) &
+                    Hospital == (hospValg) &
+                      dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"), ]
+
+antallNTR <- dim(masterDT)[1]
 
 ## Traumeskjema
 dataDT <- akutt[!duplicated(ntrid) &
@@ -73,7 +82,7 @@ prehospDT <- prehosp[!duplicated(ntrid) &
 
 ## Antall traume
 ## ===========================
-dataDT[!duplicated(ntrid), .N]
+masterDT[!duplicated(ntrid), .N]
 
 
 ## Antall traume, alder og kjønn
@@ -129,13 +138,22 @@ antallTraume <- ggplot(dataLong) +
 ## Traume med eller uten alarm
 ## ===========================
 
-dataDT[, .N, by = ed_tta]
+alarmTab <- dataDT[, .N, by = ed_tta]
+alarmTab[, ed_tta := as.character(ed_tta)]
+alarmTab[.(ed_tta = c("1", "2"), to = c("Ja", "Nei")), on = "ed_tta", ed_tta := i.to]
+data.table::setnames(alarmTab, "ed_tta", "Alarm")
 
+kable(alarmTab, 'latex', booktabs = TRUE)
 
 ## Patient age <18
 ## ===============
 
-dataDT[age < 18, .N]
+age18 <- masterDT[age < 18, .N]
+
+age18sex <- masterDT[age < 18, .N, by = gender][, gender := as.character(gender)]
+age18sex[.(gender = c("1", "2"), to = c("Gutter", "Jenter")), on = 'gender', gender := i.to]
+data.table::setnames(age18sex, c("gender", "N"), c("", "Antall"))
+kable(age18sex, 'latex', booktabs = TRUE)
 
 
 ## Andel NISS > 15 og < 15

@@ -127,7 +127,7 @@ Antall traume med eller uten alarm.\\
 alarmTab <- dataDT[, .N, by = ed_tta]
 alarmTab[, ed_tta := as.character(ed_tta)]
 alarmTab[.(ed_tta = c("1", "2"), to = c("Ja", "Nei")), on = "ed_tta", ed_tta := i.to]
-data.table::setnames(alarmTab, "ed_tta", "Alarm")
+data.table::setnames(alarmTab, c("ed_tta", "N"), c("Alarm", "Antall"))
 
 kable(alarmTab, 'latex', booktabs = TRUE)
 @
@@ -143,7 +143,7 @@ Antall menn og kvinner.\\
 dataTab <- dataDT[!is.na(gender), .N, by = gender]
 dataTab[, gender := as.character(gender)]
 dataTab[.(gender = c("1", "2"), to = c("Menn", "Kvinner")), on = "gender", gender := i.to]
-data.table::setnames(dataTab, "gender", " ")
+data.table::setnames(dataTab, c("gender", "N"), c("", "Antall"))
 
 kable(dataTab, 'latex', booktabs = TRUE)
 @
@@ -155,8 +155,14 @@ kable(dataTab, 'latex', booktabs = TRUE)
 age18 <- masterDT[age < 18, .N]
 @
 
-Det er \Sexpr{age18} pasienter under 18 år.
+Det er \Sexpr{age18} pasienter under 18 år. Kjønnsfordeling vises i tabellen nedenfor.\\
 
+<<age18sex, result='asis'>>=
+age18sex <- masterDT[age < 18, .N, by = gender][, gender := as.character(gender)]
+age18sex[.(gender = c("1", "2"), to = c("Gutter", "Jenter")), on = 'gender', gender := i.to]
+data.table::setnames(age18sex, c("gender", "N"), c("", "Antall"))
+kable(age18sex, 'latex', booktabs = TRUE)
+@
 
 \section{NISS}
 \label{sec:niss}
@@ -204,6 +210,9 @@ kable(issUT, 'latex', booktabs = TRUE)
 
 \section{ISS og traumeteam}
 \label{sec:isstraume}
+
+Tabellen viser andel og antall traumer som blir tatt i mot med traumeteam \newline
+for ISS > 15 og ISS < 15.\newline
 
 <<isstrauma, result='asis'>>=
 ## ISS og tatt i mot med traumeteam
