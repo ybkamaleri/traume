@@ -298,13 +298,14 @@ kable(preTUT, 'latex', booktabs = TRUE) %>%
 
 @
 
+\pagebreak
 
 \section{Ukedager}
 \label{sec:ukedag}
 
 Figuren viser fordeling av antall og andel pasienter fordelt på ukedager i akuttmottak.\\
 
-<<ukedager, fig.align='center', fig.height=4, fig.cap="Ukedager i akuttmottak">>=
+<<ukedager, fig.align='center', fig.height=4, fig.cap="Ukedager i akuttmottak", fig.pos='h'>>=
 ## Ukedager
 ## ============
 ## pass på riktig rekkefølge
