@@ -23,3 +23,5 @@
 
 # mkdocs for gh-pages
 site/
+
+/traumeApp/figure

@@ -10,6 +10,7 @@ pakke <- c("shiny",
   "xts",
   "zoo",
   "knitr",
+  "kableExtra",
   "DT")
 
 sapply(pakke, require, character.only = TRUE)
@@ -35,7 +36,16 @@ fun.tab <- function(data, var, include){
 
 hospValg <- "Drammen"
 datoFra <- "2016-01-01"
-qdatoTil <- "2017-12-31"
+datoTil <- "2017-12-31"
+
+
+## Traumeskjema
+masterDT <- masterFile[!duplicated(ntrid) &
+                    Hospital == (hospValg) &
+                      dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"), ]
+
+antallNTR <- dim(masterDT)[1]
 
 ## Traumeskjema
 dataDT <- akutt[!duplicated(ntrid) &
@@ -73,7 +83,7 @@ prehospDT <- prehosp[!duplicated(ntrid) &
 
 ## Antall traume
 ## ===========================
-dataDT[!duplicated(ntrid), .N]
+masterDT[!duplicated(ntrid), .N]
 
 
 ## Antall traume, alder og kjønn
@@ -129,13 +139,22 @@ antallTraume <- ggplot(dataLong) +
 ## Traume med eller uten alarm
 ## ===========================
 
-dataDT[, .N, by = ed_tta]
+alarmTab <- dataDT[, .N, by = ed_tta]
+alarmTab[, ed_tta := as.character(ed_tta)]
+alarmTab[.(ed_tta = c("1", "2"), to = c("Ja", "Nei")), on = "ed_tta", ed_tta := i.to]
+data.table::setnames(alarmTab, "ed_tta", "Alarm")
 
+kable(alarmTab, 'latex', booktabs = TRUE)
 
 ## Patient age <18
 ## ===============
 
-dataDT[age < 18, .N]
+age18 <- masterDT[age < 18, .N]
+
+age18sex <- masterDT[age < 18, .N, by = gender][, gender := as.character(gender)]
+age18sex[.(gender = c("1", "2"), to = c("Gutter", "Jenter")), on = 'gender', gender := i.to]
+data.table::setnames(age18sex, c("gender", "N"), c("", "Antall"))
+kable(age18sex, 'latex', booktabs = TRUE)
 
 
 ## Andel NISS > 15 og < 15
@@ -234,4 +253,76 @@ injMix[, navn := factor(inj_mechanism,
 ## =====================
 ## Prehospital skjema
 
-prehospTab <- prehospDT[, .N, by = pre_transport]
+preTransInd <- c(1:6, 99, 999)
+preTransNavn <- c(
+  "Bilambulanse",
+  "Ambulansehelikopter",
+  "Ambulansefly",
+  "Fraktet inn av publikum",
+  "Til sykehus selv",
+  "Politi",
+  "Annet",
+  "Ukjent"
+  )
+
+prehospTab <- prehospDT[, .N, by = pre_transport][order(-N)]
+prehospTab[, `:=` (
+  pros = round(N / sum(N, na.rm = TRUE) * 100, digits = 1),
+  trans = factor(pre_transport,
+    levels = preTransInd,
+    labels = preTransNavn))]
+
+
+preTransTab <- prehospTab[, .(Transport = trans, Antall = N, Andell = pros)]
+
+preTTot <- preTransTab[, .(Transport = "Total", Antall = sum(Antall, na.rm = T))][,
+  Andell := round(Antall / sum(Antall, na.rm = TRUE) * 100, digits = 1)]
+
+preTUT <- rbindlist(list(preTransTab, preTTot))
+
+lastRow <- nrow(preTUT)
+
+kable(preTUT, 'latex', booktabs = TRUE) %>%
+  kable_styling(latex_options = "striped") %>%
+  row_spec(lastRow, bold = TRUE)
+
+
+## Ukedager
+## ============
+## pass på riktig rekkefølge
+ukeDagInd <- 1:7
+ukeDagNavn <- c("mandag","tirsdag","onsdag","torsdag","fredag","lørdag","søndag")
+
+ukeDag <- dataDT[!is.na(ed_arrival_weekday) & ed_arrival_weekday %in% 1:7,
+  .N, by = ed_arrival_weekday]
+
+ukeDag[, `:=` (
+  pros = round(N / sum(N, na.rm = TRUE) * 100, digits = 1),
+  dag = factor(ed_arrival_weekday, levels = ukeDagInd, labels = ukeDagNavn)
+)][, name := sprintf("%s \n (N=%s)", dag, N)]
+
+ukeDag$name <- with(ukeDag, factor(name, levels = name[order(ed_arrival_weekday)]))
+
+col <- '#2171b5'
+
+barTheme <- theme(axis.text = element_text(size = 9, color = "black"), #text for x og y axis
+                  axis.ticks.y = element_blank(),
+                  axis.ticks.x = element_blank(),
+                  axis.line.x = element_line(size = 0.5),
+                  axis.line.y = element_blank(),
+                  axis.title.y = element_text(size = 11),
+                  axis.title.x = element_blank(),
+                  panel.background = element_rect(fill = "white"),
+                  panel.border = element_rect(linetype = 1, fill = NA, color = "white"),
+                  panel.grid.minor.x = element_blank(),
+                  panel.grid.major.y = element_line(linetype = 2, color = "grey"),
+                  legend.position = "none"
+                  )
+
+traumeUke <- ggplot(ukeDag, aes(name, pros)) +
+  geom_bar(stat = "identity", fill = col, width = .80) +
+  scale_y_continuous(expand = expand_scale(mult = c(0, .05))) + #5% space on top
+  geom_text(aes(label = pros), vjust = -0.5, position = position_dodge(width = .80)) +
+  ylab("prosent") +
+  ## geom_text(aes(y = 0.5, label = paste0("N=", n))) +
+  barTheme

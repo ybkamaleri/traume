@@ -53,12 +53,21 @@ hospValg <- input$hosp_rapport
 datoFra <- input$dato_rapport[1]
 datoTil <- input$dato_rapport[2]
 
+## Traumeskjema
+masterDT <- masterFile[!duplicated(ntrid) &
+                    Hospital == (hospValg) &
+                      dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"), ]
+
+antallNTR <- dim(masterDT)[1]
+
+## Akuttskjema
 dataDT <- akutt[!duplicated(ntrid) &
                     Hospital == (hospValg) &
                       dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
                        dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"), ]
 
-antallNTR <- dim(dataDT)[1]
+## antallNTR <- dim(dataDT)[1]
 
 
 ## Skadeskjema
@@ -84,6 +93,9 @@ prehospDT <- prehosp[!duplicated(ntrid) &
                     dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
                        dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
 
+## Tilgjengelige data
+minDato <- min(as.POSIXct(dataDT$dateSykehus, format = "%Y-%m-%d"))
+maxDato <- max(as.POSIXct(dataDT$dateSykehus, format = "%Y-%m-%d"))
 
 @
 
@@ -92,7 +104,7 @@ prehospDT <- prehosp[!duplicated(ntrid) &
  \centering
  \huge\textbf{NTR rapport for \Sexpr{hospValg}}
  \par\vspace{5mm}\large\textbf{\Sexpr{format(Sys.Date(), "%d %b %Y")}}
-     \par\vspace{2mm}\small\textit{Rapporten inneholder data fra
+     \par\vspace{2mm}\small\textit{Valgte perioden for rapporten er fra
        \Sexpr{format(as.Date(datoFra), '%d.%m.%Y')} til
          \Sexpr{format(as.Date(datoTil), '%d.%m.%Y')}}
  \par\noindent\rule{\textwidth}{0.4pt}
@@ -101,26 +113,28 @@ prehospDT <- prehosp[!duplicated(ntrid) &
 \section{Antall traume}
 \label{sec:antall traume}
 
-Det er \Sexpr{antallNTR} traume fra \Sexpr{format(as.Date(datoFra), '%d.%m.%Y')} til
-  \Sexpr{format(as.Date(datoTil), '%d.%m.%Y')}.\newline
+Det er \textbf{\Sexpr{antallNTR}} traumer ble rapported og gyldige data er fra
+\texttt{\Sexpr{format(as.Date(minDato), '%d.%m.%Y')}} til \texttt{\Sexpr{format(as.Date(maxDato), '%d.%m.%Y')}}.
+Hvis valgte perioden ikke er samsvar med perioden for gyldige data betyr det
+at det ikke finnes data som er tilgjengelige i databasen for den valgte tidsperioden. \newline
 
-\subsection{Alarm}
-\label{subsec:alarm}
+\section{Alarm}
+\label{sec:alarm}
 
 Antall traume med eller uten alarm.\\
 
 <<alarm, result='asis'>>=
-alarmTab <- dataDT[, .N, by = ed_tta]
+alarmTab <- dataDT[ed_tta %in% 1:2, .N, by = ed_tta]
 alarmTab[, ed_tta := as.character(ed_tta)]
 alarmTab[.(ed_tta = c("1", "2"), to = c("Ja", "Nei")), on = "ed_tta", ed_tta := i.to]
-data.table::setnames(alarmTab, "ed_tta", "Alarm")
+data.table::setnames(alarmTab, c("ed_tta", "N"), c("Alarm", "Antall"))
 
 kable(alarmTab, 'latex', booktabs = TRUE)
 @
 
 
-\subsection{Kjønn}
-\label{subsec:gender}
+\section{Kjønn}
+\label{sec:gender}
 
 Antall menn og kvinner.\\
 
@@ -129,13 +143,29 @@ Antall menn og kvinner.\\
 dataTab <- dataDT[!is.na(gender), .N, by = gender]
 dataTab[, gender := as.character(gender)]
 dataTab[.(gender = c("1", "2"), to = c("Menn", "Kvinner")), on = "gender", gender := i.to]
-data.table::setnames(dataTab, "gender", " ")
+data.table::setnames(dataTab, c("gender", "N"), c("", "Antall"))
 
 kable(dataTab, 'latex', booktabs = TRUE)
 @
 
-\subsection{NISS}
-\label{subsec:niss}
+\section{Pasienter under 18 år}
+\label{sec:under18}
+
+<<age18, include=FALSE>>=
+age18 <- masterDT[age < 18, .N]
+@
+
+Det er \Sexpr{age18} pasienter under 18 år. Kjønnsfordeling vises i tabellen nedenfor.\\
+
+<<age18sex, result='asis'>>=
+age18sex <- masterDT[age < 18, .N, by = gender][, gender := as.character(gender)]
+age18sex[.(gender = c("1", "2"), to = c("Gutter", "Jenter")), on = 'gender', gender := i.to]
+data.table::setnames(age18sex, c("gender", "N"), c("", "Antall"))
+kable(age18sex, 'latex', booktabs = TRUE)
+@
+
+\section{NISS}
+\label{sec:niss}
 
 <<niss, result='asis'>>=
 ## Andel NISS > 15 og < 15
@@ -154,11 +184,15 @@ nissUT <- rbindlist(list(nissTab, list("Total", nisTot)))
 nissUT[, Andel := round(N / nisTot * 100, digits = 1), by = niss]
 data.table::setnames(nissUT, c("niss", "N"), c("NISS < 15", "Antall"))
 
-kable(nissUT, 'latex', booktabs = TRUE)
+lastRowNISS <- nrow(nissUT)
+
+kable(nissUT, 'latex', booktabs = TRUE) %>%
+   kable_styling(position = "left") %>%
+  row_spec(lastRowNISS, bold = TRUE)
 @
 
-\subsection{ISS}
-\label{subsec:iss}
+\section{ISS}
+\label{sec:iss}
 
 <<iss, result='asis'>>=
 ## ISS > 15
@@ -175,11 +209,18 @@ issUT[, Andel := round(N / issTot * 100, digits = 1), by = iss]
 
 data.table::setnames(issUT, c("iss", "N"), c("ISS < 15", "Antall"))
 
-kable(issUT, 'latex', booktabs = TRUE)
+lastRowISS <- nrow(issUT)
+
+kable(issUT, 'latex', booktabs = TRUE) %>%
+  kable_styling(position = "left") %>%
+  row_spec(lastRowISS, bold = TRUE)
 @
 
-\subsection{ISS og traumeteam}
-\label{subsec:isstraume}
+\section{ISS og traumeteam}
+\label{sec:isstraume}
+
+Tabellen viser andel og antall traumer som blir tatt i mot med traumeteam \newline
+for ISS > 15 og ISS < 15.\newline
 
 <<isstrauma, result='asis'>>=
 ## ISS og tatt i mot med traumeteam
@@ -204,8 +245,108 @@ issTraTab[, pros := round(n / tot15iss * 100, digits = 1), by = ISS]
 
 data.table::setnames(issTraTab, c("n", "pros"), c("Antall", "Andel"))
 
-kable(issTraTab, 'latex', booktabs = TRUE)
+lastRowISSTra <- nrow(issTraTab)
+
+kable(issTraTab, 'latex', booktabs = TRUE) %>%
+  kable_styling(position = "left") %>%
+  row_spec(lastRowISSTra, bold = TRUE)
 @
+
+\section{Transport til sykehus}
+\label{sec:transport}
+
+Tabellen viser fordelingen av transporttyper som ble brukt til sykehus.\\
+
+<<trans, resultat='asis'>>=
+
+## Transport til sykehus
+## =====================
+## Prehospital skjema
+
+preTransInd <- c(1:6, 99, 999)
+preTransNavn <- c(
+  "Bilambulanse",
+  "Ambulansehelikopter",
+  "Ambulansefly",
+  "Fraktet inn av publikum",
+  "Til sykehus selv",
+  "Politi",
+  "Annet",
+  "Ukjent"
+  )
+
+prehospTab <- prehospDT[, .N, by = pre_transport][order(-N)]
+prehospTab[, `:=` (
+  pros = round(N / sum(N, na.rm = TRUE) * 100, digits = 1),
+  trans = factor(pre_transport,
+    levels = preTransInd,
+    labels = preTransNavn))]
+
+
+preTransTab <- prehospTab[, .(Transport = trans, Antall = N, Andell = pros)]
+
+preTTot <- preTransTab[, .(Transport = "Total", Antall = sum(Antall, na.rm = T))][,
+  Andell := round(Antall / sum(Antall, na.rm = TRUE) * 100, digits = 1)]
+
+preTUT <- rbindlist(list(preTransTab, preTTot))
+
+lastRowTrans <- nrow(preTUT)
+
+kable(preTUT, 'latex', booktabs = TRUE) %>%
+  kable_styling(latex_options = "striped", position = "left") %>%
+  row_spec(lastRowTrans, bold = TRUE)
+
+@
+
+\pagebreak
+
+\section{Ukedager}
+\label{sec:ukedag}
+
+Figuren viser fordeling av antall og andel pasienter fordelt på ukedager i akuttmottak.\\
+
+<<ukedager, fig.align='center', fig.height=4, fig.cap="Ukedager i akuttmottak", fig.pos='h'>>=
+## Ukedager
+## ============
+## pass på riktig rekkefølge
+ukeDagInd <- 1:7
+ukeDagNavn <- c("mandag","tirsdag","onsdag","torsdag","fredag","lørdag","søndag")
+
+ukeDag <- dataDT[!is.na(ed_arrival_weekday) & ed_arrival_weekday %in% 1:7,
+  .N, by = ed_arrival_weekday]
+
+ukeDag[, `:=` (
+  pros = round(N / sum(N, na.rm = TRUE) * 100, digits = 1),
+  dag = factor(ed_arrival_weekday, levels = ukeDagInd, labels = ukeDagNavn)
+)][, name := sprintf("%s \n (N=%s)", dag, N)]
+
+ukeDag$name <- with(ukeDag, factor(name, levels = name[order(ed_arrival_weekday)]))
+
+col <- '#2171b5'
+
+barTheme <- theme(axis.text = element_text(size = 9, color = "black"), #text for x og y axis
+                  axis.ticks.y = element_blank(),
+                  axis.ticks.x = element_blank(),
+                  axis.line.x = element_line(size = 0.5),
+                  axis.line.y = element_blank(),
+                  axis.title.y = element_text(size = 11),
+                  axis.title.x = element_blank(),
+                  panel.background = element_rect(fill = "white"),
+                  panel.border = element_rect(linetype = 1, fill = NA, color = "white"),
+                  panel.grid.minor.x = element_blank(),
+                  panel.grid.major.y = element_line(linetype = 2, color = "grey"),
+                  legend.position = "none"
+                  )
+
+ggplot(ukeDag, aes(name, pros)) +
+  geom_bar(stat = "identity", fill = col, width = .80) +
+  scale_y_continuous(expand = expand_scale(mult = c(0, .05))) + #5% space on top
+  geom_text(aes(label = pros), vjust = -0.5, position = position_dodge(width = .80)) +
+  ylab("prosent") +
+  barTheme
+
+@
+
 
 
 \end{document}

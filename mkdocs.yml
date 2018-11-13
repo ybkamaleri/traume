@@ -12,8 +12,8 @@ nav:
 
 theme:
   name: 'readthedocs'
-  logo: 'img/traume.png'
-  favicon: 'img/traume.ico'
+  favicon: 'img/ntr.ico'
+  logo: 'img/ntr.png'
 
 extra_javascript:
   - js/gitlink.js
