@@ -9,6 +9,11 @@ edit_uri: ""
 nav:
   - Hjem: index.md
   - Om: about.md
-theme: readthedocs
+
+theme:
+  name: 'readthedocs'
+  favicon: 'img/ntr.ico'
+  logo: 'img/ntr.png'
+
 extra_javascript:
   - js/gitlink.js
