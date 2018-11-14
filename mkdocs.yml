@@ -13,7 +13,7 @@ nav:
 
 theme:
   name: 'readthedocs'
-  favicon: 'img/favicon.ico'
+  favicon: 'img/ntr.ico'
   logo: 'img/ntr.png'
 
 extra_javascript:
