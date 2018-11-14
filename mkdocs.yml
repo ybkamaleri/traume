@@ -8,9 +8,13 @@ edit_uri: edit/master/docs
 
 nav:
   - Hjem: index.md
+  - Veiledning: manual.md
   - Noe mer: about.md
 
 theme:
   name: 'readthedocs'
-  favicon: 'img/ntr.ico'
+  favicon: 'img/favicon.ico'
   logo: 'img/ntr.png'
+
+extra_javascript:
+  - js/newtab.js
