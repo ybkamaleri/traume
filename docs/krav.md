@@ -24,8 +24,8 @@ ved å søke hos Sykehuspartner.
 
 #### Emacs
 [Emacs](https://www.gnu.org/software/emacs/) krever litt ekstra innsats for å begynne
-med, men er veldig fleksible når man har lært grunlagt fuksjonene. R må installeres
-seperate når man skal benytte Emacs.
+med, men er veldig fleksible når man har lært noen få grunnleggende fuksjoner. R må
+installeres seperate når man skal benytte Emacs.
 
 #### Notepad++
 [Notepad++](https://notepad-plus-plus.org/) behover ingen tilpasning og enklere å
