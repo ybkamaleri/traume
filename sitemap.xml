@@ -2,17 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>https://ybkamaleri.github.io/traume/</loc>
-     <lastmod>2018-11-14</lastmod>
+     <lastmod>2018-11-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>https://ybkamaleri.github.io/traume/krav/</loc>
+     <lastmod>2018-11-15</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://ybkamaleri.github.io/traume/manual/</loc>
-     <lastmod>2018-11-14</lastmod>
+     <lastmod>2018-11-15</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://ybkamaleri.github.io/traume/about/</loc>
-     <lastmod>2018-11-14</lastmod>
+     <lastmod>2018-11-15</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>

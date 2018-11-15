@@ -8,7 +8,7 @@
   
   <meta name="author" content="Yusman K">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Veiledning - NTR resultat</title>
+  <title>Betingelsen - NTR resultat</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Veiledning";
-    var mkdocs_page_input_path = "manual.md";
-    var mkdocs_page_url = "/traume/manual/";
+    var mkdocs_page_name = "Betingelsen";
+    var mkdocs_page_input_path = "krav.md";
+    var mkdocs_page_url = "/traume/krav/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
@@ -53,30 +53,30 @@
     <a class="" href="..">Hjem</a>
 	    </li>
           
-            <li class="toctree-l1">
-		
-    <a class="" href="../krav/">Betingelsen</a>
-	    </li>
-          
             <li class="toctree-l1 current">
 		
-    <a class="current" href="./">Veiledning</a>
+    <a class="current" href="./">Betingelsen</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#veiledning">Veiledning</a></li>
+    <li class="toctree-l2"><a href="#betingelsen">Betingelsen</a></li>
     
         <ul>
         
-            <li><a class="toctree-l3" href="#steg-1">Steg 1</a></li>
+            <li><a class="toctree-l3" href="#r">R</a></li>
         
-            <li><a class="toctree-l3" href="#steg-2">Steg 2</a></li>
+            <li><a class="toctree-l3" href="#integrert-utviklingsmilj-ide-verkty">Integrert utviklingsmiljø (IDE) verktøy</a></li>
         
-            <li><a class="toctree-l3" href="#steg-3">Steg 3</a></li>
+            <li><a class="toctree-l3" href="#latex-kompilator">LaTeX kompilator</a></li>
         
         </ul>
     
 
     </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../manual/">Veiledning</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -106,10 +106,10 @@
     
       
     
-    <li>Veiledning</li>
+    <li>Betingelsen</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/ybkamaleri/traume/edit/master/docs/manual.md"
+        <a href="https://github.com/ybkamaleri/traume/edit/master/docs/krav.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -119,21 +119,39 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="veiledning">Veiledning</h1>
-<p>Her er generell veiledning for å bruke <em>NTR resultat</em>. Beskrivelse i veiledningen er
-basert på at bruker har tilknytning til Oslo universitetssykehus nettverket. Hvis
-bruker hører til et annet helseforetak, kan veiledningen likevel brukes som generelle
-referanse for å be om assistanse fra lokal-IKT ansvarlig.</p>
-<h2 id="steg-1">Steg 1</h2>
-<p>Sjekk at du har tilgang til denne mappen <strong>K:...</strong> </p>
-<h2 id="steg-2">Steg 2</h2>
-<p>Starter opp <strong>RStudio</strong> programm. Programmet kan nås på følgende måte:</p>
-<ol>
-<li>Klikk <em>program</em></li>
-<li>... </li>
-</ol>
-<h2 id="steg-3">Steg 3</h2>
-<p>Bla.. bla.. bla.. </p>
+                <h1 id="betingelsen">Betingelsen</h1>
+<p>For å kunne benytte <strong>NTR resultat</strong> kreves det at man har tilgang eller installert
+programvarer som er listet nedenfor. Alle programvarene på listen er gratis å laste ned og bruke.</p>
+<h2 id="r">R</h2>
+<p><a href="https://cran.r-project.org/">R</a> er et statistikprogram som benyttes i alle
+beregningene og figur konstruksjon i denne resultattjenesten. Programvaren kan lastes
+ned <a href="https://cloud.r-project.org/">her</a>.</p>
+<h2 id="integrert-utviklingsmilj-ide-verkty">Integrert utviklingsmiljø (IDE) verktøy</h2>
+<p>IDE benyttes til å forekle arbeidet med feilsøking eller kjøre koder. Blant de vanlige
+IDE som man kan velge er:</p>
+<h4 id="rstudio">RStudio</h4>
+<p><a href="https://www.rstudio.com/">RStudio</a> kan lastet ned
+<a href="https://www.rstudio.com/products/rstudio/download/">her</a>. Ved å installerer RStudio
+har man også fått tilgang til <a href="https://cran.r-project.org/">R</a> uten at man behove å
+installere separat. Det er mulig å få tilgang til RStudio i Oslo universitetssykehus
+ved å søke hos Sykehuspartner.</p>
+<h4 id="emacs">Emacs</h4>
+<p><a href="https://www.gnu.org/software/emacs/">Emacs</a> krever litt ekstra innsats for å begynne
+med, men er veldig fleksible når man har lært grunlagt fuksjonene. R må installeres
+seperate når man skal benytte Emacs.</p>
+<h4 id="notepad">Notepad++</h4>
+<p><a href="https://notepad-plus-plus.org/">Notepad++</a> behover ingen tilpasning og enklere å
+bruke. R må installeres seperate når man benytter Notepad++.</p>
+<h2 id="latex-kompilator">LaTeX kompilator</h2>
+<p><a href="https://no.wikipedia.org/wiki/LaTeX">LaTeX</a> kopilator brukes til å produsere
+virksomhet rapport i PDF format. Hvis det ikke er behov å benytte denne fuksjonen så
+kan denne utelates. De finnes forskjellige programvarer tilgjenglige, bl.a:</p>
+<h4 id="texlive">TexLive</h4>
+<p>Denne programvare passer til alle operativsystemmer dvs. Linux, Windows og
+Mac. Programvaren kan lastet ned <a href="https://www.tug.org/texlive/">her</a>.</p>
+<h4 id="miktex">MiKTeX</h4>
+<p>Denne programvaren passer til bare Windows operativsystem. Denne kan lastet ned
+<a href="https://miktex.org/about">her</a>.</p>
               
             </div>
           </div>
@@ -141,10 +159,10 @@ referanse for å be om assistanse fra lokal-IKT ansvarlig.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../about/" class="btn btn-neutral float-right" title="Noe mer">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../manual/" class="btn btn-neutral float-right" title="Veiledning">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../krav/" class="btn btn-neutral" title="Betingelsen"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href=".." class="btn btn-neutral" title="Hjem"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -172,10 +190,10 @@ referanse for å be om assistanse fra lokal-IKT ansvarlig.</p>
           <a href="https://github.com/ybkamaleri/traume/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../krav/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../about/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../manual/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
