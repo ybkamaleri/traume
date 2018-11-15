@@ -44,6 +44,10 @@ knitr::opts_chunk$set(
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
+% figur caption
+\renewcommand{\figurename}{Figur:}
+
+
 \begin{document}
 
 
@@ -91,7 +95,15 @@ prehospDT <- prehosp[!duplicated(ntrid) &
                     !is.na(ntrid) &
                    Hospital == (hospValg) &
                     dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
-                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
+                    dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
+
+## Intensiv
+intDT <- intensiv[!duplicated(ntrid) &
+                   !is.na(ntrid) &
+                    Hospital == (hospValg) &
+                    dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                    dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
+
 
 ## Tilgjengelige data
 minDato <- min(as.POSIXct(dataDT$dateSykehus, format = "%Y-%m-%d"))
@@ -167,6 +179,8 @@ kable(age18sex, 'latex', booktabs = TRUE)
 \section{NISS}
 \label{sec:niss}
 
+Antall og andel pasienter med NISS under og over 15.\\
+
 <<niss, result='asis'>>=
 ## Andel NISS > 15 og < 15
 ## =================
@@ -194,6 +208,8 @@ kable(nissUT, 'latex', booktabs = TRUE) %>%
 \section{ISS}
 \label{sec:iss}
 
+Antall og andel pasienter med ISS under og over 15.\\
+
 <<iss, result='asis'>>=
 ## ISS > 15
 ## ========
@@ -219,7 +235,7 @@ kable(issUT, 'latex', booktabs = TRUE) %>%
 \section{ISS og traumeteam}
 \label{sec:isstraume}
 
-Tabellen viser andel og antall traumer som blir tatt i mot med traumeteam \newline
+Andel og antall traumer som blir tatt i mot med traumeteam
 for ISS > 15 og ISS < 15.\newline
 
 <<isstrauma, result='asis'>>=
@@ -303,7 +319,7 @@ kable(preTUT, 'latex', booktabs = TRUE) %>%
 \section{Ukedager}
 \label{sec:ukedag}
 
-Figuren viser fordeling av antall og andel pasienter fordelt på ukedager i akuttmottak.\\
+Figur \ref{fig:ukedager} viser fordeling av antall og andel pasienter fordelt på ukedager i akuttmottak.\\
 
 <<ukedager, fig.align='center', fig.height=4, fig.cap="Ukedager i akuttmottak", fig.pos='h'>>=
 ## Ukedager
@@ -344,6 +360,28 @@ ggplot(ukeDag, aes(name, pros)) +
   geom_text(aes(label = pros), vjust = -0.5, position = position_dodge(width = .80)) +
   ylab("prosent") +
   barTheme
+
+@
+
+
+\section{Liggedøgn}
+\label{sec:ligge}
+
+<<liggeDT, include=FALSE>>=
+liggMean <- intDT[, .(mean = mean(hosp_icu_days, na.rm = TRUE))]
+meanUT <- round(liggMean, digits = 1)
+@
+
+Gjennomsnitt liggedøgn er \Sexpr{meanUT} dager. Tabellen nedenfor viser fordelingen av antall dager av liggedøgn og antall pasienter.\\
+
+
+<<ligge, resultat='asis'>>=
+liggTab <- intDT[!duplicated(ntrid) & !is.na(hosp_icu_days), .N, by = hosp_icu_days]
+setkey(liggTab, hosp_icu_days)
+data.table::setnames(liggTab, c("hosp_icu_days", "N"), c("Antall Dager", "Antall traume"))
+
+kable(liggTab, 'latex', booktabs = TRUE) %>%
+  kable_styling(latex_options = "striped", position = "left")
 
 @
 

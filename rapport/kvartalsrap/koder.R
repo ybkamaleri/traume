@@ -78,6 +78,14 @@ prehospDT <- prehosp[!duplicated(ntrid) &
                        dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
 
 
+## Intensiv
+intDT <- intensiv[!duplicated(ntrid) &
+                    !is.na(ntrid) &
+                   Hospital == (hospValg) &
+                    dateSykehus >= as.POSIXct(datoFra, format = "%Y-%m-%d") &
+                       dateSykehus <= as.POSIXct(datoTil, format = "%Y-%m-%d"),]
+
+
 
 
 
@@ -326,3 +334,19 @@ traumeUke <- ggplot(ukeDag, aes(name, pros)) +
   ylab("prosent") +
   ## geom_text(aes(y = 0.5, label = paste0("N=", n))) +
   barTheme
+
+
+## Overflyttet traumesenter
+## ========================
+
+
+
+## Antall liggedøgn
+## ================
+
+liggTab <- intDT[!duplicated(ntrid), .N, by = hosp_icu_days]
+
+data.table::setnames(liggTab, c("hosp_icu_days", "N"), c("Antall Dager", "Antal traume"))
+
+kable(liggTab, 'latex', booktabs = TRUE) %>%
+  kable_styling(latex_options = "striped")
