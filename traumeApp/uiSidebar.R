@@ -9,19 +9,19 @@ sidebar <- dashboardSidebar(width = 250, #tilpase title tekst
       tabName = "tab_filter",
       icon = icon("database")),
 
-    tags$hr(), #linje
+    ## tags$hr(), #linje
 
-    menuItem("Ulykke",
-      tabName = "tab_ulykke",
-      icon = icon("bar-chart")),
+    ## menuItem("Ulykke",
+    ##   tabName = "tab_ulykke",
+    ##   icon = icon("bar-chart")),
 
-    menuItem("Akutt",
-      tabName = "tab_akutt",
-      icon = icon("bar-chart")),
+    ## menuItem("Akutt",
+    ##   tabName = "tab_akutt",
+    ##   icon = icon("bar-chart")),
 
-    menuItem("Intensiv",
-      tabName = "tab_intensiv",
-      icon = icon("bar-chart")),
+    ## menuItem("Intensiv",
+    ##   tabName = "tab_intensiv",
+    ##   icon = icon("bar-chart")),
 
     menuItem("Skadegradering",
       tabName = "tab_skadegrad",
@@ -38,12 +38,14 @@ sidebar <- dashboardSidebar(width = 250, #tilpase title tekst
         tabName = "tab_rap")
     ),
 
+    tags$hr(),
+
     menuItem("FAQ",
       tabName = "tab_manual",
-      icon = icon("question-circle")),
+      icon = icon("question-circle"))
 
-    menuItem("Test",
-      tabName = "tab_test",
-      icon = icon("wrench"))
+    ## menuItem("Test",
+    ##   tabName = "tab_test",
+    ##   icon = icon("wrench"))
   )
 )
