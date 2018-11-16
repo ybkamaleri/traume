@@ -1,4 +1,4 @@
-sidebar <- dashboardSidebar(width = 250, #tilpase title tekst
+sidebar <- shinydashboard::dashboardSidebar(width = 250, #tilpase title tekst
   collapsed = TRUE, #skjule sidebar
   sidebarMenu(
     menuItem("Generell informasjon",

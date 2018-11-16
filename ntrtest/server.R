@@ -38,7 +38,7 @@ function(input, output, session){
 
   ## Dygraphs for antall traume with timeseries
   ##################################################
-  output$traume_dygraph <- renderDygraph({
+  output$traume_dygraph <- dygraphs::renderDygraph({
     dataDG <- copy(masterFile)
     dataDG[, dateAll := as.Date(dateAll)]
 

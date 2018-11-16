@@ -1,4 +1,4 @@
-body <- dashboardBody(
+body <- shinydashboard::dashboardBody(
   ## custom css
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
@@ -16,7 +16,7 @@ body <- dashboardBody(
           valueBoxOutput("o_dead")),
         fluidRow(
           box(width = 12,
-            dygraphOutput("traume_dygraph"))
+            dygraphs::dygraphOutput("traume_dygraph"))
         )
       )),
 
