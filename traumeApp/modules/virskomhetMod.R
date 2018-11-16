@@ -109,12 +109,12 @@ virkPlotSV <- function(input, output, session, valg, data){
     ggplot(ukeDag, aes(dag, prosent)) + geom_bar(stat = "identity")
 
     virkplot <- ggplot(ukeDag) +
-      geom_bar(aes(dag, prosent), stat = "identity", fill = "#2171b5") +
+      geom_bar(aes(dag, prosent, antall = n), stat = "identity", fill = "#2171b5") +
       scale_y_continuous(expand = expand_scale(mult = c(0, .05))) + #5% space on top
       labs(y = "prosent") +
       barTheme
 
-    plotly::ggplotly(virkplot)
+    plotly::ggplotly(virkplot, tooltip = c("dag", "prosent", "antall"))
   })
 
-}
+  }
