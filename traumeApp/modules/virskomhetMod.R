@@ -67,7 +67,7 @@ virkDataSV <- function(input, output, session, resh) {
 virkPlotUI <- function(id){
   ns <- NS(id)
   fluidPage(
-    plotOutput(ns("ggplot")))
+    plotlyOutput(ns("ggplot")))
 }
 
 virkPlotSV <- function(input, output, session, valg, data){
@@ -77,7 +77,7 @@ virkPlotSV <- function(input, output, session, valg, data){
   datoFra <- quote(valg$datoFra())
   datoTil <- quote(valg$datoTil())
 
-  output$ggplot <- renderPlot({
+  output$ggplot <- renderPlotly({
 
     valgDato <- data[!duplicated(ntrid) & !is.na(dateSykehus) &
                        Hospital == eval(hospNavn) &
@@ -85,7 +85,7 @@ virkPlotSV <- function(input, output, session, valg, data){
                          dateSykehus <= as.POSIXct(eval(datoTil), format = "%Y-%m-%d")]
     valgDag <- valgDato[, dag := weekdays(dateSykehus)]
     ntot <- dim(valgDag)[1] #total dager
-    ukeDag <- valgDag[, .(pros = round((.N / ntot) * 100),
+    ukeDag <- valgDag[, .(prosent = round((.N / ntot) * 100),
       n = .N), by = dag]
 
     ## Passer på riktig rekkefølge
@@ -106,13 +106,15 @@ virkPlotSV <- function(input, output, session, valg, data){
     )
 
 
-    ggplot(ukeDag, aes(dag, pros)) + geom_bar(stat = "identity")
+    ggplot(ukeDag, aes(dag, prosent)) + geom_bar(stat = "identity")
 
-    ggplot(ukeDag) +
-      geom_bar(aes(dag, pros), stat = "identity", fill = "#2171b5") +
+    virkplot <- ggplot(ukeDag) +
+      geom_bar(aes(dag, prosent), stat = "identity", fill = "#2171b5") +
       scale_y_continuous(expand = expand_scale(mult = c(0, .05))) + #5% space on top
       labs(y = "prosent") +
       barTheme
+
+    plotly::ggplotly(virkplot)
   })
 
 }
