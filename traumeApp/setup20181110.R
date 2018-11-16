@@ -125,9 +125,9 @@ setnames(masterFile, c("PatientAge",
 ##############################
 ## timeSykehus - dato med klokkelsett
 ## dateAll og dateSykehus inneholder bare dato
-masterFile[, `:=` (timeSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"),
+masterFile[, `:=` (timeSykehus = as.POSIXct(dateSykehus, format = "%d.%m.%Y %H:%M:%S"),
   dateAll = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"),
-  dateSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"))]
+  dateSykehus = as.POSIXct(dateSykehus, format = "%d.%m.%Y %H:%M:%S"))]
 
 
 
