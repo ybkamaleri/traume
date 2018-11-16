@@ -1,5 +1,6 @@
 ## Dato with as.POSIXc
 
+
 ## laste opp data
 ###################
 rm(list = ls())
@@ -20,6 +21,7 @@ source(kilde)
 ## lager index
 ###########################
 indSkjema <- function(x, encode = "UTF-8"){
+library(data.table)
   indx <- grep(x, ntrCSV)
   datafile  <- paste0(filDir, ntrCSV[indx])
   DT <- fread(datafile, encoding = encode)
@@ -125,9 +127,10 @@ setnames(masterFile, c("PatientAge",
 ##############################
 ## timeSykehus - dato med klokkelsett
 ## dateAll og dateSykehus inneholder bare dato
-masterFile[, `:=` (timeSykehus = as.POSIXct(dateSykehus, format = "%d.%m.%Y %H:%M:%S"),
+
+masterFile[, `:=` (timeSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"),
   dateAll = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"),
-  dateSykehus = as.POSIXct(dateSykehus, format = "%d.%m.%Y %H:%M:%S"))]
+  dateSykehus = as.POSIXct(dateAll, format = "%d.%m.%Y %H:%M:%S"))]
 
 
 
