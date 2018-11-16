@@ -117,7 +117,7 @@ function(input, output, session){
   output$txtSide <- renderUI({
 
     traumeSide <- "https://ybkamaleri.github.io/traume/"
-    htmlSide <- tags$iframe(src = traumeSide, height = "600", width = "100%")
+    htmlSide <- tags$iframe(src = traumeSide, height = "750", width = "100%")
     print(htmlSide)
     htmlSide
   })
