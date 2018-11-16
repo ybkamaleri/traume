@@ -36,8 +36,12 @@ rapportUI <- function(id){
 
       box(width = 4,
         height = 100,
-        title = "Rapport",
-        downloadButton(ns("rapport"), label = "Last ned")
+        align = "center", offset = 2,
+        ## title = "Rapport",
+        background = "light-blue",
+        tags$div(HTML("<div style='color: #FFFFFF; font-size: 18px; font-weight: bold; text-align: center;'>Trykk knappen for å lage rapporten i PDF</div>")),
+        tags$br(),
+        downloadButton(ns("rapport"), label = "Last ned", class = "butangDownload")
       )
     ),
     fluidRow(
