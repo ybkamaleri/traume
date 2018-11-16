@@ -1,4 +1,3 @@
-
 \documentclass[11pt, a4paper]{article}
 
 % !Rnw weave = knitr
@@ -122,7 +121,7 @@ maxDato <- max(as.POSIXct(dataDT$dateSykehus, format = "%Y-%m-%d"))
  \par\noindent\rule{\textwidth}{0.4pt}
 \endgroup
 
-\section{Antall traume}
+\section{Antall traumer}
 \label{sec:antall traume}
 
 Det er \textbf{\Sexpr{antallNTR}} traumer ble rapported og gyldige data er fra
@@ -133,7 +132,7 @@ at det ikke finnes data som er tilgjengelige i databasen for den valgte tidsperi
 \section{Alarm}
 \label{sec:alarm}
 
-Antall traume med eller uten alarm.\\
+Antall traumer med eller uten alarm.\\
 
 <<alarm, result='asis'>>=
 alarmTab <- dataDT[ed_tta %in% 1:2, .N, by = ed_tta]
@@ -179,7 +178,7 @@ kable(age18sex, 'latex', booktabs = TRUE)
 \section{NISS}
 \label{sec:niss}
 
-Antall og andel pasienter med NISS under og over 15.\\
+Antall og andel traumer med NISS under og over 15.\\
 
 <<niss, result='asis'>>=
 ## Andel NISS > 15 og < 15
@@ -208,7 +207,7 @@ kable(nissUT, 'latex', booktabs = TRUE) %>%
 \section{ISS}
 \label{sec:iss}
 
-Antall og andel pasienter med ISS under og over 15.\\
+Antall og andel traumer med ISS under og over 15.\\
 
 <<iss, result='asis'>>=
 ## ISS > 15
@@ -319,7 +318,7 @@ kable(preTUT, 'latex', booktabs = TRUE) %>%
 \section{Ukedager}
 \label{sec:ukedag}
 
-Figur \ref{fig:ukedager} viser fordeling av antall og andel pasienter fordelt på ukedager i akuttmottak.\\
+Figur \ref{fig:ukedager} viser fordeling av antall og andel traumer fordelt på ukedager i akuttmottak.\\
 
 <<ukedager, fig.align='center', fig.height=4, fig.cap="Ukedager i akuttmottak", fig.pos='h'>>=
 ## Ukedager
@@ -372,13 +371,12 @@ liggMean <- intDT[, .(mean = mean(hosp_icu_days, na.rm = TRUE))]
 meanUT <- round(liggMean, digits = 1)
 @
 
-Gjennomsnitt liggedøgn er \Sexpr{meanUT} dager. Tabellen nedenfor viser fordelingen av antall dager av liggedøgn og antall pasienter.\\
-
+Gjennomsnitt liggedøgn er \Sexpr{meanUT} dager. Tabellen nedenfor viser fordelingen av antall dager av liggedøgn og antall traumer.\\
 
 <<ligge, resultat='asis'>>=
 liggTab <- intDT[!duplicated(ntrid) & !is.na(hosp_icu_days), .N, by = hosp_icu_days]
 setkey(liggTab, hosp_icu_days)
-data.table::setnames(liggTab, c("hosp_icu_days", "N"), c("Antall Dager", "Antall traume"))
+data.table::setnames(liggTab, c("hosp_icu_days", "N"), c("Antall Dager", "Antall traumer"))
 
 kable(liggTab, 'latex', booktabs = TRUE) %>%
   kable_styling(latex_options = "striped", position = "left")
