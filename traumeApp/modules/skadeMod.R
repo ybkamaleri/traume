@@ -204,6 +204,7 @@ skadeUI <- function(id){
       #####################
       box(
         width = 3,
+        title = "Valgte dataset:",
         background = "light-blue",
         htmlOutput(ns("txt")),
         column(
