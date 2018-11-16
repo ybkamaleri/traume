@@ -1,0 +1,38 @@
+
+/* align checkboxGroupInput */
+.checkbox-inline {
+    margin-left: 0px;
+    margin-right: 1px;
+}
+.checkbox-inline+.checkbox-inline {
+    margin-left: 0px;
+    margin-right: 1px;
+}
+
+/* color for valueBox */
+.small-box.bg-blue {
+    background-color: #00ccff !important ;
+    color: #000000 !important;  }
+
+/* Info box */
+#Info {
+    font-size: 18px;
+    font-style: bold;
+}
+
+
+/* Skade Module */
+#Butang {
+    padding:5px 30px;
+    border: none;
+    text-align: center;
+    font-size: 15px;
+}
+
+/* Rapport Module */
+.butangDownload{
+    vertical-align- middle;
+    height- 50px;
+    width- 100%;
+    font-size- 30px;
+}
