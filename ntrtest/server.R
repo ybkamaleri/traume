@@ -101,8 +101,9 @@ function(input, output, session){
 
   ## Virksomhetsdata på sykehus
   ###############################
-  valgHosp <- callModule(virkDataSV, "virkData", resh)
-  callModule(virkPlotSV, "virkPlot", valg = valgHosp, data = akutt)
+  ## valgHosp <- callModule(virkDataSV, "virkData", resh)
+  ## callModule(virkPlotSV, "virkPlot", valg = valgHosp, data = akutt)
+  callModule(virkSV, "virksomhet", resh = resh, data = akutt)
 
   ## Standard Rapport
   #######################

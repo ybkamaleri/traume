@@ -52,8 +52,9 @@ body <- shinydashboard::dashboardBody(
     tabItem(tabName = "tab_virk",
       fluidPage(
         fluidRow(
-          virkDataUI("virkData"),
-          virkPlotUI("virkPlot")
+          ## virkDataUI("virkData"),
+          ## virkPlotUI("virkPlot")
+          virkUI("virksomhet")
         )
       )),
 
