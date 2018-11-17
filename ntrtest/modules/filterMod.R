@@ -24,8 +24,8 @@ filterUI <- function(id){
       box(width = 3, height = 165, status = "primary",
         dateRangeInput(inputId = ns("tidsrom_in"),
           label = "Valg dato fra og til",
-          start = Sys.Date() - 360, #alt. min date
-          end = Sys.Date(),
+          start = Sys.Date() - 660, #alt. min date
+          end = Sys.Date() - 360,
           separator = "til",
           format = "dd.mm.yyyy",
           startview = "month",
@@ -65,16 +65,9 @@ filterUI <- function(id){
     fluidRow(
       box(width = 9,
         tabBox(side = 'left', selected = "Figur", width = 12,
-          tabPanel("Figur", plotlyOutput(ns("fig"))),
+          tabPanel("Figur", plotly::plotlyOutput(ns("fig"))),
           tabPanel("Tabell", DT::dataTableOutput(ns("tabell"))))
       ),
-
-      ## Tall Info
-      ## box(id = "filtInfo", width = 3,
-      ##   textOutput(ns("kilde")),
-      ##   textOutput(ns("traume_info")),
-      ##   textOutput(ns("mann_info")),
-      ##   textOutput(ns("kvinne_info"))),
       box(id = "Info", width = 3,
         htmlOutput(ns("traumeInfo")))
     )
@@ -88,8 +81,6 @@ filterUI <- function(id){
 filterSV <- function(input, output, session, resh, data){
 
   ns <- session$ns
-
-
 
   ## Dynamisk input
   ## ==============
@@ -270,7 +261,21 @@ filterSV <- function(input, output, session, resh, data){
   })
 
   ## Plot alder og kjønn
-  output$fig <- renderPlotly({
+  output$fig <- plotly::renderPlotly({
+
+    ## progress indikator
+    progress <- Progress$new(session, min=1, max=10)
+    on.exit(progress$close())
+
+    progress$set(message = 'Vent',
+      detail = 'kalkulering pågår...')
+
+    for (i in 1:5) {
+      progress$set(value = i)
+      Sys.sleep(0.2)
+    }
+
+    ## Begynn plotting
     if (gg$visPlot == FALSE) return()
 
     isolate({

@@ -6,12 +6,6 @@ virkDataUI <- function(id){
   ns <- NS(id)
   fluidPage(
     fluidRow(
-      ## tags$style(type='text/css',
-      ##            "/*selectInput font size*/
-      ##             .selectize-input { font-size: 20px; line-height: 20px;}
-      ##             .selectize-dropdown { font-size: 18px; line-height: 18px;}
-      ##             "),
-      ## Valg hospital
       box(width = 3,
         height = 100,
         title = "Valg sykehus:",
@@ -67,7 +61,8 @@ virkDataSV <- function(input, output, session, resh) {
 virkPlotUI <- function(id){
   ns <- NS(id)
   fluidPage(
-    plotlyOutput(ns("ggplot")))
+    plotly::plotlyOutput(ns("ggplot"))
+  )
 }
 
 virkPlotSV <- function(input, output, session, valg, data){
@@ -77,8 +72,21 @@ virkPlotSV <- function(input, output, session, valg, data){
   datoFra <- quote(valg$datoFra())
   datoTil <- quote(valg$datoTil())
 
-  output$ggplot <- renderPlotly({
+  output$ggplot <- plotly::renderPlotly({
 
+    ## progress indikator
+    progress <- Progress$new(session, min=1, max=10)
+    on.exit(progress$close())
+
+    progress$set(message = 'Vent',
+      detail = 'kalkulering pågår...')
+
+    for (i in 1:4) {
+      progress$set(value = i)
+      Sys.sleep(0.1)
+    }
+
+    ## Plotting
     valgDato <- data[!duplicated(ntrid) & !is.na(dateSykehus) &
                        Hospital == eval(hospNavn) &
                          dateSykehus >= as.POSIXct(eval(datoFra), format = "%Y-%m-%d") &
@@ -90,7 +98,7 @@ virkPlotSV <- function(input, output, session, valg, data){
 
     ## Passer på riktig rekkefølge
     ukeDag$dag <- factor(ukeDag$dag,
-      levels = c("mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag", "søndag"))
+      levels = c("mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lordag", "sondag"))
 
 
     barTheme <- theme(axis.text = element_text(size = 12, color = "black"), #text for x og y axis
@@ -106,15 +114,15 @@ virkPlotSV <- function(input, output, session, valg, data){
     )
 
 
-    ggplot(ukeDag, aes(dag, prosent)) + geom_bar(stat = "identity")
+    ggplot2::ggplot(ukeDag, aes(dag, prosent)) + geom_bar(stat = "identity")
 
-    virkplot <- ggplot(ukeDag) +
-      geom_bar(aes(dag, prosent, antall = n), stat = "identity", fill = "#2171b5") +
+    virkplot <- ggplot2::ggplot(ukeDag) +
+      geom_bar(aes(dag, prosent, n = n), stat = "identity", fill = "#2171b5") +
       scale_y_continuous(expand = expand_scale(mult = c(0, .05))) + #5% space on top
       labs(y = "prosent") +
       barTheme
 
-    plotly::ggplotly(virkplot, tooltip = c("dag", "prosent", "antall"))
+    plotly::ggplotly(virkplot, tooltip = c("dag", "prosent", "n"))
   })
 
   }

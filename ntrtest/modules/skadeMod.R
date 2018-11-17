@@ -228,14 +228,6 @@ skadeUI <- function(id){
         width = 3,
         htmlOutput(ns("traumeInfo"))
       ))
-
-    ## fluidRow(
-    ##   verbatimTextOutput(ns("test"))
-    ## ),
-
-    ## fluidRow(
-    ##   verbatimTextOutput(ns("test2"))
-    ## )
     )
 }
 
@@ -270,16 +262,6 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   output$txt <- renderUI({
     HTML(valgDT$txt)
   })
-
-  ## Filtert data
-  ## ============
-
-  ## ## for test uten module
-  ## listNTR <- reactive({
-  ##   req(input$ulykke)
-  ##   valgDT$data[, list(ntrid)]
-
-  ## })
 
   ## filtert data for å velge ntrid valgDT henter data fra filterModule. Bruk is.null
   ## hvis ingen data ikke er filtert enda

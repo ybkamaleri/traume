@@ -9,6 +9,7 @@ pakke <- c("shiny",
   "knitr",
   "kableExtra",
   "xts",
+  "tinytex",
   "zoo",
   "DT")
 

@@ -69,7 +69,7 @@ function(input, output, session){
     minDato <- strftime(zoo::as.yearqtr(as.Date(maxDato)) - 1, frac = 2)
 
     ## library(dygraphs)
-    dygraph(timeTraumeAlle,
+    dygraphs::dygraph(timeTraumeAlle,
       main = "Antall Traume per dag og kjønn",
       ylab = "Antall") %>%
       dySeries("..1", label = "Alle") %>%
@@ -108,25 +108,12 @@ function(input, output, session){
   #######################
   callModule(rapportSV, "rapport", resh, data = akutt)
 
-  ## HTML side
-  ## ==================
-  ## htmlSide <- function(){
-  ##   return(includeHTML("./index.html"))
-  ## }
-
   output$txtSide <- renderUI({
 
     traumeSide <- "https://ybkamaleri.github.io/traume/"
     htmlSide <- tags$iframe(src = traumeSide, height = "750", width = "100%")
     print(htmlSide)
     htmlSide
-  })
-
-  ## Test
-  ## ====================
-  output$test <- renderPrint({
-    str(dataClean$data)
-    dataClean$data
   })
 
   session$onSessionEnded(stopApp)

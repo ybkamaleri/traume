@@ -57,6 +57,8 @@ rapportUI <- function(id){
 
 rapportSV <- function(input, output, session, resh, data){
 
+  library(tinytex)
+
   ns <- session$ns
 
   hospValg <- sort(as.factor(unique(resh$Hospital)))
@@ -74,8 +76,8 @@ rapportSV <- function(input, output, session, resh, data){
     filename = 'ntrrapport.pdf',
 
     content = function(file) {
-      out = knit2pdf('NTRrapport.Rnw', clean = TRUE)
-      file.copy(out, file)
+      out = knitr::knit2pdf('doc/NTRrapport.Rnw', clean = TRUE)
+      file.rename(from = out, to = file)
     },
 
     contentType = 'application/pdf'
