@@ -7,7 +7,7 @@ brukes som generelle referanse for å be om assistanse fra lokal-IKT ansvarlig. 
 kreves ingen spesielle kompetanse i statistisk analyser eller koding for å bruke NTR
 resultat. Det er bare å følge veiledningen nedenfor steg for steg.
 
-## <a name='steg1'>Steg 1</a>
+## Steg 1 <a name='steg1'></a>
 
 Sjekk at du har tilgang til NTR mappen **K: sensitivt område**. Blant de mappene som
 ligger der, finner du en mappe som heter *Yusman*. Deretter finner du en mappe som
