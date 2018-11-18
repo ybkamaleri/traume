@@ -93,7 +93,7 @@ Denne kroppsregionen deles opp i tre deler:
 
 Videre skal det gjøres tilleggsuttrekk for:
 
-### Isolerte skjelettskader
+#### Isolerte skjelettskader
 
 *Isolerte skjelettskader* i nakke hvor pasienter med minst en av følgende AIS
 koder (En pasient skal bare telles en gang selv om han har flere skader):
@@ -112,7 +112,7 @@ koder (En pasient skal bare telles en gang selv om han har flere skader):
 650234.3
 ```
 
-### Ryggmargsskade
+#### Ryggmargsskade
 
 Ryggmargsskade i nakke:
 
@@ -135,7 +135,7 @@ Pasienter med både ryggmargsskade og skjelettskade regnes bare i ryggmargskateg
 
 Videre skal det gjøres tilleggsuttrekk for:
 
-### Isolerte skjelettskader
+#### Isolerte skjelettskader
 
 *Isolerte skjelettskader* i brystregion (thorax): Pasienter med minst en av følgende
 AIS koder (En pasient skal bare telles en gang selv om han har flere skader):
@@ -153,7 +153,7 @@ AIS koder (En pasient skal bare telles en gang selv om han har flere skader):
 650434.3
 ```
 
-### Ryggmargsskade
+#### Ryggmargsskade
 
 *Ryggmargsskade* i brystregion (thorax):
 
@@ -175,7 +175,7 @@ Pasienter med både ryggmargsskade og skjelettskade regnes bare i ryggmargskateg
 
 Tilleggsuttrekk:
 
-### Isolerte skjelettskader
+#### Isolerte skjelettskader
 
 *Isolerte skjelettskader* i korsrygg (lumbal): Pasienter med minst en av følgende AIS
 koder (En pasient skal bare telles en gang selv om han har flere skader):
@@ -193,7 +193,7 @@ koder (En pasient skal bare telles en gang selv om han har flere skader):
 650634.3
 ```
 
-### Ryggmargsskade
+#### Ryggmargsskade
 
 *Ryggmargsskade* i korsryggregion (lumbal):
 
