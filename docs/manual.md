@@ -13,7 +13,7 @@ Sjekk at du har tilgang til NTR mappen **K: sensitivt område**. Blant de mappen
 ligger der, finner du en mappe som heter *Yusman*. Deretter finner du en mappe som
 heter **NTRApp**. Bildet under viser stien til mappen.
 
-![NTR sti](/img/stimark.png)
+![NTR sti](./img/stimark.png)
 
 ## Steg 2
 
@@ -21,12 +21,12 @@ Starter opp **RStudio** fra startmenyen. Om programmet ikke er allerede
 tilgjengelig på din snarvei, kan du benytte *Søk i programmer og filer* for å finne
 RStudio.
 
-![RStudio](/img/rstudio.png)
+![RStudio](./img/rstudio.png)
 
 Når du har startet programmet så ser det slik som bildet nedenfor. Fargen til
 bakgrunn eller tekst for koder kan varierer pga. personlige tilpasninger.
 
-![rstudio start](/img/startside.JPG)
+![rstudio start](./img/startside.JPG)
 
 ## Steg 3
 
@@ -35,7 +35,7 @@ Når alt fungerer og du ikke får noe feil meldinger så kan du starte NTR resul
 RStudio, klikk *File* og deretter velger du *Open file*. Du kan da finne filen ved å
 følge filstien som beskreves i [Steg 1](#steg1) i en vanlig filsøkingsvindu.
 
-![open file](/img/openFile.png)
+![open file](./img/openFile.png)
 
 ## Steg 4
 
@@ -43,7 +43,7 @@ Nå er det bare å kjøre NTR resultat. Denne gjør man vet å klikke **Code** i
 deretter velg **Run Region** og så klikk **Run All**. Hvis man vil heller benytte
 tastertur forkortelse så velge man **Ctrl-Alt-R** *(R med stor bukstave)*.
 
-![run app](/img/RunFile.png)
+![run app](./img/RunFile.png)
 
 Nå bør du kunne se dashbordet til NTR resultat som er lik det bildet på første siden av
 denne manuallen. Hvis du kjører NTR resultat for første gang så kan det ta litt lengre

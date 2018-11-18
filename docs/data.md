@@ -8,7 +8,7 @@ Data som brukes til **NTR resultat** finnes i en mappe som heter **data**. Den l
 i **Yusman** mappe. Nye data som er lastet ned fra **Medisinsk registreringssystem
 (MRS)** skal ligger i denne mappen.
 
-![data](/img/dataSti.JPG)
+![data](./img/dataSti.JPG)
 
 ## Datafil
 Det er tre ting som er veldig viktig angående datafiler som skal ligger i mappen. De
