@@ -5,6 +5,6 @@ account: ybkamaleri
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 576916
-bundleId: 1706470
+bundleId: 1706591
 url: https://ybkamaleri.shinyapps.io/ntrtest/
-when: 1542492400.97346
+when: 1542499770.95391
