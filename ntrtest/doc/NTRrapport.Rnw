@@ -50,7 +50,7 @@ knitr::opts_chunk$set(
 \begin{document}
 
 
-<<data, warning=TRUE>>=
+<<data, warning=FALSE>>=
 ns <- session$ns
 hospValg <- input$hosp_rapport
 datoFra <- input$dato_rapport[1]

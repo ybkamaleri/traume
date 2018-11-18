@@ -81,14 +81,29 @@ virkSV <- function(input, output, session, resh, data) {
                        Hospital == hospNavn() &
                          dateSykehus >= as.POSIXct(datoFra(), format = "%Y-%m-%d") &
                          dateSykehus <= as.POSIXct(datoTil(), format = "%Y-%m-%d")]
-    valgDag <- valgDato[, dag := weekdays(dateSykehus)]
-    ntot <- dim(valgDag)[1] #total dager
-    ukeDag <- valgDag[, .(prosent = round((.N / ntot) * 100),
-      n = .N), by = dag]
 
-    ## Passer på riktig rekkefølge
-    ukeDag$dag <- factor(ukeDag$dag,
-      levels = c("mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag", "søndag"))
+    ## pass på riktig rekkefølge
+    ukeDagInd <- 1:7
+    ukeDagNavn <- c("mandag","tirsdag","onsdag","torsdag","fredag","lørdag","søndag")
+
+    ukeDag <- valgDato[!is.na(ed_arrival_weekday) & ed_arrival_weekday %in% 1:7,
+      .(n = .N), by = ed_arrival_weekday]
+
+    ukeDag[, `:=` (
+      prosent = round(n / sum(n, na.rm = TRUE) * 100, digits = 1),
+      dag = factor(ed_arrival_weekday, levels = ukeDagInd, labels = ukeDagNavn)
+    )][, name := sprintf("%s \n (N=%s)", dag, n)]
+
+
+    ## ## ==============
+    ## valgDag <- valgDato[, dag := weekdays(dateSykehus)]
+    ## ntot <- dim(valgDag)[1] #total dager
+    ## ukeDag <- valgDag[, .(prosent = round((.N / ntot) * 100),
+    ##   n = .N), by = dag]
+
+    ## ## Passer på riktig rekkefølge
+    ## ukeDag$dag <- factor(ukeDag$dag,
+    ##   levels = c("mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag", "søndag"))
 
 
     barTheme <- theme(axis.text = element_text(size = 12, color = "black"), #text for x og y axis
