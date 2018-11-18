@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Yusman K">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>AIS kode - NTR resultat</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="../css/extra.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "AIS kode";
+    var mkdocs_page_input_path = "ais.md";
+    var mkdocs_page_url = "/traume/ais/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> NTR resultat</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Hjem</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../krav/">Betingelsen</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../manual/">Veiledning</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../data/">Dataset</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">AIS kode</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#hvilke-ais-koder">Hvilke AIS koder?</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#hode">Hode</a></li>
+        
+            <li><a class="toctree-l3" href="#ansikt">Ansikt</a></li>
+        
+            <li><a class="toctree-l3" href="#hals">Hals</a></li>
+        
+            <li><a class="toctree-l3" href="#brystkasse">Brystkasse</a></li>
+        
+            <li><a class="toctree-l3" href="#buk">Buk</a></li>
+        
+            <li><a class="toctree-l3" href="#ryggsyle">Ryggsøyle</a></li>
+        
+            <li><a class="toctree-l3" href="#armer">Armer</a></li>
+        
+            <li><a class="toctree-l3" href="#ben">Ben</a></li>
+        
+            <li><a class="toctree-l3" href="#hudskader-og-andre-skader">Hudskader og andre skader</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">NTR resultat</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>AIS kode</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/ybkamaleri/traume/edit/master/docs/ais.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="hvilke-ais-koder">Hvilke AIS koder?</h1>
+<p>Her er oversikten om de forskjellige AIS koder og hvordan de er brukes til å velge av
+<em>kroppsregion</em> og <em>skadegradering</em>.</p>
+<h2 id="hode">Hode</h2>
+<pre><code>1*****.2 = Milde hodeskader
+1*****.3 = Moderate hodeskader
+1*****.4 = Moderate hodeskader
+1*****.5 = Alvorlige hodeskader
+1*****.6 = Livstruende hodeskader
+</code></pre>
+
+<h2 id="ansikt">Ansikt</h2>
+<pre><code>2*****.2 = Milde ansiktsskader
+2*****.3 = Moderate ansiktsskader
+2*****.4 = Moderate ansiktsskader
+</code></pre>
+
+<p>Denne kroppsregionen har ikke AIS 5 og 6 skader</p>
+<h2 id="hals">Hals</h2>
+<pre><code>3*****.2 = Milde halsskader
+3*****.3 = Moderate halsskader
+3*****.4 = Moderate halsskader
+3*****.5 = Alvorlige halsskader
+3*****.6 = Livstruende halsskader
+</code></pre>
+
+<h2 id="brystkasse">Brystkasse</h2>
+<pre><code>4*****.2 = Milde thoraxskader
+4*****.3 = Moderate thoraxskader 
+4*****.4 = Moderate thoraxskader
+4*****.5 = Alvorlige thoraxskader
+4*****.6 = Livstruende thoraxskader
+</code></pre>
+
+<h2 id="buk">Buk</h2>
+<pre><code>5*****.2 = Milde bukskader
+5*****.3 = Moderate bukskader  
+5*****.4 = Moderate bukskader
+5*****.5 = Alvorlige bukskader 
+5*****.6 = Livstruende bukskader
+</code></pre>
+
+<p>For denne kroppsregionen finnes det tilleggsuttrekk:</p>
+<h3 id="miltskader">Miltskader</h3>
+<pre><code>5442*
+</code></pre>
+
+<h3 id="leverskader">Leverskader</h3>
+<pre><code>5418*
+</code></pre>
+
+<h2 id="ryggsyle">Ryggsøyle</h2>
+<pre><code>6*****.2 = Milde columnaskader
+6*****.3 = Moderate columnaskader  
+6*****.4 = Moderate columnaskader
+6*****.5 = Alvorlige columnaskader
+6*****.6 = Livstruende columnaskader 
+</code></pre>
+
+<p>Denne kroppsregionen deles opp i tre deler:</p>
+<ul>
+<li>Cervicalcolumna</li>
+<li>Thoracalcolumna</li>
+<li>Lumbalcolumna</li>
+</ul>
+<h3 id="cervicalcolumna-nakkevirvlene">Cervicalcolumna (Nakkevirvlene)</h3>
+<pre><code>6**2**.2 Milde Nakkevirvelskader
+6**2**.3 Moderate Nakkevirvelskader
+6**2**.4 Moderate Nakkevirvelskader
+6**2**.5 Alvorlige Nakkevirvelskader
+6**2**.6 Livstruende Nakkevirvelskader
+</code></pre>
+
+<p>Videre skal det gjøres tilleggsuttrekk for:</p>
+<h3 id="isolerte-skjelettskader">Isolerte skjelettskader</h3>
+<p><em>Isolerte skjelettskader</em> i nakke hvor pasienter med minst en av følgende AIS
+koder (En pasient skal bare telles en gang selv om han har flere skader):</p>
+<pre><code>650216.2
+650217.2
+650218.2
+650220.2
+650222.2
+650224.2
+650226.2
+650228.3
+650230.2
+650232.2
+650234.3
+</code></pre>
+
+<h3 id="ryggmargsskade">Ryggmargsskade</h3>
+<p>Ryggmargsskade i nakke:</p>
+<pre><code>6402**.3
+6402**.4
+6402**.5
+6402**.6
+</code></pre>
+
+<p>Pasienter med både ryggmargsskade og skjelettskade regnes bare i ryggmargskategorien, ikke under skjelettskader.</p>
+<h3 id="thoracalcolumna-brystvirvlene">Thoracalcolumna (brystvirvlene)</h3>
+<pre><code>6**4**.2 Milde Brystvirvelskader
+6**4**.3 Moderate Brystvirvelskader
+6**4**.4 Moderate Brystvirvelskader 
+6**4**.5 Alvorlige Brystvirvelskader
+</code></pre>
+
+<p>Videre skal det gjøres tilleggsuttrekk for:</p>
+<h3 id="isolerte-skjelettskader_1">Isolerte skjelettskader</h3>
+<p><em>Isolerte skjelettskader</em> i brystregion (thorax): Pasienter med minst en av følgende
+AIS koder (En pasient skal bare telles en gang selv om han har flere skader):</p>
+<pre><code>650416.2
+650417.2
+650418.2
+650420.2
+650422.2
+650424.2
+650426.2
+650430.2
+650432.2
+650434.3
+</code></pre>
+
+<h3 id="ryggmargsskade_1">Ryggmargsskade</h3>
+<p><em>Ryggmargsskade</em> i brystregion (thorax):</p>
+<pre><code>6404**.3
+6404**.4
+6404**.5
+</code></pre>
+
+<p>Pasienter med både ryggmargsskade og skjelettskade regnes bare i ryggmargskategorien, ikke under skjelettskader.</p>
+<h3 id="lumbalcolumna-korsryggsvirvlene">Lumbalcolumna (korsryggsvirvlene)</h3>
+<pre><code>6**6**.2 Milde korsryggsvirvelskader
+6**6**.3 Moderate korsryggsvirvelskader
+6**6**.4 Moderate korsryggsvirvelskader 
+6**6**.5 Alvorlige korsryggsvirvelskader
+</code></pre>
+
+<p>Tilleggsuttrekk:</p>
+<h3 id="isolerte-skjelettskader_2">Isolerte skjelettskader</h3>
+<p><em>Isolerte skjelettskader</em> i korsrygg (lumbal): Pasienter med minst en av følgende AIS
+koder (En pasient skal bare telles en gang selv om han har flere skader):</p>
+<pre><code>650616.2
+650617.2
+650618.2
+650620.2
+650622.2
+650624.2
+650626.2
+650630.2
+650632.2
+650634.3
+</code></pre>
+
+<h3 id="ryggmargsskade_2">Ryggmargsskade</h3>
+<p><em>Ryggmargsskade</em> i korsryggregion (lumbal):</p>
+<pre><code>6406**.3
+6406**.4
+6406**.5
+</code></pre>
+
+<p>Pasienter med både ryggmargsskade og skjelettskade regnes bare i ryggmargskategorien, ikke under skjelettskader.</p>
+<h2 id="armer">Armer</h2>
+<pre><code>7*****.2 = Milde armskader
+7*****.3 = Moderate armskader
+7*****.4 = Moderate armskader 
+7*****.5 = Alvorlige armskader
+</code></pre>
+
+<h2 id="ben">Ben</h2>
+<pre><code>8*****.2 = Milde benskader
+8*****.3 = Moderate benskader
+8*****.4 = Moderate benskader 
+8*****.5 = Alvorlige benskader 
+</code></pre>
+
+<p>Tilleggsuttrekk:</p>
+<h3 id="bekken">Bekken:</h3>
+<pre><code>856*
+</code></pre>
+
+<h3 id="femur-og-tibiafrakturer">Femur og tibiafrakturer:</h3>
+<pre><code>853* 
+8540* 
+8541*
+8542*
+8543*
+</code></pre>
+
+<h2 id="hudskader-og-andre-skader">Hudskader og andre skader</h2>
+<pre><code>9*****.2 = Milde hudskader
+9*****.3 = Moderate hudskader
+9*****.4 = Moderate hudskader 
+9*****.5 = Alvorlige hudskader 
+9*****.6 = Livstruende hudskader
+0*****.2 = Milde andre skader
+0*****.3 = Moderate andre skader
+0*****.4 = Moderate andre skader 
+0*****.5 = Alvorlige andre skader 
+0*****.6 = Livstruende andre skader
+</code></pre>
+
+<p>Under «Andre skader» regnes Drukning, asfyksi, hypotermi og elektrisk skade.</p>
+<p>Tilleggsuttrekk:</p>
+<h3 id="brannskader">Brannskader</h3>
+<pre><code>9120**.2 = Milde brannskader
+9120**.3 = Moderate brannskader 
+9120**.4 = Moderate brannskader 
+9120**.5 = Alvorlige brannskader 
+9120**.6 = Livstruende brannskader
+</code></pre>
+
+<h3 id="hypotermi">Hypotermi:</h3>
+<pre><code>01*
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../data/" class="btn btn-neutral" title="Dataset"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/ybkamaleri/traume/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../data/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/newtab.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="../css/extra.css" rel="stylesheet">
   
   <script>
     // Current page data
@@ -63,15 +64,15 @@
     <a class="current" href="./">Veiledning</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#veiledning">Veiledning</a></li>
+    <li class="toctree-l2"><a href="#hvordan">Hvordan?</a></li>
     
         <ul>
-        
-            <li><a class="toctree-l3" href="#steg-1">Steg 1</a></li>
         
             <li><a class="toctree-l3" href="#steg-2">Steg 2</a></li>
         
             <li><a class="toctree-l3" href="#steg-3">Steg 3</a></li>
+        
+            <li><a class="toctree-l3" href="#steg-4">Steg 4</a></li>
         
         </ul>
     
@@ -81,7 +82,12 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="../about/">Noe mer</a>
+    <a class="" href="../data/">Dataset</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../ais/">AIS kode</a>
 	    </li>
           
         </ul>
@@ -119,21 +125,40 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="veiledning">Veiledning</h1>
-<p>Her er generell veiledning for å bruke <em>NTR resultat</em>. Beskrivelse i veiledningen er
-basert på at bruker har tilknytning til Oslo universitetssykehus nettverket. Hvis
-bruker hører til et annet helseforetak, kan veiledningen likevel brukes som generelle
-referanse for å be om assistanse fra lokal-IKT ansvarlig.</p>
-<h2 id="steg-1">Steg 1</h2>
-<p>Sjekk at du har tilgang til denne mappen <strong>K:...</strong> </p>
+                <h1 id="hvordan">Hvordan?</h1>
+<p>Her er generell veiledning for å bruke <em>NTR resultat</em> lokalt. Beskrivelse i
+veiledningen er basert på at bruker har tilknytning til Oslo universitetssykehus
+nettverket. Hvis bruker hører til et annet helseforetak, kan veiledningen likevel
+brukes som generelle referanse for å be om assistanse fra lokal-IKT ansvarlig. Det
+kreves ingen spesielle kompetanse i statistisk analyser eller koding for å bruke NTR
+resultat. Det er bare å følge veiledningen nedenfor steg for steg.</p>
+<h2 id="steg-1"><a name='steg1'></a>Steg 1</h2>
+<p>Sjekk at du har tilgang til NTR mappen <strong>K: sensitivt område</strong>. Blant de mappene som
+ligger der, finner du en mappe som heter <em>Yusman</em>. Deretter finner du en mappe som
+heter <strong>NTRApp</strong>. Bildet under viser stien til mappen.</p>
+<p><img alt="NTR sti" src="/img/stimark.png" /></p>
 <h2 id="steg-2">Steg 2</h2>
-<p>Starter opp <strong>RStudio</strong> programm. Programmet kan nås på følgende måte:</p>
-<ol>
-<li>Klikk <em>program</em></li>
-<li>... </li>
-</ol>
+<p>Starter opp <strong>RStudio</strong> fra startmenyen. Om programmet ikke er allerede
+tilgjengelig på din snarvei, kan du benytte <em>Søk i programmer og filer</em> for å finne
+RStudio.</p>
+<p><img alt="RStudio" src="/img/rstudio.png" /></p>
+<p>Når du har startet programmet så ser det slik som bildet nedenfor. Fargen til
+bakgrunn eller tekst for koder kan varierer pga. personlige tilpasninger.</p>
+<p><img alt="rstudio start" src="/img/startside.JPG" /></p>
 <h2 id="steg-3">Steg 3</h2>
-<p>Bla.. bla.. bla.. </p>
+<p>Når alt fungerer og du ikke får noe feil meldinger så kan du starte NTR resultat ved
+å finne filen <strong>RunFile.R</strong> som ligger i mappen <strong>NTRApp</strong>. For å åpne filen i
+RStudio, klikk <em>File</em> og deretter velger du <em>Open file</em>. Du kan da finne filen ved å
+følge filstien som beskreves i <a href="#steg1">Steg 1</a> i en vanlig filsøkingsvindu.</p>
+<p><img alt="open file" src="/img/openFile.png" /></p>
+<h2 id="steg-4">Steg 4</h2>
+<p>Nå er det bare å kjøre NTR resultat. Denne gjør man vet å klikke <strong>Code</strong> i menyen og
+deretter velg <strong>Run Region</strong> og så klikk <strong>Run All</strong>. Hvis man vil heller benytte
+tastertur forkortelse så velge man <strong>Ctrl-Alt-R</strong> <em>(R med stor bukstave)</em>.</p>
+<p><img alt="run app" src="/img/RunFile.png" /></p>
+<p>Nå bør du kunne se dashbordet til NTR resultat som er lik det bildet på første siden av
+denne manuallen. Hvis du kjører NTR resultat for første gang så kan det ta litt lengre
+tid før dashbordet dykker opp fordi det skal installeres flere tillegg pakker.</p>
               
             </div>
           </div>
@@ -141,7 +166,7 @@ referanse for å be om assistanse fra lokal-IKT ansvarlig.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../about/" class="btn btn-neutral float-right" title="Noe mer">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../data/" class="btn btn-neutral float-right" title="Dataset">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../krav/" class="btn btn-neutral" title="Betingelsen"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -175,7 +200,7 @@ referanse for å be om assistanse fra lokal-IKT ansvarlig.</p>
         <span><a href="../krav/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../about/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../data/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

@@ -8,7 +8,7 @@
   
   <meta name="author" content="Yusman K">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Betingelsen - NTR resultat</title>
+  <title>Dataset - NTR resultat</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -18,9 +18,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Betingelsen";
-    var mkdocs_page_input_path = "krav.md";
-    var mkdocs_page_url = "/traume/krav/";
+    var mkdocs_page_name = "Dataset";
+    var mkdocs_page_input_path = "data.md";
+    var mkdocs_page_url = "/traume/data/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
@@ -54,25 +54,9 @@
     <a class="" href="..">Hjem</a>
 	    </li>
           
-            <li class="toctree-l1 current">
+            <li class="toctree-l1">
 		
-    <a class="current" href="./">Betingelsen</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l2"><a href="#hva-trenger-man">Hva trenger man?</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l3" href="#r">R</a></li>
-        
-            <li><a class="toctree-l3" href="#integrert-utviklingsmilj-ide-verkty">Integrert utviklingsmiljø (IDE) verktøy</a></li>
-        
-            <li><a class="toctree-l3" href="#latex-kompilator">LaTeX kompilator</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../krav/">Betingelsen</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -80,9 +64,23 @@
     <a class="" href="../manual/">Veiledning</a>
 	    </li>
           
-            <li class="toctree-l1">
+            <li class="toctree-l1 current">
 		
-    <a class="" href="../data/">Dataset</a>
+    <a class="current" href="./">Dataset</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#hva-med-nye-data">Hva med nye data?</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#mappen-til-data">Mappen til data</a></li>
+        
+            <li><a class="toctree-l3" href="#datafil">Datafil</a></li>
+        
+        </ul>
+    
+
+    </ul>
 	    </li>
           
             <li class="toctree-l1">
@@ -112,10 +110,10 @@
     
       
     
-    <li>Betingelsen</li>
+    <li>Dataset</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/ybkamaleri/traume/edit/master/docs/krav.md"
+        <a href="https://github.com/ybkamaleri/traume/edit/master/docs/data.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -125,44 +123,22 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="hva-trenger-man">Hva trenger man?</h1>
-<p>Hva må det til for å kunne benytte <strong>NTR resultat</strong> localt? Det kreves at man har
-tilgang til eller installert programvarer som er listet nedenfor. Alle programvarene
-på listen er gratis å laste ned og bruke. Så snart
-<a href="https://www.kvalitetsregistre.no/rapporteket">Raporteket</a> er klar så ville alle
-disse betingelsene for å benytte denne resultattjenesten faller bort.</p>
-<h2 id="r">R</h2>
-<p><a href="https://cran.r-project.org/">R</a> er et statistikprogram som benyttes i alle
-beregninger og figurkonstruksjoner i denne resultattjenesten. Programvaren kan lastes
-ned <a href="https://cloud.r-project.org/">her</a>.</p>
-<h2 id="integrert-utviklingsmilj-ide-verkty">Integrert utviklingsmiljø (IDE) verktøy</h2>
-<p>IDE benyttes til å forenkle arbeidet med kode skriving, feilsøking eller kjøre
-resultattjenesten. Blant de vanlige IDE-ene som man kan velge bl.a er:</p>
-<h3 id="rstudio">RStudio</h3>
-<p><a href="https://www.rstudio.com/">RStudio</a> kan lastet ned
-<a href="https://www.rstudio.com/products/rstudio/download/">her</a>. Ved å installere RStudio
-har man også fått tilgang til <a href="https://cran.r-project.org/">R</a> uten at man behøve å
-installere separat. Alle som er tilknyttet til Oslo universitetssykehus kan benytte
-RStudio. Hvis du ikke har installert programmet, kan du søke om tilgang til RStudio
-hos Sykehuspartner.</p>
-<h3 id="emacs">Emacs</h3>
-<p><a href="https://www.gnu.org/software/emacs/">Emacs</a> kan kreve litt ekstra innsats for å
-kunne utnytte sin potensial, men er den som er mest fleksible av disse. R må
-installeres separat når man skal benytte Emacs.</p>
-<h3 id="notepad">Notepad++</h3>
-<p><a href="https://notepad-plus-plus.org/">Notepad++</a> er enklere å bruke, men mangler en del
-hjelpemidler særlig feilsøking og automatisk forslag til en mulige
-funksjoner eller objekter. R må installeres separat når man benytter Notepad++.</p>
-<h2 id="latex-kompilator">LaTeX kompilator</h2>
-<p><a href="https://no.wikipedia.org/wiki/LaTeX">LaTeX</a> kompilator brukes til å produsere
-virksomhet rapport i PDF format. Hvis det ikke er behov å benytte denne funksjonen så
-kan denne utelates. Det finnes forskjellige programvarer tilgjengelige, bl.a:</p>
-<h3 id="texlive">TexLive</h3>
-<p>Denne programvare kan brukes til alle operativsystemmer dvs. Linux, Windows og
-Mac. Programvaren kan lastes ned <a href="https://www.tug.org/texlive/">her</a>.</p>
-<h3 id="miktex">MiKTeX</h3>
-<p>Denne programvaren passer bare til Windows operativsystem. Denne kan lastet ned
-<a href="https://miktex.org/about">her</a>.</p>
+                <h1 id="hva-med-nye-data">Hva med nye data?</h1>
+<p>Her finner det informasjon om hvor ligger datakilder til NTR resultat og hva man MÅ
+gjøre for at dataene kan leses.</p>
+<h2 id="mappen-til-data">Mappen til data</h2>
+<p>Data som brukes til <strong>NTR resultat</strong> finnes i en mappe som heter <strong>data</strong>. Den ligger
+i <strong>Yusman</strong> mappe. Nye data som er lastet ned fra <strong>Medisinsk registreringssystem
+(MRS)</strong> skal ligger i denne mappen.</p>
+<p><img alt="data" src="/img/dataSti.JPG" /></p>
+<h2 id="datafil">Datafil</h2>
+<p>Det er tre ting som er veldig viktig angående datafiler som skal ligger i mappen. De
+er følgende:</p>
+<ol>
+<li>Default filnavn fra MRS når man laster ned datasetet <strong>må</strong> ikke endres.</li>
+<li>Kommentar felter <strong>må</strong> fjernes fra datasetet.</li>
+<li>Filformat må være i <strong>CSV</strong>.</li>
+</ol>
               
             </div>
           </div>
@@ -170,10 +146,10 @@ Mac. Programvaren kan lastes ned <a href="https://www.tug.org/texlive/">her</a>.
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../manual/" class="btn btn-neutral float-right" title="Veiledning">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../ais/" class="btn btn-neutral float-right" title="AIS kode">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href=".." class="btn btn-neutral" title="Hjem"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../manual/" class="btn btn-neutral" title="Veiledning"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -201,10 +177,10 @@ Mac. Programvaren kan lastes ned <a href="https://www.tug.org/texlive/">her</a>.
           <a href="https://github.com/ybkamaleri/traume/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../manual/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../manual/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../ais/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
