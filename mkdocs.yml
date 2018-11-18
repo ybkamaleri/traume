@@ -1,0 +1,21 @@
+site_name: NTR resultat
+site_url: https://ybkamaleri.github.io/traume
+site_description: Resultattjenester for NTR
+site_author: Yusman K
+
+repo_url: https://github.com/ybkamaleri/traume/
+edit_uri: edit/master/docs
+
+nav:
+  - Hjem: index.md
+  - Betingelsen: krav.md
+  - Veiledning: manual.md
+  - Noe mer: about.md
+
+theme:
+  name: 'readthedocs'
+  favicon: 'img/ntr.ico'
+  logo: 'img/ntr.png'
+
+extra_javascript:
+  - js/newtab.js
