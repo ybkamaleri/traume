@@ -2,8 +2,10 @@
 params:
   dynamictitle: "My report"
   reportdate: !r Sys.Date()
-title: "`r params$dynamictitle`"
+  dynamicSub: "My subtitle"
+title: "`r paste0('NTR rapport for ', params$dynamictitle)`"
 date: "`r params$reportdate`"
+subtitle: "`r paste0('Dato er ', params$dynamicSub)`"
 output:
   word_document:
     highlight: "kate"
