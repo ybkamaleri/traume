@@ -10,6 +10,7 @@ function(input, output) {
   })
 
   valgtit <- "Sendiri punya"
+  dato <- "2018.11.12"
 
   output$downloadReport <- downloadHandler(
     filename = function() {
@@ -29,7 +30,7 @@ function(input, output) {
 
       library(rmarkdown)
       out <- render('report.Rmd',
-        params = list(dynamictitle = valgtit, reportdate = Sys.Date() - 360),
+        params = list(dynamictitle = valgtit, reportdate = Sys.Date() - 360, dynamicSub = dato),
         switch(input$format,
         PDF = pdf_document(), HTML = html_document(), Word = word_document()
       ))
