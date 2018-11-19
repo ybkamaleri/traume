@@ -10,7 +10,9 @@ nav:
   - Hjem: index.md
   - Betingelsen: krav.md
   - Veiledning: manual.md
-  - Noe mer: about.md
+  - Dataset: data.md
+  - AIS kode: ais.md
+
 
 theme:
   name: 'readthedocs'
@@ -19,3 +21,7 @@ theme:
 
 extra_javascript:
   - js/newtab.js
+
+extra_css:
+  - css/extra.css
+
