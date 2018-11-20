@@ -91,7 +91,7 @@ body <- dashboardBody(
           align = "center", offset = 2,
           ## title = "Rapport",
           background = "light-blue",
-          tags$div(HTML("<div style='color: #FFFFFF; font-size: 18px; text-align: center;'>Trykk knappen for å kompilere rapporten til en PDF fil</div>")),
+          tags$div(HTML("<div style='color: #FFFFFF; font-size: 18px; text-align: center;'>Trykk knappen for &aring; kompilere rapporten til en PDF fil</div>")),
           tags$br(),
           downloadButton("downloadReport", label = "Last ned", class = "butangDownload")
         )
