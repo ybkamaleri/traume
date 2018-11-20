@@ -97,7 +97,9 @@ body <- dashboardBody(
         )
       ),
       fluidRow(
-        includeMarkdown("rapport.md")
+        column(width = 10,
+          includeMarkdown("rapport.md")
+        )
       )
 
       ## rapportUI("rapport")
