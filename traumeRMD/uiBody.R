@@ -85,15 +85,15 @@ body <- dashboardBody(
             weekstart = 1)
         ),
 
-        box(
-          width = 2,
-          height = 100,
-          radioButtons('format', "Valg format: ",
-            c('PDF', 'Word'),
-            inline = TRUE)),
+        ## box(
+        ##   width = 2,
+        ##   height = 100,
+        ##   radioButtons('format', "Valg format: ",
+        ##     c('PDF', 'Word'),
+        ##     inline = TRUE)),
 
           box(
-            width = 2,
+            width = 4,
           height = 100,
           align = "center", offset = 2,
           ## title = "Rapport",
