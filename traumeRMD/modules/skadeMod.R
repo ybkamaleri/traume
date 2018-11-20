@@ -271,7 +271,7 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   output$txt <- renderUI({
 
     if (is.null(valgDT$txt)){
-      HTML("<div style='color: #b22; font-size: 15px; text-align: center;'> <b>OBS!!</b> Ingen data å vise. Har du spesifisert datavalg fra <em>'Filter data'</em>?</div>")
+      HTML("<div style='color: #a11; font-size: 15px; text-align: center;'> <b>OBS!!</b> Ingen data å vise. Har du spesifisert datavalg fra <em>'Filter data'</em>?</div>")
     } else {
       HTML(valgDT$txt)
     }
