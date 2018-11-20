@@ -1,5 +1,5 @@
 sidebar <- dashboardSidebar(width = 250, #tilpase title tekst
-  collapsed = TRUE, #skjule sidebar
+  collapsed = FALSE, #skjule sidebar er TRUE
   sidebarMenu(
     menuItem("Generell informasjon",
       tabName = "tab_info",
