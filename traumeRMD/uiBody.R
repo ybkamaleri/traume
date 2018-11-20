@@ -85,20 +85,13 @@ body <- dashboardBody(
             weekstart = 1)
         ),
 
-        ## box(
-        ##   width = 2,
-        ##   height = 100,
-        ##   radioButtons('format', "Valg format: ",
-        ##     c('PDF', 'Word'),
-        ##     inline = TRUE)),
-
-          box(
-            width = 4,
+        box(
+          width = 4,
           height = 100,
           align = "center", offset = 2,
           ## title = "Rapport",
           background = "light-blue",
-          tags$div(HTML("<div style='color: #FFFFFF; font-size: 14px; text-align: center;'>Trykk knappen for å lage rapporten</div>")),
+          tags$div(HTML("<div style='color: #FFFFFF; font-size: 18px; text-align: center;'>Trykk knappen for å kompilere rapporten til en PDF fil</div>")),
           tags$br(),
           downloadButton("downloadReport", label = "Last ned", class = "butangDownload")
         )
