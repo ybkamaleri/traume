@@ -47,7 +47,7 @@ filterUI <- function(id){
           options = list(container = "body"))),
 
       box(width = 3, height = 165, background = "light-blue",
-        tags$h4("Bruk valgte spesifikasjoner?"),
+        tags$h4("Bruk denne datavalg spesifikasjoner?"),
         htmlOutput(ns("txtList")),
         column(
           id = "Butang",
