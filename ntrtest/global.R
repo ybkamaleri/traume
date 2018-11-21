@@ -23,4 +23,4 @@ invisible(sapply(list.files('functions', full.names = TRUE), source))
 
 ## modules
 ###########
-invisible(sapply(list.files('modules', full.names = TRUE), source))
+invisible(sapply(list.files('modules', full.names = TRUE), function(x) source(x, encoding = "UTF-8")))
