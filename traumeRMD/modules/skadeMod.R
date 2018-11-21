@@ -229,6 +229,14 @@ skadeUI <- function(id){
         width = 3,
         htmlOutput(ns("traumeInfo"))
       ))
+
+    ## fluidRow(
+    ##   verbatimTextOutput(ns("test"))
+    ## ),
+
+    ## fluidRow(
+    ##   verbatimTextOutput(ns("test2"))
+    ## )
     )
 }
 
@@ -263,11 +271,22 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   output$txt <- renderUI({
 
     if (is.null(valgDT$txt)){
-HTML("<div style='color: #A11; font-size: 15px; text-align: center;'> <b>OBS!</b> Ingen data &aring; vise. Har du spesifisert datavalg fra <em>'Filter data'</em>?</div>")
+      HTML("<div style='color: #a11; font-size: 15px; text-align: center;'> <b>OBS!!</b> Ingen data å vise. Har du spesifisert datavalg fra <em>'Filter data'</em>?</div>")
     } else {
       HTML(valgDT$txt)
     }
+
   })
+
+  ## Filtert data
+  ## ============
+
+  ## ## for test uten module
+  ## listNTR <- reactive({
+  ##   req(input$ulykke)
+  ##   valgDT$data[, list(ntrid)]
+
+  ## })
 
   ## filtert data for å velge ntrid valgDT henter data fra filterModule. Bruk is.null
   ## hvis ingen data ikke er filtert enda
@@ -980,7 +999,6 @@ HTML("<div style='color: #A11; font-size: 15px; text-align: center;'> <b>OBS!</b
   ##    })
 
   ## output$test2 <- renderPrint({
-  ##   tabUT()
   ## })
 
 }
