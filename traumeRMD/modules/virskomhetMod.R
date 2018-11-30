@@ -12,7 +12,7 @@ virkDataUI <- function(id){
       ##             .selectize-dropdown { font-size: 18px; line-height: 18px;}
       ##             "),
       ## Valg hospital
-      box(width = 3,
+      box(width = 4,
         height = 100,
         title = "Valg sykehus:",
         status = "primary",
@@ -20,7 +20,7 @@ virkDataUI <- function(id){
         uiOutput(ns("hosp"))),
 
       ## Valg tidsrom
-      box(width = 3,
+      box(width = 4,
         height = 100,
         title = "Valg tidsrom:",
         status = "primary",

@@ -145,9 +145,7 @@ function(input, output, session){
 
   output$downloadReport <- downloadHandler(
     filename = function() {
-      paste('ntr-report', sep = '.', switch(
-        input$format, PDF = 'pdf', Word = 'docx'
-      ))
+      paste0(hospNavn(), Sys.Date(), ".pdf")
     },
 
     content = function(file) {
@@ -164,11 +162,9 @@ function(input, output, session){
         params = list(
           dynamictitle = hospNavn(),
           reportdate = Sys.Date(),
-          dynamicSub = paste0(datoFra(), " til ", datoTil()) ),
-        switch(
-          input$format,
-          PDF = pdf_document(), Word = word_document()
-        ))
+          dynamicSub = paste0(datoFra(), " til ", datoTil()))
+      )
+
       file.rename(out, file)
     }
   )

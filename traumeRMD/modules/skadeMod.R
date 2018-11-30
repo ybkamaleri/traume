@@ -191,7 +191,7 @@ skadeUI <- function(id){
         ),
         checkboxInput(inputId = ns("skadegrad1"),
           label = "Andel inkluderer skadegrad 1",
-          value = FALSE),
+          value = TRUE),
         bsTooltip(id = ns("skadegrad1"),
           title = "Hvis skadegrad 1 er valgt må denne også velges",
           placement = "bottom",
@@ -204,7 +204,8 @@ skadeUI <- function(id){
       #####################
       box(
         width = 3,
-        title = "Valgte dataset:",
+        height = 125,
+        ## title = "Valgte dataset:",
         background = "light-blue",
         htmlOutput(ns("txt")),
         column(
@@ -268,7 +269,13 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
 
   ## Tekst til data valg
   output$txt <- renderUI({
-    HTML(valgDT$txt)
+
+    if (is.null(valgDT$txt)){
+      HTML("<div style='color: #a11; font-size: 15px; text-align: center;'> <b>OBS!!</b> Ingen data å vise. Har du spesifisert datavalg fra <em>'Filter data'</em>?</div>")
+    } else {
+      HTML(valgDT$txt)
+    }
+
   })
 
   ## Filtert data
@@ -992,7 +999,6 @@ skadeSV <- function(input, output, session, valgDT, dataUK, dataSK){
   ##    })
 
   ## output$test2 <- renderPrint({
-  ##   tabUT()
   ## })
 
 }

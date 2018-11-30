@@ -39,7 +39,7 @@ rapportUI <- function(id){
         align = "center", offset = 2,
         ## title = "Rapport",
         background = "light-blue",
-        tags$div(HTML("<div style='color: #FFFFFF; font-size: 18px; font-weight: bold; text-align: center;'>Trykk knappen for å lage rapporten i PDF</div>")),
+        tags$div(HTML("<div style='color: #FFFFFF; font-size: 18px; font-weight: bold; text-align: center;'>Trykk knappen for &aring; kompilere rapporten i PDF</div>")),
         tags$br(),
         downloadButton(ns("rapport"), label = "Last ned", class = "butangDownload")
       )
@@ -76,7 +76,7 @@ rapportSV <- function(input, output, session, resh, data){
     filename = 'ntrrapport.pdf',
 
     content = function(file) {
-      out = knitr::knit2pdf('doc/NTRrapport.Rnw', clean = TRUE)
+      out = knitr::knit2pdf('doc/NTRrapport.Rnw', encoding = "UTF-8", clean = TRUE)
       file.rename(from = out, to = file)
     },
 
