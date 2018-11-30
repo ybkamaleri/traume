@@ -11,9 +11,10 @@ i **Yusman** mappe. Nye data som er lastet ned fra **Medisinsk registreringssyst
 ![data](./img/dataSti.JPG)
 
 ## Datafil
-Det er tre ting som er veldig viktig angående datafiler som skal ligger i mappen. De
+Det er fire ting som er veldig viktig angående datafiler som skal ligger i mappen. De
 er følgende:
 
-1. Default filnavn fra MRS når man laster ned datasetet **må** ikke endres.
-2. Kommentar felter **må** fjernes fra datasetet.
-3. Filformat må være i **CSV**.
+1. Slett de gamle filene i mappen som skal erstates.
+2. Default filnavn fra MRS når man laster ned datasetet **må** ikke endres.
+3. Kommentar felter **må** fjernes fra datasetet.
+4. Filformat må være i **CSV**.
