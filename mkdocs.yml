@@ -10,6 +10,7 @@ nav:
   - Hjem: index.md
   - Betingelsen: krav.md
   - Veiledning: manual.md
+  - Rapport: rapport.md
   - Dataset: data.md
   - AIS kode: ais.md
 

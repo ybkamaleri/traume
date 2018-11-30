@@ -41,7 +41,7 @@ følge filstien som beskreves i [Steg 1](#steg1) i en vanlig filsøkingsvindu.
 
 Nå er det bare å kjøre NTR resultat. Denne gjør man vet å klikke **Code** i menyen og
 deretter velg **Run Region** og så klikk **Run All**. Hvis man vil heller benytte
-tastertur forkortelse så velge man **Ctrl-Alt-R** *(R med stor bukstave)*.
+tastertur forkortelse så velge man **Ctrl-Alt-r**.
 
 ![run app](./img/RunFile.png)
 
