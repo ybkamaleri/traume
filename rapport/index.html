@@ -8,7 +8,7 @@
   
   <meta name="author" content="Yusman K">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Dataset - NTR resultat</title>
+  <title>Rapport - NTR resultat</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -18,9 +18,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Dataset";
-    var mkdocs_page_input_path = "data.md";
-    var mkdocs_page_url = "/traume/data/";
+    var mkdocs_page_name = "Rapport";
+    var mkdocs_page_input_path = "rapport.md";
+    var mkdocs_page_url = "/traume/rapport/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
@@ -64,28 +64,30 @@
     <a class="" href="../manual/">Veiledning</a>
 	    </li>
           
-            <li class="toctree-l1">
-		
-    <a class="" href="../rapport/">Rapport</a>
-	    </li>
-          
             <li class="toctree-l1 current">
 		
-    <a class="current" href="./">Dataset</a>
+    <a class="current" href="./">Rapport</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#hva-med-nye-data">Hva med nye data?</a></li>
+    <li class="toctree-l2"><a href="#rapport-kompilator-via-rstudio">Rapport kompilator via RStudio</a></li>
     
         <ul>
         
-            <li><a class="toctree-l3" href="#mappen-til-data">Mappen til data</a></li>
+            <li><a class="toctree-l3" href="#sti-til-mappen">Sti til mappen</a></li>
         
-            <li><a class="toctree-l3" href="#datafil">Datafil</a></li>
+            <li><a class="toctree-l3" href="#generere-rapport">Generere rapport</a></li>
+        
+            <li><a class="toctree-l3" href="#hvor-ligger-rapporten">Hvor ligger rapporten?</a></li>
         
         </ul>
     
 
     </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../data/">Dataset</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -115,10 +117,10 @@
     
       
     
-    <li>Dataset</li>
+    <li>Rapport</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/ybkamaleri/traume/edit/master/docs/data.md"
+        <a href="https://github.com/ybkamaleri/traume/edit/master/docs/rapport.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -128,22 +130,33 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="hva-med-nye-data">Hva med nye data?</h1>
-<p>Her finner det informasjon om hvor ligger datakilder til NTR resultat og hva man MÅ
-gjøre for at dataene kan leses.</p>
-<h2 id="mappen-til-data">Mappen til data</h2>
-<p>Data som brukes til <strong>NTR resultat</strong> finnes i en mappe som heter <strong>data</strong>. Den ligger
-i <strong>Yusman</strong> mappe. Nye data som er lastet ned fra <strong>Medisinsk registreringssystem
-(MRS)</strong> skal ligger i denne mappen.</p>
-<p><img alt="data" src="../img/dataSti.JPG" /></p>
-<h2 id="datafil">Datafil</h2>
-<p>Det er tre ting som er veldig viktig angående datafiler som skal ligger i mappen. De
-er følgende:</p>
+                <h1 id="rapport-kompilator-via-rstudio">Rapport kompilator via RStudio</h1>
+<p>Noen ganger kan det være et problem å generere rapport via Shinyapps. Hvis du har det
+problemmet kan det være aktuelt å kompilere rapport via RStudio. Her finner man
+veiledning for å gjøre det:</p>
+<h2 id="sti-til-mappen">Sti til mappen</h2>
+<p>Mappen ligger i <em>K sensetive</em> området og heter <strong>autoRapport</strong>. Inne denne mappen
+ligger en fil som heter <strong>runFile.R</strong>. Denne filen som skal brukes til å kompilere
+rapporten. Bildet nedenfor viser hvor mappen ligger.</p>
+<p><img alt="sti til rapport" src="../img/image002.png" /></p>
+<h2 id="generere-rapport">Generere rapport</h2>
+<p>Starter RStudio program og finner fram mappen <strong>autoRapport</strong> ved bruk av menyen som
+heter <em>File</em> og deretter <em>Open File</em>. Når du har funnet rapport mappen, valg
+filen <strong>runFile.R</strong> og deretter klikk Open*.</p>
+<p>Det er 3 variabler som du kan endre. De er:</p>
 <ol>
-<li>Default filnavn fra MRS når man laster ned datasetet <strong>må</strong> ikke endres.</li>
-<li>Kommentar felter <strong>må</strong> fjernes fra datasetet.</li>
-<li>Filformat må være i <strong>CSV</strong>.</li>
+<li><em>sykehusNavn</em>: Valg sykehus til rapporten</li>
+<li><em>datoFra</em>: Valg startdato for rapporten</li>
+<li><em>datoTil</em>: Valg sluttdato for rapporten</li>
 </ol>
+<p>Viktig at strukturen beholdes dvs. bruk av anførselstegn og måten dato skal skrives
+<em>"YYYY-MM-DD"</em>. Kjør koden ved å tykke <strong>Ctrl+Alt+r</strong> eller ved bruk menyen <em>Code -&gt;
+Run Region -&gt; Run All</em>. Se figuren nedenfor:</p>
+<p><img alt="runFile" src="../img/image001.png" /></p>
+<h2 id="hvor-ligger-rapporten">Hvor ligger rapporten?</h2>
+<p>Når koden er kjørt, ligger ferdig rapporten i mappe som heter <strong>doc</strong>. I mappen
+<strong>fig</strong> finner du figuren til ukedager.</p>
+<p><img alt="doc" src="../img/image003.png" /></p>
               
             </div>
           </div>
@@ -151,10 +164,10 @@ er følgende:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../ais/" class="btn btn-neutral float-right" title="AIS kode">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../data/" class="btn btn-neutral float-right" title="Dataset">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../rapport/" class="btn btn-neutral" title="Rapport"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../manual/" class="btn btn-neutral" title="Veiledning"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -182,10 +195,10 @@ er følgende:</p>
           <a href="https://github.com/ybkamaleri/traume/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../rapport/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../manual/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../ais/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../data/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
