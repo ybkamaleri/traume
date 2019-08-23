@@ -13,19 +13,19 @@ rapbar <- function(DT, x, n1, n2, pros1, pros2, ascending = TRUE, line2 = FALSE,
   data.table::setDT(data)
 
   ## choose x-axis. "x" argument
-  data.table::setnames(data, as.character(substitute(x)), "xvar")
+  data.table::setnames(data, as.character(substitute(x)), "xvar", skip_absent = T)
 
   ## choose y-axis for local. "n1" argument
-  data.table::setnames(data, as.character(substitute(n1)), "n1")
+  data.table::setnames(data, as.character(substitute(n1)), "n1",  skip_absent = T)
 
   ## choose y-axis for national. "n2" argument
-  data.table::setnames(data, as.character(substitute(n2)), "n2")
+  data.table::setnames(data, as.character(substitute(n2)), "n2",  skip_absent = T)
 
   ## choose y-axis for national. "pros1" argument
-  data.table::setnames(data, as.character(substitute(pros1)), "pros1")
+  data.table::setnames(data, as.character(substitute(pros1)), "pros1",  skip_absent = T)
 
   ## choose y-axis for national. "pros2" argument
-  data.table::setnames(data, as.character(substitute(pros2)), "pros2")
+  data.table::setnames(data, as.character(substitute(pros2)), "pros2",  skip_absent = T)
 
   ## Order data 'ascending' argument
   if (ascending) {
